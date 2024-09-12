@@ -1,3 +1,5 @@
 .vscode
 .venv
-inputs/datasets/pets
+inputs/datasets/
+outputs/
+live_img/
