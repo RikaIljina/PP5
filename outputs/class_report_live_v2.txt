@@ -1,0 +1,16 @@
+                  Actually Fin  Actually Iris  Actually Smilla  Unknown
+Predicted Fin               94              0                0        0
+Predicted Iris               0             90                4        6
+Predicted Smilla             0              1              125        8
+Unknown                      0              0                0        0
+
+              precision    recall  f1-score   support
+
+         Fin       1.00      1.00      1.00        94
+        Iris       0.90      0.99      0.94        91
+      Smilla       0.93      0.97      0.95       129
+     Unknown       0.00      0.00      0.00        14
+
+    accuracy                           0.94       328
+   macro avg       0.71      0.74      0.72       328
+weighted avg       0.90      0.94      0.92       328
