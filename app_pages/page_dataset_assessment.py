@@ -6,28 +6,34 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
 from PIL import Image
-
 import itertools
-import random
+from src.data_visualization.get_montage import image_montage
+import joblib
+
 
 def page_dataset_assessment_body():
     output_path = os.path.relpath('outputs')
     full_dataset_path = os.path.relpath('inputs/datasets/pets')
+    LABELS = sorted(joblib.load(f"{output_path}/class_dict.pkl").values())
+    COMBOS = list(itertools.combinations(LABELS, 2))
     
-    st.write("### Compare pets")
+    
+    st.write("### Dataset Assessment")
     st.info(
         '''The client is interested in a recommendation based on the comparison of the 
             image labels in the dataset to be able to evaluate and adjust future training
             sets to work with our model.''')
     
-    #version = 'v1'
-    if st.checkbox("Average and variance images for each label:"):
+    if st.checkbox("Average and variance images for each label"):
       
         avg_grid = plt.imread(os.path.join(output_path, 'average_images_grid.png'))
         st.image(avg_grid, caption="The average images for each label in the 'train' subset")
         
         var_grid = plt.imread(os.path.join(output_path, 'variance_images_grid.png'))
         st.image(var_grid, caption="The variance images for each label in the 'train' subset")
+        
+        var_grid_norm = plt.imread(os.path.join(output_path, 'variance_normalized_images_grid.png'))
+        st.image(var_grid_norm, caption="The normalized variance images for each label in the 'train' subset")
 
         st.success(
         f"* We notice that the average image for each pet is clearly distinguishable "
@@ -36,14 +42,15 @@ def page_dataset_assessment_body():
         f"seen as clear outlines on the average image. This might lead to bias during "
         f"model training.\n\n"
         f"* The variance images show the mean variance between each image in the label "
-        f"set, brighter areas indicating greater variance."
+        f"set, brighter areas indicating greater variance. Dark areas can be interpreted "
+        f"as unchanging aspects such as floor or wall."
         )
 
         st.write("---")
 
-    if st.checkbox("Differences between the average images for each label combo:"):
-        for combo in ['fin_iris', 'fin_smilla', 'iris_smilla']:
-            diff_between_avgs = plt.imread(f"{output_path}/average_imgs_{combo}.png")
+    if st.checkbox("Differences between averages for each label combo"):
+        for combo in COMBOS:
+            diff_between_avgs = plt.imread(f"{output_path}/average_imgs_{'_'.join(combo)}.png")
             st.image(diff_between_avgs)
 
         st.success(
@@ -55,9 +62,117 @@ def page_dataset_assessment_body():
         f"* We make the preliminary conclusion that the labels **'fin'** and **'smilla'**"
         f" might turn out to be easiest for the model to distinguish."
         )
-        
+
     if st.checkbox("Histogram comparison"):
-        st.write(f"Histograms")
+        st.info(
+        f"On top of the visual comparison, we want to compare the histograms for the "
+        f"average images of each combo and use the results to evaluate our dataset.\n"
+        f"Seeing as we will be training our model on 3-channel RGB color images, we will "
+        f"compare each channel separately."
+        )
+        st.write(f"---")
+        st.write('#### Step 1: Create baseline')
+        st.info(
+        f"To create the baselines, we have loaded at least 200 random non-consecutive "
+        f"images from each label, split the resulting array in half and compared the "
+        f"means of both halves with each other by subtracting one from the other and "
+        f"converting the result to absolute values.\n"
+        f"- Dark pixels: there is little to no difference in hue and/or brightness "
+        f"between two compared pixels\n"
+        f"- Bright pixels: there is noticeable difference in hue and/or brightness "
+        f"between two compared pixels\n\n"
+        )
+        for label in LABELS:
+            baseline = plt.imread(f"{output_path}/baseline_imgs_{label}.png")
+            st.image(baseline)
+        st.info(
+        f"The resulting dark, noisy images represent the amount of variance we can expect"
+        f" from two indistinguishable animals.\n"
+        )
+        st.write("---")
+        st.info(
+        f"We will now create histograms from each average image and compare them:"
+        )
+        
+        for label in LABELS:
+            baseline_diffs = plt.imread(f"{output_path}/hist_baseline_average_{label}_rgb.png")
+            st.image(baseline_diffs)
+
+        st.info(
+        f"We will now create histograms from each average image and compare them:"
+        )
+        
+        st.write('#### Step 2: Compare all labels')
+        
+        for combo in COMBOS:
+            hist_diffs = plt.imread(f"{output_path}/hist_average_{'_'.join(combo)}_rgb.png")
+            st.image(hist_diffs)
+
+        st.success(
+        f"We can clearly see that the histograms depicting the differences between two "
+        f"different labels are much more pronounced than the baseline histogram diffs. "
+        f"This reinforces our initial assumption that the pets seem to have prominent "
+        f"features that make them distinguishable from one another.\n\n"
+        f"However, we want to go one step further and find metrics that will inform our "
+        f"training set evaluation even better."
+        )
+
+
+    if st.checkbox("Metrics analysis"):
+        
+        st.write('#### Step 3: Analyze the comparison metrics')
+
+        st.info(
+        f"In order to assess the similarity between our image sets, we performed "
+        f"histogram comparison for each color channel using five distinct methods and "
+        f"summarized the results in the following heatmap."
+        )
+        
+        st.error(
+        f"##### NB!\n\n"
+        f"The annotated values on the heatmap are normalized within the range (0, 1) to "
+        f"denote the similarity between the datasets and do not represent the actual "
+        f"calculated values of the applied metric."
+        )
+        
+        heat_ch = plt.imread(f"{output_path}/heatmap_by_channel.png")
+        st.image(heat_ch)
+
+        st.success(
+            f"As expected, the upper half of the heatmap containing our baseline data "
+            f"is showing overwhelmingly high similarity values.\n\n"
+            f"At the same time, . "
+            f""
+            )
+        
+        heat = plt.imread(f"{output_path}/heatmap_conclusion.png")
+        st.image(heat, width=600)
+
+        heat_mm = plt.imread(f"{output_path}/heatmap_mean_med.png")
+        st.image(heat_mm, width=400)
+        
+        with st.expander('Metrics details'):
+            st.info(
+            f"Methods:\n\n"
+            f"* Correlation (high=sim)\n"
+            f"* Chi-Squared (low=sim)\n"
+            f"* Intersection (high=sim)\n"
+            f"* Bhattacharyya (low=sim)\n"
+            f"* Euclidean Distance (low=sim)\n"
+            )
+
+    
+    if st.checkbox("Conclusions and recommendations"):
+        st.write("* To refresh the montage, click on the 'Create Montage' button")
+        st.info(
+            f"The resulting dark images are an indicator for either a balanced amount of variance / variety or "
+            f"high bias in the dataset due to the presence of too many similar images. "
+            f"images from each label, split the resulting array in half and compared the "
+            )
+
+
+    st.write("---")
+
 
     if st.checkbox("Image Montage"):
         st.write("* To refresh the montage, click on the 'Create Montage' button")
@@ -67,170 +182,7 @@ def page_dataset_assessment_body():
         if st.button("Create Montage"):
             image_montage(f'{full_dataset_path}/train', label_to_display,  
                             3, 3, show_all, figsize=(10,10))
+        
         st.write("---")
         
-
-def set_ticks(ax):
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-
-
-
-##########
-
-import os
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import joblib
-from tensorflow.keras.preprocessing import image
-from PIL import Image
-import random
-
-sns.set_style("white")
-
-def show_progress(label, list_len):
-    width = 100
-    for i in range(list_len):
-        yield f'\r{label:<10}: {"#"*int(width if i == list_len-1 else i//(list_len/width)):<{width}}|| '
-        
-# Load images from specified folder, resize them, save them as np array in X and save their labels in y
-
-from PIL.Image import UnidentifiedImageError
-
-def save_live_data(path, shape):
-    Xy_dict = {}
-    dims = shape[1:3]
-    for label in os.listdir(path):
-        img_list = os.listdir(os.path.join(path, label))[:100] # FIXED AMOUNT!!!
-        Xy_dict[label] = np.array([], dtype="int")
-
-        print(f'\nImporting from label "{label}..."')
-        progress_bar = show_progress(label, len(img_list))
-        img_counter = 0
-        errors = []
-
-        for img_name in img_list:
-            try:
-                img = image.load_img(os.path.join(path, label, img_name))
-            except UnidentifiedImageError as e:
-                errors.append(f"{e} :: {img_name} >> skipped")
-                continue
-            
-            #img = img.crop((30, 30, 90, 90))
-            if img.size != (dims):
-                img = img.resize(dims, resample=Image.LANCZOS)
-            
-            img_resized = image.img_to_array(img)
-            
-            if img_resized.max() > 1:
-                img_resized = img_resized / 255
-
-            img_counter += 1
-            Xy_dict[label] = np.append(Xy_dict[label], img_resized)
-
-            print(next(progress_bar), end="")
-
-        # Exhaust the generator
-        try:
-            rest = [p for p in progress_bar]
-            print("".join(rest), end="")
-        except StopIteration:
-            pass
-
-        print(f"{img_counter} images loaded")
-        if errors:
-            print_err("\n".join(errors))
-
-        Xy_dict[label] = Xy_dict[label].reshape(shape)
-
-    print("\nLive data loaded.")
-
-    return Xy_dict
-
-live_path = os.path.join(full_dataset_path, "train")
-X_y_live = save_live_data(live_path, INPUT_SHAPE)
-
-# Check if the images have been loaded correctly
-rnd_label = random.choice(list(X_y_live.keys()))
-print(f"\nShape of label {'fin'}: {X_y_live.get('fin').shape}")
-plt.imshow(random.choice(X_y_live.get('fin')))
-plt.axis("off")
-plt.show()
-
-
-# Create a dictionary with the mean images of all labels
-import itertools
-import functools
-from skimage.color import rgb2gray
-
-def get_means(X, y, labels):
-
-    compound_dict = {"means": {}, "vars": {}, "std": {}}
-
-    for label in labels:
-        #y = y.reshape(-1, 1, 1)
-        #bool_mask = np.any(y == label, axis=1).reshape(-1)
-        #arr = X[bool_mask]
-        X_mean = np.mean(X[label], axis=0)
-        X_var = rgb2gray(np.var(X[label], axis=0))
-        compound_dict["means"][label] = X_mean
-        compound_dict["vars"][label] = X_var
-
-    return compound_dict
-
-
-##########################
-
-
-
-
-def image_montage(dir_path, label_to_display, nrows, ncols, show_all=False, figsize=(10,10)):
-    sns.set_style("white")
-    
-    labels = os.listdir(dir_path)
-    print(dir_path)
-    if show_all:
-        st.write('Showing all labels')
-    else:
-        if label_to_display in labels:
-            labels = [label_to_display]
-        else:
-            print("The label you selected doesn't exist.")
-            print(f"The existing options are: {labels}")
-            return
-
-    list_rows = range(0, nrows)
-    list_cols = range(0, ncols)
-    plot_idx = list(itertools.product(list_rows, list_cols))
-        
-    # subset the class you are interested to display
-    for label in labels:
-        label_path = os.path.join(dir_path, label)
-        images_list = os.listdir(label_path)
-    
-        if nrows * ncols < len(images_list):
-            rnd_sample = random.sample(images_list, nrows * ncols)
-        else:
-            print(
-                f"Decrease nrows or ncols to create your montage. \n"
-                f"There are {len(images_list)} in your subset {label}. "
-                f"You requested a montage with {nrows * ncols} spaces.")
-            return
-
-        fig, axes = plt.subplots(
-            nrows=nrows, ncols=ncols, figsize=(ncols * 4, nrows * 5)
-        )
-        for idx, img in enumerate(rnd_sample):
-            img = np.asarray(Image.open(os.path.join(label_path, img))) / 255.0
-            axes[plot_idx[idx][0], plot_idx[idx][1]].imshow(img)
-            set_ticks(axes[plot_idx[idx][0], plot_idx[idx][1]])
-
-        plt.suptitle(t=f"\n{label.upper()}:\n", weight="bold", size=20, y=0.85, va="bottom")
-        plt.axis("off")
-        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-        st.pyplot(fig=fig)
-        
-    
+                
