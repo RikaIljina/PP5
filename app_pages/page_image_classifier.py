@@ -1,9 +1,9 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import ailia_tflite as tflite
+#import ailia_tflite as tflite
 #import keras
-#import tensorflow as tf
+import tensorflow as tf
 #from tensorflow.keras.models import load_model
 from src.data_management import load_pkl_file
 from collections import Counter
@@ -143,7 +143,7 @@ def page_image_classifier_body():
         try:
             #model = load_model(f"outputs/model_final.keras")
             #model = keras.saving.load_model(f"outputs/model_final.keras")
-            interpreter = tflite.Interpreter(model_path="outputs/model.tflite")
+            interpreter = tf.lite.Interpreter(model_path="outputs/model.tflite")
             interpreter.allocate_tensors()
             input_details = interpreter.get_input_details()
             output_details = interpreter.get_output_details()
