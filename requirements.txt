@@ -6,7 +6,7 @@ matplotlib==3.9.2
 #matplotlib-inline==0.1.7
 seaborn==0.13.2
 #tflite-runtime
-ailia_tflite
+#ailia_tflite
 tf-nightly-cpu
 #tensorflow-cpu==1.14
 #keras~=3.0

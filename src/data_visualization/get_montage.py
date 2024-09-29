@@ -2,13 +2,13 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 from PIL import Image
 import itertools
 import random
 import streamlit as st
 
-sns.set_style("white")
+#sns.set_style("white")
 
 
 def set_ticks(ax):
@@ -25,7 +25,7 @@ def set_ticks(ax):
 
 
 def image_montage(dir_path, label_to_display, nrows, ncols, show_all=False, figsize=(10,10)):
-    sns.set_style("white")
+    #sns.set_style("white")
     
     labels = os.listdir(dir_path)
     print(dir_path)
