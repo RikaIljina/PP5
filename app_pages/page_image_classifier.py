@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import tflite_runtime.interpreter as tflite
+import ailia_tflite as tflite
 #import keras
 #import tensorflow as tf
 #from tensorflow.keras.models import load_model

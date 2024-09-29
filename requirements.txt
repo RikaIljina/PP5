@@ -5,6 +5,7 @@ pillow==10.4.0
 matplotlib==3.9.2
 #matplotlib-inline==0.1.7
 seaborn==0.13.2
-tflite-runtime
+#tflite-runtime
+ailia_tflite
 #keras~=3.0
 #tf-nightly
