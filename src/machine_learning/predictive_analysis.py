@@ -9,7 +9,7 @@ from src.data_management import load_pkl_file
 
 # Generator either produces random images from one specific label
 # or random images from a random label
-def X_gen(buffer, dims):
+def image_feed(buffer, dims):
     errors = [] 
     for img in buffer:
         try:
@@ -33,7 +33,17 @@ def X_gen(buffer, dims):
         img_arr = np.expand_dims(img_arr, axis=0)
         
         yield img_arr, img, errors
-        
+
+
+def get_next_column():
+            get_col = iter(st.columns(5))
+            while True:
+                try:
+                    col = next(get_col)
+                except StopIteration:
+                    get_col = iter(st.columns(5))
+                    col = next(get_col)
+                yield col
         
 '''
 

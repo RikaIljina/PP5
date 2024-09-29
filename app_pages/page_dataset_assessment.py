@@ -161,16 +161,6 @@ def page_dataset_assessment_body():
             f"* Euclidean Distance (low=sim)\n"
             )
 
-    
-    if st.checkbox("Conclusions and recommendations"):
-        st.write("* To refresh the montage, click on the 'Create Montage' button")
-        st.info(
-            f"The resulting dark images are an indicator for either a balanced amount of variance / variety or "
-            f"high bias in the dataset due to the presence of too many similar images. "
-            f"images from each label, split the resulting array in half and compared the "
-            )
-
-
     st.write("---")
 
 

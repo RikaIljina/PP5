@@ -21,10 +21,10 @@ def set_ticks(ax):
     ax.set_yticks([])
 
 
-def show_progress(label, list_len):
-    width = 100
-    for i in range(list_len):
-        yield f'\r{label:<10}: {"#"*int(width if i == list_len-1 else i//(list_len/width)):<{width}}|| '
+# def show_progress(label, list_len):
+#     width = 100
+#     for i in range(list_len):
+#         yield f'\r{label:<10}: {"#"*int(width if i == list_len-1 else i//(list_len/width)):<{width}}|| '
         
 
 
