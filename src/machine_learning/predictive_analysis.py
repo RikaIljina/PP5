@@ -17,7 +17,7 @@ def image_feed(buffer, dims):
         if img.size != dims:
             img = img.resize(dims, resample=Image.LANCZOS)
         #img_resized = image.img_to_array(img)
-        img_arr = np.array(img)
+        img_arr = np.array(img).astype('float32')
        
         # if len(img_arr.shape) == 3 and img_arr.shape[-1] == 4:
         #     img_arr = img_arr[:, :, 3]
