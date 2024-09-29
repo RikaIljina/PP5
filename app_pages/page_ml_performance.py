@@ -40,7 +40,8 @@ def page_ml_performance_metrics():
     st.dataframe(pd.DataFrame(eval, index=['Loss', 'Accuracy'], columns=['Value']))
     
     st.write("### Detailed Performance on Test Set")
-    st.dataframe(pd.DataFrame(load_reports['test']))
+    st.write(load_reports()['test'])
+    #st.dataframe(pd.DataFrame(load_reports()['test']))
     test_heat_precision = plt.imread(f"outputs/pred_test_precision_heatmap.png")
     st.image(test_heat_precision, caption='Prediction of test set, precision')
 
@@ -57,7 +58,7 @@ def page_ml_performance_metrics():
     st.image(live_heat_classification, caption='Prediction of Live set, classification')
 
 
-    st.dataframe(pd.DataFrame(load_reports['live']))
+    #st.dataframe(pd.DataFrame(load_reports()['live']))
     
     st.write("#### Detailed Performance on Live Batches")
     
@@ -69,13 +70,13 @@ def page_ml_performance_metrics():
     st.image(live_batch_smilla, caption='Label "smilla", probability spread between batches')
 
     live_img_fin = plt.imread(f"outputs/live_class_img_probas_fin.png")
-    st.image(live_batch_fin, caption='Label "fin", probability spread between images')
+    st.image(live_img_fin, caption='Label "fin", probability spread between images')
     live_img_iris = plt.imread(f"outputs/live_class_img_probas_iris.png")
     st.image(live_img_iris, caption='Label "iris", probability spread between images')
     live_img_smilla = plt.imread(f"outputs/live_class_img_probas_smilla.png")
     st.image(live_img_smilla, caption='Label "smilla", probability spread between images')
     
-    st.dataframe(pd.DataFrame(load_reports['live_batch']))
+    #st.dataframe(pd.DataFrame(load_reports()['live_batch']))
     
     
     
