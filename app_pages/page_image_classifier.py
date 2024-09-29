@@ -1,11 +1,10 @@
 import streamlit as st
-from PIL import Image, UnidentifiedImageError
 import numpy as np
 import pandas as pd
-from tensorflow.keras.models import load_model
+import keras
+#from tensorflow.keras.models import load_model
 from src.data_management import load_pkl_file
 from collections import Counter
-import streamlit.components.v1 as components
 
 from src.data_management import download_dataframe_as_csv
 from src.machine_learning.predictive_analysis import image_feed, get_next_column
@@ -140,7 +139,8 @@ def page_image_classifier_body():
             
         st.write('Loading the model ...')
         try:
-            model = load_model(f"outputs/model_final.keras")
+            #model = load_model(f"outputs/model_final.keras")
+            model = keras.saving.load_model(f"outputs/model_final.keras")
         except:
             st.write("Error.")
 

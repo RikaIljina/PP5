@@ -5,4 +5,5 @@ pillow==10.4.0
 matplotlib==3.9.2
 #matplotlib-inline==0.1.7
 seaborn==0.13.2
-tf-nightly
+keras~=3.0
+#tf-nightly
