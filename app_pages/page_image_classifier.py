@@ -1,7 +1,9 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import keras
+import tflite_runtime.interpreter as tflite
+#import keras
+#import tensorflow as tf
 #from tensorflow.keras.models import load_model
 from src.data_management import load_pkl_file
 from collections import Counter
@@ -140,7 +142,13 @@ def page_image_classifier_body():
         st.write('Loading the model ...')
         try:
             #model = load_model(f"outputs/model_final.keras")
-            model = keras.saving.load_model(f"outputs/model_final.keras")
+            #model = keras.saving.load_model(f"outputs/model_final.keras")
+            interpreter = tflite.Interpreter(model_path="outputs/model.tflite")
+            interpreter.allocate_tensors()
+            input_details = interpreter.get_input_details()
+            output_details = interpreter.get_output_details()
+
+            
         except:
             st.write("Error.")
 
@@ -200,12 +208,27 @@ def page_image_classifier_body():
                     # ----------- Uncomment to see a reel of currently evaluated images -------
                     # Predict based on feed-in data
                     # Run [img_min] predictions first and collect data without trying to classify
-                    y_pred_sg = model.predict(img_arr, verbose=0)
-                    fav_class_sg = np.argmax(y_pred_sg)
-                    fav_class_min.append(classes[fav_class_sg])
+            
+                    input_index = input_details[0]['index']
+                    output_index = output_details[0]['index']
+                    interpreter.set_tensor(input_index, img_arr)
+                    interpreter.invoke()
+                    output_data = interpreter.get_tensor(output_index)
 
-                    trial_probas.append(y_pred_sg)
-                    probas_sg = y_pred_sg.flatten()
+                    #y_pred_sg = model.predict(img_arr, verbose=0)
+                    # if len(y_pred_raw) == 0:
+                    #     y_pred_raw = output_data
+                    # else:
+                    #     y_pred_raw = np.vstack((y_pred_raw, output_data))
+                    
+                    fav_class_sg = np.argmax(output_data)
+                    #fav_class_sg = np.argmax(y_pred_sg)
+                    fav_class_min.append(classes[fav_class_sg])
+                    trial_probas.append(output_data)
+
+                    #trial_probas.append(y_pred_sg)
+                    #probas_sg = y_pred_sg.flatten()
+                    probas_sg = output_data.flatten()
                     probas_mean = np.mean(trial_probas, axis=0).flatten()
                     fav_class = np.argmax(probas_mean)
                     
