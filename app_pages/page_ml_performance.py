@@ -43,8 +43,8 @@ def page_ml_performance_metrics():
     
     st.write("### Detailed Performance on Test Set")
     
-    st.dataframe(pd.DataFrame(load_reports()['test']))
-    st.write(load_reports()['test'])
+    #st.dataframe(pd.DataFrame(load_reports()['test']))
+    #st.write(load_reports()['test'])
     
     
     test_heat_precision = plt.imread(f"outputs/pred_test_precision_heatmap.png")
