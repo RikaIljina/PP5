@@ -19,7 +19,8 @@ def page_dataset_assessment_body():
             image labels in the dataset to be able to evaluate and adjust future training
             sets to work with our model.''')
     
-    if st.checkbox("Average and variance images for each label"):
+    st.write("#### Average and variance images for each label")
+    if st.checkbox("Show", key="show-1"):
       
         avg_grid = plt.imread(os.path.join(output_path, 'average_images_grid.png'))
         st.image(avg_grid, caption="The average images for each label in the 'train' subset")
@@ -43,7 +44,8 @@ def page_dataset_assessment_body():
 
         st.write("---")
 
-    if st.checkbox("Differences between averages for each label combo"):
+    st.write("#### Differences between averages for each label combo")
+    if st.checkbox("Show", key="show-2"):
         for combo in COMBOS:
             diff_between_avgs = plt.imread(f"{output_path}/average_imgs_{'_'.join(combo)}.png")
             st.image(diff_between_avgs)
@@ -58,7 +60,8 @@ def page_dataset_assessment_body():
         f" might turn out to be easiest for the model to distinguish."
         )
 
-    if st.checkbox("Histogram comparison"):
+    st.write("#### Histogram comparison")
+    if st.checkbox("Show", key="show-3"):
         st.info(
         f"On top of the visual comparison, we want to compare the histograms for the "
         f"average images of each combo and use the results to evaluate our dataset.\n"
@@ -66,7 +69,7 @@ def page_dataset_assessment_body():
         f"compare each channel separately."
         )
         st.write(f"---")
-        st.write('#### Step 1: Create baseline')
+        st.write('##### Create baseline')
         st.info(
         f"To create the baselines, we have loaded at least 200 random non-consecutive "
         f"images from each label, split the resulting array in half and compared the "
@@ -85,19 +88,14 @@ def page_dataset_assessment_body():
         f" from two indistinguishable animals.\n"
         )
         st.write("---")
-        st.info(
-        f"We will now create histograms from each average image and compare them:"
-        )
         
+        st.info(f"Let's assess the histograms where we compare each label to itself:")
         for label in LABELS:
             baseline_diffs = plt.imread(f"{output_path}/hist_baseline_average_{label}_rgb.png")
             st.image(baseline_diffs)
-
-        st.info(
-        f"We will now create histograms from each average image and compare them:"
-        )
-        
-        st.write('#### Step 2: Compare all labels')
+            
+        st.write('##### Compare all labels')
+        st.info(f"Let's now compare the histograms for each label combination:")
         
         for combo in COMBOS:
             hist_diffs = plt.imread(f"{output_path}/hist_average_{'_'.join(combo)}_rgb.png")
@@ -112,10 +110,10 @@ def page_dataset_assessment_body():
         f"training set evaluation even better."
         )
 
-
-    if st.checkbox("Metrics analysis"):
+    st.write('#### Metrics analysis')
+    if st.checkbox("Show", key="show-4"):
         
-        st.write('#### Step 3: Analyze the comparison metrics')
+        st.write('##### Analyze the comparison metrics')
 
         st.info(
         f"In order to assess the similarity between our image sets, we performed "
@@ -123,7 +121,7 @@ def page_dataset_assessment_body():
         f"summarized the results in the following heatmap."
         )
         
-        st.error(
+        st.warning(
         f"##### NB!\n\n"
         f"The annotated values on the heatmap are normalized within the range (0, 1) to "
         f"denote the similarity between the datasets and do not represent the actual "
@@ -139,28 +137,64 @@ def page_dataset_assessment_body():
             f"At the same time, . "
             f""
             )
-        
+        col1, col2 =st.columns([5, 4])
         heat = plt.imread(f"{output_path}/heatmap_conclusion.png")
-        st.image(heat, width=600)
+        col1.image(heat)
 
         heat_mm = plt.imread(f"{output_path}/heatmap_mean_med.png")
-        st.image(heat_mm, width=400)
+        col2.image(heat_mm)
         
         with st.expander('Metrics details'):
-            st.info(
-            f"Methods:\n\n"
-            f"* Correlation (high=sim)\n"
-            f"* Chi-Squared (low=sim)\n"
-            f"* Intersection (high=sim)\n"
-            f"* Bhattacharyya (low=sim)\n"
-            f"* Euclidean Distance (low=sim)\n"
+            st.markdown(
+            f"""<b>Methods:</b>
+            <ul>
+            <li>
+            <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient" target="_blank">
+            <b>Correlation</b></a>:
+            <br>Computes the correlation coefficient between two histograms, measuring
+            the strength of a linear relationship between two histograms. Values range
+            from -1 (perfectly anti-correlated) to 1 (perfectly correlated).<br>
+            A value of 0 means no correlation."
+            </li>
+            <li>
+            <a href="https://en.wikipedia.org/wiki/Chi-squared_test" target="_blank">
+            <b>Chi-Squared</b></a>:
+            This method measures the similarity between two histograms by calculating 
+            the sum of the squared differences normalized by the values of the histograms.
+            It is sensitive to small changes in the histogram bins.<br>
+            The result is a value between 0 and infinity, where 0 means highest similarity.
+            </li>
+            <li>
+            <a href="https://blog.datadive.net/histogram-intersection-for-change-detection/" target="_blank">
+            <b>Intersection</b></a>:
+            Calculates the sum of the minimum values of corresponding bins in two histograms.
+            The result is a value between 0 and 1, where 1 means the histograms are identical.
+            </li>
+            <li>
+            <a href="https://en.wikipedia.org/wiki/Bhattacharyya_distance" target="_blank">
+            <b>Bhattacharyya</b></a>:
+            The Bhattacharyya distance quantifies the overlap between two probability
+            distributions. It is useful for comparing two probability histograms and
+            provides a measurement of the distance between two distributions.
+            The result is a value between 0 and infinity, where 0 means highest similarity.
+            </li>
+            <li>
+            <a href="https://en.wikipedia.org/wiki/Bhattacharyya_distance" target="_blank">
+            <b>Euclidean Distance</b></a>:
+            This method measures the straight-line distance between corresponding bins in
+            two histograms. It sums the squared differences of each bin and takes the
+            square root. The smaller the distance, the more similar the histograms are.
+            The result is a value between 0 and infinity, where 0 means highest similarity.
+            </li>
+            </ul>"""
+            , unsafe_allow_html=True
             )
 
     st.write("---")
 
-
-    if st.checkbox("Image Montage"):
-        st.write("* To refresh the montage, click on the 'Create Montage' button")
+    st.write("#### Image Montage")
+    if st.checkbox("Show", key="show-5"):
+        st.info("To refresh the montage, click on the 'Create Montage' button")
         labels = os.listdir(f'{full_dataset_path}/train')
         label_to_display = st.selectbox(label="Select label", options=labels, index=0)
         show_all = st.checkbox("Show all")

@@ -47,11 +47,11 @@ def page_summary_body():
             target="_blank" rel="noopener">Project README file on GitHub</a>.
             </p>
             <p>
-            Please download the full dataset and the live image set here: <br><br>
+            Please download the full dataset and the live image set from Google Drive: <br><br>
             <a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" 
-            target="_blank" rel="noopener">Live images</a> and
+            target="_blank" rel="noopener">Live images</a> <br>
             <a href="https://drive.usercontent.google.com/download?id=1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr&export=download" 
-            target="_blank" rel="noopener">Train, Test, Validation datasets</a> on Google Drive
+            target="_blank" rel="noopener">Train, Test, Validation datasets</a>
             </div></p>
             """ , unsafe_allow_html=True)
     # st.write(
