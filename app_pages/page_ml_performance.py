@@ -17,12 +17,14 @@ def page_ml_performance_metrics():
 
     augmented_train_set = plt.imread(f"outputs/post_augment_montage_train.png")
     st.image(augmented_train_set, caption='Train set after augmentation')
-    st.write(f"* noise, cropping ...")
+    st.write(f"Train set preparation and augmentation:\n\n"
+             f"* noise, cropping ...")
 
     st.write("### Model Setup")
     eval, hyperparams = load_test_evaluation()
     model_df = pd.DataFrame.from_dict(hyperparams, orient='index')
     model_df.rename(columns={0: 'Value'}, inplace=True)
+    st.write("Model type, activation functions, layers...")
     st.dataframe(model_df)
     
 
@@ -40,8 +42,11 @@ def page_ml_performance_metrics():
     st.dataframe(pd.DataFrame(eval, index=['Loss', 'Accuracy'], columns=['Value']))
     
     st.write("### Detailed Performance on Test Set")
+    
+    st.dataframe(pd.DataFrame(load_reports()['test']))
     st.write(load_reports()['test'])
-    #st.dataframe(pd.DataFrame(load_reports()['test']))
+    
+    
     test_heat_precision = plt.imread(f"outputs/pred_test_precision_heatmap.png")
     st.image(test_heat_precision, caption='Prediction of test set, precision')
 
@@ -58,23 +63,30 @@ def page_ml_performance_metrics():
     st.image(live_heat_classification, caption='Prediction of Live set, classification')
 
 
+    st.write("... Live report, Test report as tables ...")
     #st.dataframe(pd.DataFrame(load_reports()['live']))
+    #st.markdown(f'''{pd.DataFrame(load_reports()['live'])}''')
+    #st.markdown(f'''{load_reports()['live']}''')
+    
     
     st.write("#### Detailed Performance on Live Batches")
     
+    live_img_fin = plt.imread(f"outputs/live_class_img_probas_fin.png")
+    st.image(live_img_fin, caption='Label "fin", probability spread between images')
     live_batch_fin = plt.imread(f"outputs/live_class_batch_probas_fin.png")
     st.image(live_batch_fin, caption='Label "fin", probability spread between batches')
+    
+    live_img_iris = plt.imread(f"outputs/live_class_img_probas_iris.png")
+    st.image(live_img_iris, caption='Label "iris", probability spread between images')
     live_batch_iris = plt.imread(f"outputs/live_class_batch_probas_iris.png")
     st.image(live_batch_iris, caption='Label "iris", probability spread between batches')
+    
+    live_img_smilla = plt.imread(f"outputs/live_class_img_probas_smilla.png")
+    st.image(live_img_smilla, caption='Label "smilla", probability spread between images')
     live_batch_smilla = plt.imread(f"outputs/live_class_batch_probas_smilla.png")
     st.image(live_batch_smilla, caption='Label "smilla", probability spread between batches')
 
-    live_img_fin = plt.imread(f"outputs/live_class_img_probas_fin.png")
-    st.image(live_img_fin, caption='Label "fin", probability spread between images')
-    live_img_iris = plt.imread(f"outputs/live_class_img_probas_iris.png")
-    st.image(live_img_iris, caption='Label "iris", probability spread between images')
-    live_img_smilla = plt.imread(f"outputs/live_class_img_probas_smilla.png")
-    st.image(live_img_smilla, caption='Label "smilla", probability spread between images')
+    
     
     #st.dataframe(pd.DataFrame(load_reports()['live_batch']))
     

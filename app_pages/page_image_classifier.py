@@ -14,45 +14,60 @@ from src.machine_learning.predictive_analysis import image_feed, get_next_column
 
 def page_image_classifier_body():
     
-    st.markdown("""
-    <style>
-    .small-font {
-        font-size:0.8rem !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # st.markdown("""
+    # <style>
+    # .small-font {
+    #     font-size:0.8rem !important;
+    # }
+    # </style>
+    # """, unsafe_allow_html=True)
+    
+    st.write("### Image Classifier")
 
     st.markdown("""
-            <div style="background-color: #CBDFE3; padding: 1rem;">
-            <p>The client is interested in classifying pet images from an incoming image stream.
-            </p>
+            <div class="blue-div">
+                <h5>Business requirement 2 and 3:</h5>
+                <p>The client is interested in a confident and correct classification of any 
+                    given live image.<br>
+                    The client is interested in a prototype for a tool that receives and evaluates
+                    a stream of snapshots from a camera and returns a useable classification.
+                </p>
             </div>
-    """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
     st.write('\n\n')
 
     st.markdown("""
-        <div style="background-color: #E3E2CB; padding: 1rem;">
-        <p>
-        You can download a set of pet images for live prediction. You can download the 
-        images from Github: 
-        <a href="https://github.com/RikaIljina/PP5/main/README.md" 
-        target="_blank" rel="noopener">GitHub</a>.
-        </p>
+        <div class="yellow-div">
+            <p>
+            You can download a set of pet images for live prediction from Google Drive: 
+            <a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" 
+            target="_blank" rel="noopener">Live images</a>
+            </p>
         </div>
         """ , unsafe_allow_html=True)
 
     st.write('\n\n')
 
     st.write("---")
-    st.info(f"**Please provide parameters for the classification.**\n"
-        f"* A **trial** is a series of predictions from individual images that are assumed "
-        f"to belong to the same class. The final classification result is based on "
-        f"the mean values of all classification attempts within that trial.\n"
-        f"* An **attempt** is the model's calculation of probabilities for a single "
-        f"image and the comparison of the top value to the confidence threshold.\n\n"
-        f"The following parameters may be clipped or adjusted based on the amount "
-        f"of provided images.")
+    st.markdown("""
+            <div class="blue-div">
+            <b>Please provide parameters for the classification.</b><br>
+            <ul>
+            <li>
+            A <b>trial</b> is a series of classification attempts from individual images
+            that are assumed to belong to the same class. The final classification result
+            is based on the mean values of all classification attempts within that trial.
+            </li>
+            <li>An <b>attempt</b> is the model's mean probability calculation from all
+            probabilities gathered so far within a single trial and the comparison of the
+            top value to the confidence threshold.
+            </li>
+            </ul>
+            <p>The following parameters may be clipped or adjusted based on the amount
+            of provided images.</p>
+            </div>
+            """, unsafe_allow_html=True)
     
     st.write("---")
     
@@ -333,5 +348,6 @@ def page_image_classifier_body():
                 st.caption(cap3)
                 st.dataframe(df_favs_sg)
 
+            st.write("\n")
             st.markdown(download_dataframe_as_csv((df, df_favs_maj, df_favs_sg), (cap1, cap2, cap3)), unsafe_allow_html=True)
         

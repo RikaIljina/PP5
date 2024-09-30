@@ -8,7 +8,7 @@ class MultiPage:
     def __init__(self, app_name) -> None:
         self.pages = []
         self.app_name = app_name
-        with open('./files/wave.css') as f:
+        with open('./files/styles.css') as f:
             self.css = f.read()
 
         st.set_page_config(
