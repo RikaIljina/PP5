@@ -48,11 +48,14 @@ def page_summary_body():
             </p>
             <p>
             Please download the full dataset and the live image set here: 
-            <a href="https://drive.google.com/file/d/1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr/view?usp=drive_link" 
+            <a href="https://drive.google.com/file/d/1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y/view?usp=sharing" 
             target="_blank" rel="noopener">Live images on Google Drive</a>,
-            <a href="https://drive.google.com/file/d/1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y/view?usp=drive_link" 
+            <a href="https://drive.google.com/file/d/1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr/view?usp=sharing" 
             target="_blank" rel="noopener">Train, Test, Validation datasets on Google Drive</a>
             </div></p>
+            <a href="https://drive.usercontent.google.com/download?id=1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr&export=download" 
+            target="_blank" rel="noopener">Train, Test, Validation datasets on Google Drive</a>
+            
             """ , unsafe_allow_html=True)
     # st.write(
     #     f"* For additional information, please visit and **read** the "
