@@ -8,7 +8,7 @@ import joblib
 
 def page_dataset_assessment_body():
     output_path = os.path.relpath('outputs')
-    full_dataset_path = os.path.relpath('inputs/datasets/pets')
+    full_dataset_path = os.path.relpath('inputs/datasets/pets_slim')
     LABELS = sorted(joblib.load(f"{output_path}/class_dict.pkl").values())
     COMBOS = list(itertools.combinations(LABELS, 2))
     

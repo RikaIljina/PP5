@@ -46,7 +46,13 @@ def page_summary_body():
             <a href="https://github.com/RikaIljina/PP5/main/README.md" 
             target="_blank" rel="noopener">Project README file on GitHub</a>.
             </p>
-            </div>
+            <p>
+            Please download the full dataset and the live image set here: 
+            <a href="https://drive.google.com/file/d/1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr/view?usp=drive_link" 
+            target="_blank" rel="noopener">Live images on Google Drive</a>,
+            <a href="https://drive.google.com/file/d/1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y/view?usp=drive_link" 
+            target="_blank" rel="noopener">Train, Test, Validation datasets on Google Drive</a>
+            </div></p>
             """ , unsafe_allow_html=True)
     # st.write(
     #     f"* For additional information, please visit and **read** the "
