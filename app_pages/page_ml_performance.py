@@ -43,6 +43,9 @@ def page_ml_performance_metrics():
     
     st.write("### Detailed Performance on Test Set")
     
+    test_report = load_reports()['test']
+    st.code(f'''{test_report}''' )
+    
     #st.dataframe(pd.DataFrame(load_reports()['test'])) 
     # fix
     # st.write(load_reports()['test'])
@@ -64,6 +67,13 @@ def page_ml_performance_metrics():
 
 
     st.write("... Live report, Test report as tables ...")
+    
+    live_report = load_reports()['live']
+    st.code(f'''{live_report}''' )
+    
+    live_batch_report = load_reports()['live_batches']
+    st.code(f'''{live_batch_report}''' )
+    
     #st.dataframe(pd.DataFrame(load_reports()['live']))
     #st.markdown(f'''{pd.DataFrame(load_reports()['live'])}''')
     #st.markdown(f'''{load_reports()['live']}''')
