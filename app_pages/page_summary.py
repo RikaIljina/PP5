@@ -33,8 +33,9 @@ def page_summary_body():
                 </p>
                 <p>
                 To this end, the product will be equipped with a motion sensor and a camera that will 
-                take a series of snapshots whenever it detects movement. The device software will then
-                run the image batch against a pretrained model, deciding which pet has triggered its activation.
+                take a series of snapshots whenever it detects movement. The camera will take
+                three pictures per second. The device software will then run the image batch
+                against a pretrained model, deciding which pet has triggered its activation.
                 </p>
                 <p>
                 In case of a successful classification, it will proceed to dispense food and record the 
@@ -70,25 +71,29 @@ def page_summary_body():
     st.write("\n\n")
 
     st.markdown("""
-            <div class="blue-div">
-                <b>The project has 4 business requirements:</b>
-                <ol>
-                    <li>
-                    The client is interested in a recommendation regarding the scale and quality
-                    of future datasets.
-                    </li>
-                    <li>
-                    The client is interested in a confident and correct classification of any 
-                    given live image.
-                    </li>
-                    <li>
-                    The client is interested in a prototype for a tool that receives and evaluates
-                    a stream of snapshots from a camera and returns a useable classification.
-                    </li>
-                    <li>
-                    The client is interested in an assessment regarding the automation of the
-                    data collection and model training processes.
-                    </li>
-                </ol>
-            </div>
-            """ , unsafe_allow_html=True)
+        <div class="blue-div">
+          <b>The project has 4 business requirements:</b>
+          <ol>
+            <li>
+            The client is interested in a recommendation regarding the scale
+            and quality of future datasets.
+            </li>
+            <li>
+            The client is interested in a confident and correct classification
+            of any given live image - an f1 score of at least 0.9. 
+            </li>
+            <li>
+            The client is interested in a prototype for a tool that receives
+            and evaluates a stream of snapshots from a camera and returns a
+            useable classification. If the tool receives a stream of images
+            from exactly one pet, it must be able to correctly classify it
+            within 5 seconds (i.e., after 15 images). The expected accuracy
+            for classification from a stream is 100%.
+            </li>
+            <li>
+            The client is interested in an assessment regarding the automation
+            of the data collection and model training processes.
+            </li>
+          </ol>
+        </div>
+        """ , unsafe_allow_html=True)

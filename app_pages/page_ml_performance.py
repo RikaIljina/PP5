@@ -7,13 +7,19 @@ from src.machine_learning.evaluate_clf import load_test_evaluation, load_reports
 
 def page_ml_performance_metrics():
 
-    st.write("### Train, Validation and Test Set: Labels Frequencies")
+    st.write("### Dataset preparation")
+    
+    
+    
     labels_distribution = plt.imread(f"outputs/labels_distribution_after_split.png")
-    buff, col1, buff = st.columns([2, 6, 2])
-    col1.image(labels_distribution, caption='Labels Distribution on Train, Validation and Test Sets')
+    col1, col2, = st.columns(2)
+    col1.image(labels_distribution, caption='Initial label distribution on Train, Validation and Test Sets')
     st.write("---")
 
     st.write("### Train, Validation and Test Set: Balancing and Augmentation")
+
+    augmented_dataset = plt.imread(f"outputs/post_augment_dataset_plot.png")
+    col2.image(augmented_dataset, caption='Dataset after augmentation and balancing')
 
     augmented_train_set = plt.imread(f"outputs/post_augment_montage_train.png")
     st.image(augmented_train_set, caption='Train set after augmentation')
@@ -98,7 +104,5 @@ def page_ml_performance_metrics():
 
     
     
-    #st.dataframe(pd.DataFrame(load_reports()['live_batch']))
-    
-    
-    
+    st.write(f"#### Conclusions and recommendations for classification "
+             f"parameters")
