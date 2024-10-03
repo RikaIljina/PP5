@@ -1,0 +1,893 @@
+
+###############################################################################################################
+x_b_1
+
+adjusted augment values, capped all sets at 300 to reduce iris
+
+#print(hyperparams)
+
+hyperparams = {'kernel_1': 5, 'filters_1': 128, 'pool_1': 6, 'filters_2': 128,
+               'filters_3_0': 128, 'num_filters': 1,
+               'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'kernel_reg': 0.0001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=5,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+
+
+GUT!!!
+
+
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9826700019836426
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9682040023803711
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9429820020198822
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     16.0          nan         53.0
+smilla                    nan         34.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               4               496
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9775040022134781
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9725479986667633
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9458640016317368
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              32.0   NaN    67.0
+smilla             NaN  42.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               499               1                 0
+Actually iris                0             500                 0
+Actually smilla              0               3               497
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9813650041818619
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9653649985790252
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9419850018620491
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     10.0          nan         29.0
+smilla                    nan         23.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               200               0                 0
+Actually iris                0             200                 0
+Actually smilla              0               0               200
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       200
+        iris       1.00      1.00      1.00       200
+      smilla       1.00      1.00      1.00       200
+
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.980600001335144
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9694999997615814
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9372580025196076
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     35.0          nan        104.0
+smilla                    nan         58.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               1               499
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9780140038728714
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9749540005922317
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9387460021972657
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     52.0          nan        122.0
+smilla                    nan         50.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9821140050888062
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.969705999970436
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9449200037717819
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     43.0          nan        107.0
+smilla                    nan         76.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+???
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     36.0          nan         70.0
+smilla                    nan         39.0          nan
+fin                       nan          nan          7.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               499               1                 0
+Actually iris                0             500                 0
+Actually smilla              0               2               498
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+
+
+4-15 images
+80%
+
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           5                         fin              1.0
+1                           5                         fin              1.0
+2                           5                         fin              1.0
+3                           5                         fin              1.0
+4                           5                         fin              1.0
+5                           5                         fin              1.0
+6                           5                         fin              1.0
+7                           5                         fin              1.0
+8                           5                         fin              1.0
+9                           5                         fin              1.0
+10                          5                         fin              1.0
+11                          5                         fin              1.0
+12                          5                         fin              1.0
+13                          5                         fin             0.97
+14                          5                         fin              1.0
+15                          5                         fin              1.0
+16                          5                         fin              1.0
+17                          5                         fin             0.86
+18                          5                         fin              1.0
+19                          5                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            5                        iris              1.0
+1                            5                        iris             0.88
+2                            5                        iris             0.95
+3                            5                        iris              1.0
+4                            5                        iris             0.88
+5                            5                        iris              1.0
+6                            5                        iris              1.0
+7                            5                        iris              1.0
+8                            5                        iris             0.96
+9                            5                        iris              1.0
+10                           5                        iris              1.0
+11                           5                        iris              1.0
+12                           5                        iris              1.0
+13                           5                        iris              1.0
+14                           5                        iris              1.0
+15                           5                        iris              1.0
+16                           5                        iris              1.0
+17                           5                        iris              1.0
+18                           5                        iris             0.99
+19                           5                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              5                      smilla             0.99
+1                              5                      smilla              1.0
+2                              5                      smilla             0.97
+3                              5                      smilla             0.99
+4                              5                      smilla             0.98
+5                              5                      smilla              1.0
+6                              5                      smilla              1.0
+7                              5                      smilla             0.92
+8                              5                      smilla              1.0
+9                              5                      smilla             0.98
+10                             5                      smilla              1.0
+11                             5                      smilla             0.99
+12                             5                      smilla             0.99
+13                             5                      smilla              1.0
+14                             5                      smilla             0.96
+15                             5                      smilla              1.0
+16                             5                      smilla              1.0
+17                             5                      smilla             0.81
+18                             5                      smilla             0.96
+19                             6                      smilla             0.82
+
+
+
+###############
+
+2 min 38 sec for 100 trials with 5-15 images (8 min is max for 5sec*100)
+
+
+
+
+
+
+
+
+3 - 15 images
+70% conf
+
+predicting ca 40 images per second
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin             0.96
+1                           4                         fin              1.0
+2                           4                         fin             0.94
+3                           4                         fin              1.0
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           4                         fin             0.94
+8                           4                         fin              1.0
+9                           4                         fin             0.94
+10                          4                         fin              1.0
+11                          4                         fin              1.0
+12                          4                         fin             0.82
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris             0.85
+2                            4                        iris              1.0
+3                            4                        iris             0.86
+4                            4                        iris              1.0
+5                            4                        iris              1.0
+6                            4                        iris              1.0
+7                            4                        iris             0.97
+8                            4                        iris              1.0
+9                            4                        iris             0.83
+10                           4                        iris             0.95
+11                           4                        iris             0.99
+12                           4                        iris              1.0
+13                           4                        iris              1.0
+14                           4                        iris             0.86
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.79
+1                              4                      smilla             0.83
+2                              4                      smilla             0.99
+3                              4                      smilla             0.71
+4                              4                      smilla              1.0
+5                              4                      smilla             0.76
+6                              4                      smilla              1.0
+7                              4                      smilla              1.0
+8                              4                      smilla             0.74
+9                              4                      smilla             0.98
+10                             4                      smilla              1.0
+11                             4                      smilla             0.79
+12                             4                      smilla              1.0
+13                             4                      smilla              1.0
+14                             4                      smilla             0.71
+
+
+
+80% conf
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin              1.0
+1                           4                         fin              1.0
+2                           4                         fin              1.0
+3                           4                         fin             0.94
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           5                         fin             0.83
+8                           4                         fin              1.0
+9                           4                         fin              1.0
+10                          4                         fin             0.99
+11                          5                         fin             0.82
+12                          4                         fin              1.0
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris              1.0
+2                            4                        iris             0.86
+3                            4                        iris              1.0
+4                            4                        iris              1.0
+5                            4                        iris             0.97
+6                            4                        iris              1.0
+7                            4                        iris             0.88
+8                            4                        iris              1.0
+9                            4                        iris              1.0
+10                           4                        iris              1.0
+11                           4                        iris              1.0
+12                           4                        iris             0.97
+13                           4                        iris             0.94
+14                           4                        iris             0.96
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.98
+1                              6                      smilla             0.82
+2                              4                      smilla              1.0
+3                              4                      smilla              0.9
+4                              5                      smilla              0.8
+5                              4                      smilla              1.0
+6                              4                      smilla             0.99
+7                              4                      smilla              1.0
+8                              5                      smilla             0.82
+9                              5                      smilla             0.83
+10                             9                      smilla              0.8
+11                             4                      smilla              1.0
+12                             5                      smilla             0.83
+13                             4                      smilla              1.0
+14                             4                      smilla             0.99
+
+90% conf
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin              1.0
+1                           4                         fin              1.0
+2                           4                         fin              1.0
+3                           4                         fin             0.99
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           4                         fin              1.0
+8                           4                         fin              1.0
+9                           4                         fin              1.0
+10                          4                         fin             0.99
+11                          4                         fin             0.94
+12                          4                         fin              1.0
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris             0.97
+2                            4                        iris             0.94
+3                            4                        iris              1.0
+4                            4                        iris              1.0
+5                            8                        iris             0.91
+6                            4                        iris             0.97
+7                            4                        iris              1.0
+8                            4                        iris              1.0
+9                            6                        iris             0.92
+10                           4                        iris              1.0
+11                           4                        iris             0.95
+12                           4                        iris              1.0
+13                           4                        iris             0.95
+14                           4                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.95
+1                              4                      smilla             0.94
+2                              4                      smilla              1.0
+3                              8                      smilla             0.92
+4                              4                      smilla              1.0
+5                              5                      smilla             0.92
+6                            nan              smilla?                    0.85
+7                              7                      smilla             0.91
+8                              4                      smilla              1.0
+9                              5                      smilla             0.91
+10                             4                      smilla              1.0
+11                             4                      smilla              1.0
+12                             8                      smilla             0.91
+13                             9                      smilla             0.91
+14                             4                      smilla             0.95
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9790900027751923
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9665620005130768
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9400540025234222
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              41.0   NaN   105.0
+smilla             NaN  66.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               1               499
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###
+MIX MODE
+
+
+   Looping through label run 1:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                           nan  smilla?       maj. ('smilla', 7)/15   
+1                           nan   iris?          maj. ('iris', 6)/15   
+2                             5               smilla ('smilla', 4)/5   
+3                           nan  smilla?       maj. ('smilla', 7)/15   
+4                             5               smilla ('smilla', 5)/5   
+5                           nan   fin?            maj. ('fin', 8)/15   
+6                           nan  iris?         maj. ('smilla', 7)/15   
+7                           nan  iris?         maj. ('smilla', 8)/15   
+8                           nan   iris?          maj. ('iris', 6)/15   
+9                           nan  smilla?       maj. ('smilla', 6)/15   
+10                          nan   iris?          maj. ('iris', 6)/15   
+11                          nan   iris?          maj. ('iris', 6)/15   
+12                          nan   iris?          maj. ('iris', 6)/15   
+13                          nan   iris?          maj. ('iris', 6)/15   
+14                          nan  smilla?       maj. ('smilla', 8)/15   
+
+                     
+   -- Confidence --  
+0              0.47  
+1               0.4  
+2              0.79  
+3              0.45  
+4               1.0  
+5              0.53  
+6              0.38  
+7               0.4  
+8              0.41  
+9               0.4  
+10             0.46  
+11             0.45  
+12             0.39  
+13              0.4  
+14             0.53  
+
+
+
+   Looping through label run 2:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                             5               smilla ('smilla', 4)/5   
+1                           nan   iris?          maj. ('iris', 9)/15   
+2                           nan   fin?            maj. ('fin', 6)/15   
+3                           nan  iris?         maj. ('smilla', 6)/15   
+4                           nan   iris?          maj. ('iris', 6)/15   
+5                             5                     fin ('fin', 4)/5   
+6                           nan   fin?            maj. ('fin', 6)/15   
+7                           nan   fin?            maj. ('fin', 6)/15   
+8                           nan   iris?          maj. ('iris', 7)/15   
+9                           nan  iris?         maj. ('smilla', 5)/15   
+10                          nan   fin?            maj. ('fin', 5)/15   
+11                          nan  smilla?       maj. ('smilla', 6)/15   
+12                            5               smilla ('smilla', 4)/5   
+13                          nan   fin?            maj. ('fin', 6)/15   
+14                          nan   fin?            maj. ('fin', 9)/15   
+
+                     
+   -- Confidence --  
+0              0.84  
+1              0.59  
+2               0.4  
+3              0.36  
+4               0.4  
+5              0.77  
+6               0.4  
+7               0.4  
+8              0.53  
+9              0.37  
+10             0.33  
+11             0.39  
+12              0.8  
+13              0.4  
+14              0.6  
+
+
+
+   Looping through label run 3:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0        nan   fin?            maj. ('fin', 8)/15   
+1          5                   iris ('iris', 4)/5   
+2        nan  fin?          maj. ('smilla', 5)/15   
+3        nan   smilla?         maj. ('fin', 6)/15   
+4        nan   iris?          maj. ('iris', 9)/15   
+5          5                     fin ('fin', 4)/5   
+6        nan  smilla?       maj. ('smilla', 7)/15   
+7        nan   iris?           maj. ('fin', 5)/15   
+8          5                   iris ('iris', 3)/5   
+9        nan   iris?          maj. ('iris', 8)/15   
+10         5                     fin ('fin', 5)/5   
+11       nan   smilla?        maj. ('iris', 6)/15   
+12       nan  smilla?       maj. ('smilla', 7)/15   
+13       nan   iris?          maj. ('iris', 7)/15   
+14         5                   iris ('iris', 3)/5   
+
+                     
+   -- Confidence --  
+0              0.53  
+1               0.8  
+2              0.33  
+3               0.4  
+4              0.56  
+5               0.8  
+6              0.43  
+7              0.38  
+8               0.9  
+9              0.58  
+10              1.0  
+11             0.38  
+12             0.47  
+13             0.51  
+14             0.77  
+
+
+
+
+Analyzed 3000 images per label in total
+
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     56.0          nan        153.0
+smilla                    nan        101.0          nan
+fin                       nan         42.0         25.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin              1000               0                 0
+Actually iris                0             999                 1
+Actually smilla              2               7               991
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00      1000
+        iris       0.99      1.00      1.00      1000
+      smilla       1.00      0.99      0.99      1000
+
+    accuracy                           1.00      3000
+   macro avg       1.00      1.00      1.00      3000
+weighted avg       1.00      1.00      1.00      3000
+
+

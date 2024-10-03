@@ -1,0 +1,3871 @@
+priginal model:
+
+###########################################################################
+... Made predictions for 150 batches with 9 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.8923866633574168
+###########################################################################
+... Made predictions for 150 batches with 9 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9269666687647502
+###########################################################################
+... Made predictions for 150 batches with 9 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9694333338737487
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                    105.0          nan          8.0
+smilla                    nan         95.0          nan
+fin                       nan         17.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               150               0                 0
+Actually iris                0             150                 0
+Actually smilla              0               0               150
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       150
+        iris       1.00      1.00      1.00       150
+      smilla       1.00      1.00      1.00       150
+
+    accuracy                           1.00       450
+   macro avg       1.00      1.00      1.00       450
+weighted avg       1.00      1.00      1.00       450
+
+
+
+
+
+
+###########################################################################
+... Made predictions for 200 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.8908000001311303
+###########################################################################
+... Made predictions for 200 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9432400006055832
+###########################################################################
+... Made predictions for 200 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9688700005412102
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     75.0          nan          8.0
+smilla                    nan         54.0          nan
+fin                       nan          6.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               200               0                 0
+Actually iris                0             200                 0
+Actually smilla              0               0               200
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       200
+        iris       1.00      1.00      1.00       200
+      smilla       1.00      1.00      1.00       200
+
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
+
+
+###########################################################################
+... Made predictions for 200 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.8994850021600723
+###########################################################################
+... Made predictions for 200 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9329350018501281
+###########################################################################
+... Made predictions for 200 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9711799994111061
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     59.0          nan          4.0
+smilla                    nan         52.0          nan
+fin                       nan          5.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               198               2                 0
+Actually iris                0             200                 0
+Actually smilla              0               0               200
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      0.99      0.99       200
+        iris       0.99      1.00      1.00       200
+      smilla       1.00      1.00      1.00       200
+
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
+
+
+
+
+
+
+
+
+- prove that adding noise improves model: make a set, train, add noise to same set, train, find new parameters, train
+- prove that grayscale does not improve: make a set, train, convert to grayscale, train, find new parameters, train
+
+added more images, 600 per train set
+
+v1
+model = create_model(hyperparams)
+
+batch_size = 32
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=25,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+Model: "sequential"
+----------------------------------------------------------------------------
+� Layer (type)                    � Output Shape           �       Param # �
+----------------------------------------------------------------------------
+� conv2d (Conv2D)                 � (None, 128, 128, 128)  �        13,952 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d (MaxPooling2D)    � (None, 25, 25, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_1 (Conv2D)               � (None, 25, 25, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_1 (MaxPooling2D)  � (None, 12, 12, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_2 (Conv2D)               � (None, 12, 12, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_2 (MaxPooling2D)  � (None, 6, 6, 128)      �             0 �
++---------------------------------+------------------------+---------------�
+� flatten (Flatten)               � (None, 4608)           �             0 �
++---------------------------------+------------------------+---------------�
+� dense (Dense)                   � (None, 384)            �     1,769,856 �
++---------------------------------+------------------------+---------------�
+� dropout (Dropout)               � (None, 384)            �             0 �
++---------------------------------+------------------------+---------------�
+� dense_1 (Dense)                 � (None, 3)              �         1,155 �
++--------------------------------------------------------------------------+
+ Total params: 2,080,131 (7.94 MB)
+ Trainable params: 2,080,131 (7.94 MB)
+ Non-trainable params: 0 (0.00 B)
+ 
+ {'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128, 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.6, 'learning_rate': 0.001, 'filters_3_0': 128}
+
+aug: 0,5, insg. 600 imgs
+Current image distribution in the input dataset:
+
+                         TEST        TRAIN   VALIDATION
+----------------------------------------------------------------------
+fin                        82          247           81
+iris                      120          363          121
+smilla                     89          268           88
+
+Label with the most images: iris - 363 images
+
+During the sampling of the original image data, the amount will be capped at 400.
+
+Normalized split ratios between the train, test, and validation subsets: 
+train         1.00
+test          0.33
+validation    0.33
+
+You chose to augment the majority label by 50.0%.
+After the augmentation, each label in the training set will contain 600 images.
+The following amounts of images need to be added to each label:
+
+                        TRAIN         TEST   VALIDATION
+----------------------------------------------------------------------
+fin                       353          118          119
+iris                      237           80           79
+smilla                    332          111          112
+
+If the amount is negative, the sampling of the original images for this label will be 
+capped at 400 and the label will be augmented with the amount shown.
+
+
+
+
+
+  Looping through label run 1:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                          nan  smilla?       maj. ('smilla', 5)/10   
+1                          nan  iris?         maj. ('smilla', 5)/10   
+2                          nan  smilla?       maj. ('smilla', 5)/10   
+3                          nan   iris?          maj. ('iris', 4)/10   
+4                          nan   fin?            maj. ('fin', 4)/10   
+5                          nan   iris?          maj. ('iris', 6)/10   
+6                          nan   fin?            maj. ('fin', 4)/10   
+7                          nan   fin?            maj. ('fin', 5)/10   
+8                          nan   fin?            maj. ('fin', 5)/10   
+9                          nan   iris?          maj. ('iris', 6)/10   
+
+                    
+  -- Confidence --  
+0             0.49  
+1              0.4  
+2              0.5  
+3             0.39  
+4             0.49  
+5              0.6  
+6              0.4  
+7              0.5  
+8              0.5  
+9              0.6  
+
+
+
+  Looping through label run 2:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                          nan  smilla?       maj. ('smilla', 5)/10   
+1                          nan  smilla?       maj. ('smilla', 4)/10   
+2                          nan  smilla?       maj. ('smilla', 5)/10   
+3                          nan  smilla?       maj. ('smilla', 5)/10   
+4                          nan   fin?            maj. ('fin', 4)/10   
+5                          nan  smilla?       maj. ('smilla', 4)/10   
+6                            6                   iris ('iris', 5)/6   
+7                          nan   iris?          maj. ('iris', 5)/10   
+8                          nan  smilla?       maj. ('smilla', 6)/10   
+9                          nan  smilla?       maj. ('smilla', 6)/10   
+
+                    
+  -- Confidence --  
+0             0.42  
+1             0.39  
+2              0.5  
+3              0.5  
+4              0.4  
+5             0.42  
+6             0.83  
+7             0.52  
+8              0.6  
+9             0.57  
+
+
+
+  Looping through label run 3:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                          nan  smilla?       maj. ('smilla', 5)/10   
+1                          nan   iris?          maj. ('iris', 5)/10   
+2                          nan  smilla?       maj. ('smilla', 5)/10   
+3                          nan   fin?            maj. ('fin', 4)/10   
+4                          nan   iris?          maj. ('iris', 5)/10   
+5                          nan  iris?         maj. ('smilla', 4)/10   
+6                          nan  smilla?       maj. ('smilla', 5)/10   
+7                          nan   iris?          maj. ('iris', 5)/10   
+8                          nan   fin?            maj. ('fin', 4)/10   
+9                          nan   fin?            maj. ('fin', 5)/10   
+
+                    
+  -- Confidence --  
+0             0.47  
+1              0.5  
+2              0.5  
+3              0.4  
+4              0.5  
+5              0.4  
+6              0.5  
+7              0.5  
+8              0.4  
+9              0.5  
+
+
+
+#####################################################
+
+same as v1, but 9 epochs
+
+
+v1_1
+
+mix mode
+
+  Looping through label run 1:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                            7                     fin ('fin', 4)/7   
+1                          nan   iris?          maj. ('iris', 6)/10   
+2                          nan  smilla?       maj. ('smilla', 4)/10   
+3                          nan   fin?            maj. ('fin', 4)/10   
+4                          nan   fin?            maj. ('fin', 4)/10   
+5                            6                     fin ('fin', 5)/6   
+6                          nan   smilla?        maj. ('iris', 4)/10   
+7                          nan   iris?          maj. ('iris', 5)/10   
+8                          nan   iris?          maj. ('iris', 4)/10   
+9                          nan  smilla?       maj. ('smilla', 5)/10   
+
+                    
+  -- Confidence --  
+0             0.78  
+1             0.51  
+2              0.4  
+3             0.46  
+4             0.42  
+5             0.83  
+6             0.46  
+7             0.47  
+8              0.4  
+9              0.5  
+
+
+
+  Looping through label run 2:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                          nan  smilla?       maj. ('smilla', 5)/10   
+1                          nan   smilla?        maj. ('iris', 5)/10   
+2                          nan   iris?          maj. ('iris', 5)/10   
+3                          nan   fin?            maj. ('fin', 5)/10   
+4                          nan  smilla?       maj. ('smilla', 5)/10   
+5                          nan  smilla?       maj. ('smilla', 6)/10   
+6                          nan   iris?          maj. ('iris', 5)/10   
+7                          nan   iris?          maj. ('iris', 5)/10   
+8                          nan   fin?           maj. ('iris', 5)/10   
+9                          nan  smilla?       maj. ('smilla', 5)/10   
+
+                    
+  -- Confidence --  
+0             0.45  
+1             0.51  
+2             0.46  
+3              0.5  
+4              0.5  
+5             0.58  
+6             0.45  
+7             0.48  
+8             0.49  
+9             0.49  
+
+
+
+  Looping through label run 3:                                       \
+                -- Attempts --          ------- Pred. class -------   
+0                            6                     fin ('fin', 4)/6   
+1                          nan  smilla?       maj. ('smilla', 4)/10   
+2                          nan   iris?          maj. ('iris', 4)/10   
+3                          nan   fin?            maj. ('fin', 4)/10   
+4                          nan  smilla?       maj. ('smilla', 5)/10   
+5                          nan   smilla?        maj. ('iris', 5)/10   
+6                          nan   fin?           maj. ('iris', 4)/10   
+7                            6               smilla ('smilla', 5)/6   
+8                          nan  smilla?       maj. ('smilla', 4)/10   
+9                          nan   iris?          maj. ('iris', 4)/10   
+
+                    
+  -- Confidence --  
+0             0.83  
+1              0.4  
+2             0.35  
+3             0.42  
+4              0.5  
+5              0.5  
+6             0.38  
+7             0.79  
+8             0.38  
+9             0.41  
+
+
+#################################
+
+v2
+
+{'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128, 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.6, 'learning_rate': 0.001, 'filters_3_0': 128}
+
+
+batch_size = 20
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=25,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+Model: "sequential_2"
+????????????????????????????????????????????????????????????????????????????
+? Layer (type)                    ? Output Shape           ?       Param # ?
+????????????????????????????????????????????????????????????????????????????
+� conv2d_6 (Conv2D)               � (None, 128, 128, 128)  �        13,952 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_6 (MaxPooling2D)  � (None, 25, 25, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_7 (Conv2D)               � (None, 25, 25, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_7 (MaxPooling2D)  � (None, 12, 12, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_8 (Conv2D)               � (None, 12, 12, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_8 (MaxPooling2D)  � (None, 6, 6, 128)      �             0 �
++---------------------------------+------------------------+---------------�
+� flatten_2 (Flatten)             � (None, 4608)           �             0 �
++---------------------------------+------------------------+---------------�
+� dense_4 (Dense)                 � (None, 384)            �     1,769,856 �
++---------------------------------+------------------------+---------------�
+� dropout_2 (Dropout)             � (None, 384)            �             0 �
++---------------------------------+------------------------+---------------�
+� dense_5 (Dense)                 � (None, 3)              �         1,155 �
++--------------------------------------------------------------------------+
+ Total params: 2,080,131 (7.94 MB)
+ Trainable params: 2,080,131 (7.94 MB)
+ Non-trainable params: 0 (0.00 B)
+
+
+
+
+  Looping through label fin:                                             
+              -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                          6                         fin              1.0
+1                          6                         fin              1.0
+2                          6                         fin              1.0
+3                          6                         fin              1.0
+4                          6                         fin             0.89
+5                          6                         fin              1.0
+6                          6                         fin              1.0
+7                          6                         fin             0.99
+8                          6                         fin              1.0
+9                          6                         fin              1.0
+
+
+
+  Looping through label iris:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           6                        iris              1.0
+1                           6                        iris              1.0
+2                           6                        iris             0.99
+3                           6                        iris              1.0
+4                           6                        iris              1.0
+5                           6                        iris              1.0
+6                           6                        iris              1.0
+7                           6                        iris              1.0
+8                           6                        iris             0.95
+9                           6                        iris              1.0
+
+
+
+  Looping through label smilla:                                             
+                 -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                             6                      smilla             0.83
+1                             6                      smilla             0.95
+2                           nan              smilla?                    0.58
+3                           nan              smilla?                    0.64
+4                             9                      smilla             0.77
+5                             6                      smilla             0.83
+6                             6                      smilla             0.97
+7                             6                      smilla             0.84
+8                             7                      smilla             0.79
+9                           nan              smilla?                    0.73
+
+
+############################################
+
+v3
+
+batch_size = 40
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=25,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+{'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128, 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.6, 'learning_rate': 0.001, 'filters_3_0': 128}
+
+Model: "sequential_3"
+????????????????????????????????????????????????????????????????????????????
+? Layer (type)                    ? Output Shape           ?       Param # ?
+????????????????????????????????????????????????????????????????????????????
+� conv2d_9 (Conv2D)               � (None, 128, 128, 128)  �        13,952 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_9 (MaxPooling2D)  � (None, 25, 25, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_10 (Conv2D)              � (None, 25, 25, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_10 (MaxPooling2D) � (None, 12, 12, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_11 (Conv2D)              � (None, 12, 12, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_11 (MaxPooling2D) � (None, 6, 6, 128)      �             0 �
++---------------------------------+------------------------+---------------�
+� flatten_3 (Flatten)             � (None, 4608)           �             0 �
++---------------------------------+------------------------+---------------�
+� dense_6 (Dense)                 � (None, 384)            �     1,769,856 �
++---------------------------------+------------------------+---------------�
+� dropout_3 (Dropout)             � (None, 384)            �             0 �
++---------------------------------+------------------------+---------------�
+� dense_7 (Dense)                 � (None, 3)              �         1,155 �
++--------------------------------------------------------------------------+
+ Total params: 2,080,131 (7.94 MB)
+ Trainable params: 2,080,131 (7.94 MB)
+ Non-trainable params: 0 (0.00 B)
+ 
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           6                         fin             0.85
+1                           6                         fin             0.79
+2                           6                         fin             0.85
+3                           6                         fin             0.99
+4                           6                         fin              1.0
+5                           6                         fin              1.0
+6                           6                         fin              1.0
+7                           6                         fin              1.0
+8                           6                         fin              1.0
+9                           6                         fin              1.0
+10                          6                         fin             0.99
+11                          6                         fin              1.0
+12                          6                         fin             0.84
+13                          6                         fin              1.0
+14                          6                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            6                        iris             0.97
+1                            6                        iris             0.99
+2                            6                        iris              1.0
+3                            6                        iris              1.0
+4                            6                        iris             0.95
+5                            6                        iris              1.0
+6                            6                        iris              1.0
+7                            6                        iris              1.0
+8                            6                        iris              1.0
+9                            6                        iris              1.0
+10                           6                        iris              1.0
+11                           6                        iris              1.0
+12                           6                        iris              1.0
+13                           6                        iris              1.0
+14                           6                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              6                      smilla             0.83
+1                              6                      smilla             0.95
+2                              6                      smilla             0.99
+3                              6                      smilla             0.98
+4                              6                      smilla              1.0
+5                              6                      smilla             0.76
+6                              6                      smilla             0.86
+7                              6                      smilla              0.8
+8                              6                      smilla             0.86
+9                              6                      smilla              1.0
+10                             6                      smilla             0.99
+11                             6                      smilla             0.81
+12                             6                      smilla              1.0
+13                             6                      smilla             0.83
+14                             6                      smilla             0.95
+
+
+
+##############################################
+
+v4 - Dropouts ! -> FAVOURITE!!!
+
+
+hyperparams_2 = {'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128,
+                 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'filters_3_0': 128}
+
+model = create_model(hyperparams_2)
+
+
+batch_size = 32
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=12,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           6                         fin              1.0
+1                           6                         fin              1.0
+2                           6                         fin              1.0
+3                           6                         fin              1.0
+4                           6                         fin              1.0
+5                           6                         fin              1.0
+6                           6                         fin              1.0
+7                           6                         fin              1.0
+8                           6                         fin              1.0
+9                           6                         fin             0.99
+10                          6                         fin              1.0
+11                          6                         fin              1.0
+12                          6                         fin              1.0
+13                          6                         fin              1.0
+14                          6                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            6                        iris             0.97
+1                            6                        iris              1.0
+2                            6                        iris              1.0
+3                            6                        iris              1.0
+4                            6                        iris              1.0
+5                            6                        iris             0.94
+6                            6                        iris              1.0
+7                            6                        iris              1.0
+8                            6                        iris              1.0
+9                            6                        iris              1.0
+10                           6                        iris              1.0
+11                           6                        iris              1.0
+12                           6                        iris              1.0
+13                           6                        iris             0.93
+14                           6                        iris              1.0
+
+
+
+   Looping through label smilla:                                             A
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              6                      smilla              1.0
+1                              6                      smilla              1.0
+2                              6                      smilla              1.0
+3                              6                      smilla              1.0
+4                              6                      smilla              1.0
+5                              6                      smilla              1.0
+6                              6                      smilla             0.89
+7                              6                      smilla              0.9
+8                              6                      smilla             0.91
+9                              9                      smilla             0.77
+10                             6                      smilla              1.0
+11                             6                      smilla             0.91
+12                             6                      smilla              1.0
+13                             6                      smilla              1.0
+14                             6                      smilla              1.0
+
+
+Mix mode
+
+
+
+   Looping through label run 1:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                           nan  smilla?       maj. ('smilla', 8)/15   
+1                           nan   iris?          maj. ('iris', 6)/15   
+2                           nan  iris?         maj. ('smilla', 5)/15   
+3                           nan   fin?            maj. ('fin', 7)/15   
+4                             6                     fin ('fin', 5)/6   
+5                           nan   iris?          maj. ('iris', 7)/15   
+6                           nan   fin?            maj. ('fin', 5)/15   
+7                           nan   fin?            maj. ('fin', 9)/15   
+8                           nan   iris?          maj. ('iris', 6)/15   
+9                           nan  smilla?       maj. ('smilla', 6)/15   
+10                          nan  iris?         maj. ('smilla', 7)/15   
+11                          nan   smilla?        maj. ('iris', 5)/15   
+12                          nan   fin?            maj. ('fin', 6)/15   
+13                            6                     fin ('fin', 5)/6   
+14                          nan   fin?            maj. ('fin', 5)/15   
+
+                     
+   -- Confidence --  
+0              0.53  
+1               0.4  
+2              0.37  
+3              0.47  
+4              0.83  
+5              0.47  
+6              0.34  
+7               0.6  
+8               0.4  
+9              0.37  
+10             0.46  
+11             0.34  
+12             0.43  
+13             0.83  
+14             0.33  
+
+
+
+   Looping through label run 2:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                           nan   iris?          maj. ('iris', 7)/15   
+1                             9                     fin ('fin', 7)/9   
+2                           nan  iris?         maj. ('smilla', 5)/15   
+3                           nan   fin?            maj. ('fin', 7)/15   
+4                           nan   iris?          maj. ('iris', 6)/15   
+5                           nan   fin?            maj. ('fin', 6)/15   
+6                           nan  iris?         maj. ('smilla', 5)/15   
+7                           nan   fin?            maj. ('fin', 5)/15   
+8                           nan   iris?          maj. ('iris', 8)/15   
+9                           nan   iris?          maj. ('iris', 9)/15   
+10                          nan   iris?          maj. ('iris', 8)/15   
+11                          nan   fin?            maj. ('fin', 7)/15   
+12                          nan   iris?          maj. ('iris', 6)/15   
+13                          nan   fin?            maj. ('fin', 7)/15   
+14                            9                     fin ('fin', 7)/9   
+
+                     
+   -- Confidence --  
+0              0.47  
+1              0.78  
+2              0.34  
+3              0.46  
+4               0.4  
+5               0.4  
+6               0.4  
+7              0.33  
+8              0.54  
+9              0.63  
+10             0.53  
+11             0.47  
+12              0.4  
+13             0.47  
+14             0.78  
+
+
+
+   Looping through label run 3:                                        \
+                 -- Attempts --           ------- Pred. class -------   
+0                           nan    iris?          maj. ('iris', 8)/15   
+1                           nan  smilla?       maj. ('smilla', 10)/15   
+2                           nan    iris?          maj. ('iris', 8)/15   
+3                           nan    fin?            maj. ('fin', 9)/15   
+4                           nan    fin?            maj. ('fin', 6)/15   
+5                           nan   smilla?       maj. ('smilla', 6)/15   
+6                           nan    fin?            maj. ('fin', 7)/15   
+7                           nan    iris?          maj. ('iris', 6)/15   
+8                           nan    fin?            maj. ('fin', 7)/15   
+9                           nan    iris?          maj. ('iris', 6)/15   
+10                          nan    fin?            maj. ('fin', 8)/15   
+11                          nan   smilla?       maj. ('smilla', 7)/15   
+12                          nan   smilla?       maj. ('smilla', 8)/15   
+13                          nan   smilla?       maj. ('smilla', 6)/15   
+14                          nan    iris?          maj. ('iris', 7)/15   
+
+                     
+   -- Confidence --  
+0              0.53  
+1              0.63  
+2              0.56  
+3               0.6  
+4               0.4  
+5              0.34  
+6              0.47  
+7              0.41  
+8              0.47  
+9              0.44  
+10             0.55  
+11             0.46  
+12             0.47  
+13              0.4  
+14             0.46  
+
+
+
+
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           5                         fin              1.0
+1                           5                         fin              1.0
+2                           5                         fin              1.0
+3                           5                         fin              1.0
+4                           5                         fin             0.92
+5                           5                         fin              1.0
+6                           5                         fin              1.0
+7                           5                         fin              1.0
+8                           5                         fin              1.0
+9                           5                         fin              1.0
+10                          5                         fin              1.0
+11                          5                         fin              1.0
+12                          5                         fin              1.0
+13                          5                         fin              1.0
+14                          5                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            5                        iris             0.99
+1                            5                        iris              1.0
+2                            5                        iris              1.0
+3                            5                        iris              1.0
+4                            5                        iris              1.0
+5                            5                        iris              1.0
+6                            5                        iris              1.0
+7                            5                        iris              1.0
+8                            5                        iris              1.0
+9                            5                        iris             0.99
+10                           5                        iris              1.0
+11                           5                        iris              1.0
+12                           5                        iris              1.0
+13                           5                        iris             0.99
+14                           5                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              5                      smilla             0.89
+1                              5                      smilla              1.0
+2                              5                      smilla              0.8
+3                              5                      smilla             0.98
+4                              5                      smilla              1.0
+5                              5                      smilla             0.98
+6                              5                      smilla             0.81
+7                              5                      smilla             0.99
+8                              5                      smilla              1.0
+9                              5                      smilla             0.86
+10                             5                      smilla              1.0
+11                             5                      smilla              1.0
+12                             5                      smilla             0.99
+13                             5                      smilla              1.0
+14                             5                      smilla             0.78
+
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9956420021057129
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.989195999622345
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9449760016202927
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                      nan          nan           86
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               4               496
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9968600004911423
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9889499992132187
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9558160008192063
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                      nan          nan           85
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+##################################
+
+4 retrained 
+
+Requirement already satisfied: colorama in /usr/local/lib/python3.10/dist-packages (0.4.6)
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9922980054616928
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9855500022172928
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.8940720007419586
+
+Errors during individual image classification:
+
+                  fin  iris  smilla
+Misclassified as                   
+iris              NaN   NaN     198
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+#################################
+
+v5 - like v4, but with kernel 3 and pool 2
+
+
+hyperparams_2 = {'kernel_1': 3, 'filters_1': 128, 'pool_1': 2, 'filters_2': 128,
+                 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'filters_3_0': 128}
+
+model = create_model(hyperparams_2)
+
+batch_size = 32
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=12,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+Model: "sequential_5"
+????????????????????????????????????????????????????????????????????????????
+? Layer (type)                    ? Output Shape           ?       Param # ?
+????????????????????????????????????????????????????????????????????????????
+� conv2d_15 (Conv2D)              � (None, 128, 128, 128)  �         3,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_15 (MaxPooling2D) � (None, 64, 64, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_16 (Conv2D)              � (None, 64, 64, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_16 (MaxPooling2D) � (None, 32, 32, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_17 (Conv2D)              � (None, 32, 32, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_17 (MaxPooling2D) � (None, 16, 16, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� flatten_5 (Flatten)             � (None, 32768)          �             0 �
++---------------------------------+------------------------+---------------�
+� dense_10 (Dense)                � (None, 384)            �    12,583,296 �
++---------------------------------+------------------------+---------------�
+� dropout_5 (Dropout)             � (None, 384)            �             0 �
++---------------------------------+------------------------+---------------�
+� dense_11 (Dense)                � (None, 3)              �         1,155 �
++--------------------------------------------------------------------------+
+ Total params: 12,883,203 (49.15 MB)
+ Trainable params: 12,883,203 (49.15 MB)
+ Non-trainable params: 0 (0.00 B)
+ 
+ 
+
+
+
+  Looping through label fin:                                             
+              -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                          6                         fin              1.0
+1                          6                         fin             0.97
+2                          6                         fin             0.91
+3                          6                         fin              1.0
+4                          6                         fin              1.0
+5                          6                         fin              1.0
+6                          6                         fin             0.94
+7                          6                         fin              1.0
+8                          6                         fin             0.88
+9                          6                         fin              1.0
+
+
+
+  Looping through label iris:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           6                        iris             0.95
+1                           6                        iris              1.0
+2                           6                        iris             0.92
+3                           6                        iris              1.0
+4                           6                        iris             0.96
+5                           6                        iris             0.98
+6                           6                        iris              1.0
+7                           6                        iris             0.96
+8                           6                        iris              1.0
+9                           6                        iris             0.98
+
+
+
+  Looping through label smilla:                                             
+                 -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                             6                      smilla             0.84
+1                             6                      smilla             0.86
+2                             6                      smilla              1.0
+3                             6                      smilla              1.0
+4                             6                      smilla              1.0
+5                             6                      smilla             0.99
+6                             6                      smilla              1.0
+7                             6                      smilla             0.84
+8                             6                      smilla              1.0
+9                             6                      smilla             0.86
+
+
+
+################################
+
+v6
+
+like 4, but more dense units
+
+hyperparams_2 = {'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128,
+                 'num_filters': 1, 'dense_units_1': 512, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'filters_3_0': 128}
+
+model = create_model(hyperparams_2)
+
+batch_size = 32
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=12,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+Model: "sequential_6"
+????????????????????????????????????????????????????????????????????????????
+? Layer (type)                    ? Output Shape           ?       Param # ?
+????????????????????????????????????????????????????????????????????????????
+� conv2d_18 (Conv2D)              � (None, 128, 128, 128)  �        13,952 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_18 (MaxPooling2D) � (None, 25, 25, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_19 (Conv2D)              � (None, 25, 25, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_19 (MaxPooling2D) � (None, 12, 12, 128)    �             0 �
++---------------------------------+------------------------+---------------�
+� conv2d_20 (Conv2D)              � (None, 12, 12, 128)    �       147,584 �
++---------------------------------+------------------------+---------------�
+� max_pooling2d_20 (MaxPooling2D) � (None, 6, 6, 128)      �             0 �
++---------------------------------+------------------------+---------------�
+� flatten_6 (Flatten)             � (None, 4608)           �             0 �
++---------------------------------+------------------------+---------------�
+� dense_12 (Dense)                � (None, 512)            �     2,359,808 �
++---------------------------------+------------------------+---------------�
+� dropout_6 (Dropout)             � (None, 512)            �             0 �
++---------------------------------+------------------------+---------------�
+� dense_13 (Dense)                � (None, 3)              �         1,539 �
++--------------------------------------------------------------------------+
+ Total params: 2,670,467 (10.19 MB)
+ Trainable params: 2,670,467 (10.19 MB)
+ Non-trainable params: 0 (0.00 B)
+
+
+
+
+  Looping through label fin:                                             
+              -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                          6                         fin             0.88
+1                          6                         fin              1.0
+2                          6                         fin              1.0
+3                          6                         fin              1.0
+4                          6                         fin              1.0
+5                          6                         fin             0.99
+6                          6                         fin              1.0
+7                          6                         fin              1.0
+8                          6                         fin              1.0
+9                          6                         fin              1.0
+
+
+
+  Looping through label iris:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           6                        iris             0.99
+1                           6                        iris              1.0
+2                           6                        iris             0.99
+3                           6                        iris              1.0
+4                           6                        iris              1.0
+5                           6                        iris             0.99
+6                           6                        iris              1.0
+7                           6                        iris             0.99
+8                           6                        iris              1.0
+9                           6                        iris             0.99
+
+
+
+  Looping through label smilla:                                             
+                 -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                             6                      smilla             0.89
+1                             6                      smilla              1.0
+2                             6                      smilla              1.0
+3                             6                      smilla             0.99
+4                             6                      smilla              1.0
+5                             6                      smilla              1.0
+6                             6                      smilla              1.0
+7                             6                      smilla              1.0
+8                             6                      smilla             0.85
+9                             6                      smilla              1.0
+
+
+
+--------------##########################
+
+
+tuning in colab:
+
+
+
+
+###########
+
+
+tuner results :
+
+Model: "sequential"
+????????????????????????????????????????????????????????????????????????????????????????
+? Layer (type)                         ? Output Shape                ?         Param # ?
+????????????????????????????????????????????????????????????????????????????????????????
+� conv2d (Conv2D)                      � (None, 128, 128, 64)        �           6,976 �
++--------------------------------------+-----------------------------+-----------------�
+� max_pooling2d (MaxPooling2D)         � (None, 32, 32, 64)          �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� conv2d_1 (Conv2D)                    � (None, 32, 32, 224)         �         129,248 �
++--------------------------------------+-----------------------------+-----------------�
+� max_pooling2d_1 (MaxPooling2D)       � (None, 16, 16, 224)         �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� conv2d_2 (Conv2D)                    � (None, 16, 16, 128)         �         258,176 �
++--------------------------------------+-----------------------------+-----------------�
+� max_pooling2d_2 (MaxPooling2D)       � (None, 8, 8, 128)           �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� flatten (Flatten)                    � (None, 8192)                �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� dense (Dense)                        � (None, 704)                 �       5,767,872 �
++--------------------------------------+-----------------------------+-----------------�
+� dropout (Dropout)                    � (None, 704)                 �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� dense_1 (Dense)                      � (None, 224)                 �         157,920 �
++--------------------------------------+-----------------------------+-----------------�
+� dropout_1 (Dropout)                  � (None, 224)                 �               0 �
++--------------------------------------+-----------------------------+-----------------�
+� dense_2 (Dense)                      � (None, 3)                   �             675 �
++--------------------------------------------------------------------------------------+
+ Total params: 6,320,867 (24.11 MB)
+ Trainable params: 6,320,867 (24.11 MB)
+ Non-trainable params: 0 (0.00 B)
+ 
+ Results summary
+Results in /tmp/tb/pets
+Showing 10 best trials
+Objective(name="val_accuracy", direction="max")
+
+Trial 12 summary
+Hyperparameters:
+kernel_1: 6
+filters_1: 64
+pool_1: 4
+filters_2: 224
+third_filter: 1
+dense_units_1: 704
+dropout_1: 0.5
+second_dense_layer: 1
+learning_rate: 0.001
+filters_3_0: 128
+dense_units_2: 224
+dropout_2: 0.4
+Score: 0.9933333396911621
+
+
+too big?? 74 mb
+
+
+TREAINIG RESULTS:
+
+
+Model: "sequential_5"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                         ┃ Output Shape                ┃         Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
+│ conv2d_15 (Conv2D)                   │ (None, 128, 128, 64)        │           6,976 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_15 (MaxPooling2D)      │ (None, 32, 32, 64)          │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ conv2d_16 (Conv2D)                   │ (None, 32, 32, 224)         │         129,248 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_16 (MaxPooling2D)      │ (None, 16, 16, 224)         │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ conv2d_17 (Conv2D)                   │ (None, 16, 16, 128)         │         258,176 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_17 (MaxPooling2D)      │ (None, 8, 8, 128)           │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ flatten_5 (Flatten)                  │ (None, 8192)                │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_15 (Dense)                     │ (None, 704)                 │       5,767,872 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dropout_10 (Dropout)                 │ (None, 704)                 │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_16 (Dense)                     │ (None, 224)                 │         157,920 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dropout_11 (Dropout)                 │ (None, 224)                 │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_17 (Dense)                     │ (None, 3)                   │             675 │
+└──────────────────────────────────────┴─────────────────────────────┴─────────────────┘
+ Total params: 6,320,867 (24.11 MB)
+ Trainable params: 6,320,867 (24.11 MB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 8s 81ms/step - accuracy: 0.4846 - loss: 0.9521 - val_accuracy: 0.7083 - val_loss: 0.8934
+Epoch 2/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 30ms/step - accuracy: 0.8439 - loss: 0.4024 - val_accuracy: 0.9333 - val_loss: 0.1453
+Epoch 3/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 27ms/step - accuracy: 0.9482 - loss: 0.1554 - val_accuracy: 0.9700 - val_loss: 0.0721
+Epoch 4/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 25ms/step - accuracy: 0.9774 - loss: 0.0617 - val_accuracy: 0.9517 - val_loss: 0.1213
+Epoch 5/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - accuracy: 0.9769 - loss: 0.0704 - val_accuracy: 0.9817 - val_loss: 0.0517
+Epoch 6/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 26ms/step - accuracy: 0.9911 - loss: 0.0235 - val_accuracy: 0.9883 - val_loss: 0.0600
+Epoch 7/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - accuracy: 0.9958 - loss: 0.0162 - val_accuracy: 0.9400 - val_loss: 0.2086
+Epoch 8/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 25ms/step - accuracy: 0.9732 - loss: 0.0880 - val_accuracy: 0.9833 - val_loss: 0.0514
+Epoch 9/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 30ms/step - accuracy: 0.9887 - loss: 0.0304 - val_accuracy: 0.9900 - val_loss: 0.0470
+Epoch 10/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 28ms/step - accuracy: 0.9980 - loss: 0.0156 - val_accuracy: 0.9750 - val_loss: 0.1378
+Epoch 11/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 25ms/step - accuracy: 0.9984 - loss: 0.0105 - val_accuracy: 0.9750 - val_loss: 0.0593
+Epoch 12/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 25ms/step - accuracy: 0.9919 - loss: 0.0250 - val_accuracy: 0.9833 - val_loss: 0.0684
+Epoch 13/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - accuracy: 0.9763 - loss: 0.0709 - val_accuracy: 0.9633 - val_loss: 0.1382
+Epoch 14/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - accuracy: 0.9933 - loss: 0.0227 - val_accuracy: 0.9900 - val_loss: 0.0626
+Epoch 15/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 29ms/step - accuracy: 0.9951 - loss: 0.0206 - val_accuracy: 0.9800 - val_loss: 0.0928
+
+
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9892199999094009
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9569800001382828
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9511699992418289
+
+Errors during individual image classification:
+
+                  fin  iris  smilla
+Misclassified as                   
+iris              1.0   NaN     4.0
+smilla            NaN   4.0     NaN
+fin               NaN   NaN     4.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               100               0                 0
+Actually iris                0             100                 0
+Actually smilla              0               0               100
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       100
+        iris       1.00      1.00      1.00       100
+      smilla       1.00      1.00      1.00       100
+
+    accuracy                           1.00       300
+   macro avg       1.00      1.00      1.00       300
+weighted avg       1.00      1.00      1.00       300
+
+
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9864599996805191
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.957419999241829
+###########################################################################
+... Made predictions for 100 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9486000001430511
+
+Errors during individual image classification:
+
+                  fin  iris  smilla
+Misclassified as                   
+iris              2.0   NaN     6.0
+smilla            NaN   8.0     NaN
+fin               NaN   NaN     1.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               100               0                 0
+Actually iris                0             100                 0
+Actually smilla              0               0               100
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       100
+        iris       1.00      1.00      1.00       100
+      smilla       1.00      1.00      1.00       100
+
+    accuracy                           1.00       300
+   macro avg       1.00      1.00      1.00       300
+weighted avg       1.00      1.00      1.00       300
+
+
+###########################################################################
+... Made predictions for 200 batches with 2 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.987640001475811
+###########################################################################
+... Made predictions for 200 batches with 2 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9639650014042854
+###########################################################################
+... Made predictions for 200 batches with 2 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9331700000166893
+
+Errors during individual image classification:
+
+                  fin  iris  smilla
+Misclassified as                   
+iris              3.0   NaN    18.0
+smilla            NaN  10.0     NaN
+fin               NaN   NaN     2.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               200               0                 0
+Actually iris                0             200                 0
+Actually smilla              0               5               195
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       200
+        iris       0.98      1.00      0.99       200
+      smilla       1.00      0.97      0.99       200
+
+    accuracy                           0.99       600
+   macro avg       0.99      0.99      0.99       600
+weighted avg       0.99      0.99      0.99       600
+
+
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9908200013637543
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9658520030975342
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9340099995136261
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              10.0   NaN    57.0
+smilla             NaN  27.0     NaN
+fin                NaN   NaN    10.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               3               497
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9890540000200272
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9652860035896301
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9391860024929046
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              11.0   NaN    66.0
+smilla             NaN  35.0     NaN
+fin                NaN   NaN    12.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9860220021009445
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.963856004357338
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9357420026659965
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              29.0   NaN    88.0
+smilla             NaN  51.0     NaN
+fin                NaN   NaN    17.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+
+##############
+
+NUMBER 4
+
+
+
+Model: "sequential_6"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Layer (type)                         ┃ Output Shape                ┃         Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
+│ conv2d_18 (Conv2D)                   │ (None, 128, 128, 224)       │           6,272 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_18 (MaxPooling2D)      │ (None, 25, 25, 224)         │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ conv2d_19 (Conv2D)                   │ (None, 25, 25, 128)         │         258,176 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_19 (MaxPooling2D)      │ (None, 12, 12, 128)         │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ conv2d_20 (Conv2D)                   │ (None, 12, 12, 256)         │         295,168 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ max_pooling2d_20 (MaxPooling2D)      │ (None, 6, 6, 256)           │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ flatten_6 (Flatten)                  │ (None, 9216)                │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_18 (Dense)                     │ (None, 640)                 │       5,898,880 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dropout_12 (Dropout)                 │ (None, 640)                 │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_19 (Dense)                     │ (None, 96)                  │          61,536 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dropout_13 (Dropout)                 │ (None, 96)                  │               0 │
+├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
+│ dense_20 (Dense)                     │ (None, 3)                   │             291 │
+└──────────────────────────────────────┴─────────────────────────────┴─────────────────┘
+ Total params: 6,520,323 (24.87 MB)
+ Trainable params: 6,520,323 (24.87 MB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 17s 225ms/step - accuracy: 0.5388 - loss: 0.8952 - val_accuracy: 0.9167 - val_loss: 0.2295
+Epoch 2/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 8s 46ms/step - accuracy: 0.8845 - loss: 0.3407 - val_accuracy: 0.9350 - val_loss: 0.1947
+Epoch 3/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 5s 46ms/step - accuracy: 0.9464 - loss: 0.1564 - val_accuracy: 0.9633 - val_loss: 0.0810
+Epoch 4/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 44ms/step - accuracy: 0.9837 - loss: 0.0459 - val_accuracy: 0.9783 - val_loss: 0.0358
+Epoch 5/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 58ms/step - accuracy: 0.9842 - loss: 0.0404 - val_accuracy: 0.9900 - val_loss: 0.0317
+Epoch 6/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 4s 63ms/step - accuracy: 0.9788 - loss: 0.0631 - val_accuracy: 0.9683 - val_loss: 0.0793
+Epoch 7/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 4s 51ms/step - accuracy: 0.9848 - loss: 0.0457 - val_accuracy: 0.9833 - val_loss: 0.0532
+Epoch 8/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 49ms/step - accuracy: 0.9919 - loss: 0.0176 - val_accuracy: 0.9833 - val_loss: 0.0445
+Epoch 9/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 3s 49ms/step - accuracy: 0.9968 - loss: 0.0106 - val_accuracy: 0.9783 - val_loss: 0.0633
+Epoch 10/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 5s 45ms/step - accuracy: 0.9975 - loss: 0.0085 - val_accuracy: 0.9900 - val_loss: 0.0590
+Epoch 11/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 43ms/step - accuracy: 0.9973 - loss: 0.0128 - val_accuracy: 0.9833 - val_loss: 0.0730
+Epoch 12/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 41ms/step - accuracy: 0.9961 - loss: 0.0105 - val_accuracy: 0.9917 - val_loss: 0.0477
+Epoch 13/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 41ms/step - accuracy: 0.9742 - loss: 0.1052 - val_accuracy: 0.9917 - val_loss: 0.0362
+Epoch 14/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 42ms/step - accuracy: 0.9997 - loss: 0.0022 - val_accuracy: 0.9850 - val_loss: 0.0506
+Epoch 15/35
+57/57 ━━━━━━━━━━━━━━━━━━━━ 2s 43ms/step - accuracy: 0.9987 - loss: 0.0028 - val_accuracy: 0.9917 - val_loss: 0.0474
+
+
+
+
+
+batch_size = 64!!
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9569660006761551
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9374480047225953
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9765080012083054
+
+Errors during individual image classification:
+
+                   fin   iris  smilla
+Misclassified as                     
+iris              80.0    NaN      33
+fin                NaN  122.0      26
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9617880021333695
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9368580024242401
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9759840025901795
+
+Errors during individual image classification:
+
+                   fin   iris  smilla
+Misclassified as                     
+iris              51.0    NaN      27
+fin                NaN  108.0      20
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9549000008106232
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9361500022411346
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.974276004076004
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              51.0   NaN      21
+fin                NaN  80.0      22
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               499               1                 0
+Actually iris                2             498                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+#####
+old final model:
+model_final.keras
+kernel_1           6.000
+filters_1        128.000
+pool_1             5.000
+filters_2        128.000
+num_filters        1.000
+dense_units_1    384.000
+dropout_1          0.600
+learning_rate      0.001
+filters_3_0      128.000
+
+model_x1:
+
+Trial 12 summary
+Hyperparameters:
+kernel_1: 6
+filters_1: 64
+pool_1: 4
+filters_2: 224
+third_filter: 1
+dense_units_1: 704
+dropout_1: 0.5
+second_dense_layer: 1
+learning_rate: 0.001
+filters_3_0: 128
+dense_units_2: 224
+dropout_2: 0.4
+Score: 0.9933333396911621
+(on google drive)
+
+
+model_x2:
+upgraded final, nr 4 with 0.3 dropout:
+batch 64
+hyperparams_2 = {'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128,
+                 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'filters_3_0': 128}
+				 
+
+model_final_eval_x2_l2_64:
+
+added kernel_regularizer=l2(0.001)
+batch 64
+hyperparams_2 = {'kernel_1': 6, 'filters_1': 128, 'pool_1': 5, 'filters_2': 128,
+                 'num_filters': 1, 'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'filters_3_0': 128}
+
+bad classification results even with 5 img per batch
+
+
+# Try to reduce overfitting
+# adding kernel_regularizer=l2(0.001)
+from tensorflow.keras.regularizers import l2
+
+
+# Prepare model for saved hyperparams
+def create_model(hyperparams):
+    img_shape = INPUT_SHAPE[1:]
+    output_classes = len(LABELS)
+
+    model = Sequential()
+    model.add(InputLayer(shape=img_shape))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_1"],
+            kernel_size=(hyperparams["kernel_1"], hyperparams["kernel_1"]),
+            padding="same",
+            activation="relu",
+            kernel_regularizer=l2(0.001),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(hyperparams["pool_1"], hyperparams["pool_1"])))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_2"],
+            kernel_size=(3, 3),
+            padding="same",
+            activation="relu",
+            kernel_regularizer=l2(0.001),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_3_0"],
+            kernel_size=(3, 3),
+            padding="same",
+            activation="relu",
+            kernel_regularizer=l2(0.001),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(hyperparams["dense_units_1"], activation="relu", kernel_regularizer=l2(0.001)))
+    model.add(Dropout(hyperparams["dropout_1"]))
+
+    model.add(Dense(output_classes, activation="softmax"))
+
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=keras.optimizers.Adam(learning_rate=hyperparams["learning_rate"]),
+        metrics=["accuracy"],
+    )
+
+    model.summary()
+
+    return model
+	
+
+#####
+
+Based on graphs, model x2 is overfitting
+
+x3_l2_64
+
+CHANGED: kernel, pool, filters
+removed 3rd filter layer
+
+still added kernel_regularizer=l2(0.001)
+
+#print(hyperparams)
+
+hyperparams = {'kernel_1': 3, 'filters_1': 32, 'pool_1': 2, 'filters_2': 64,
+                 'num_filters': 0, 'dense_units_1': 256, 'dropout_1': 0.3,
+                 'learning_rate': 0.001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=3,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 64
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=30,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+)
+
+
+#####
+
+x4
+#print(hyperparams)
+
+hyperparams = {'kernel_1': 4, 'filters_1': 32, 'pool_1': 4, 'filters_2': 64,
+                 'num_filters': 0, 'dense_units_1': 256, 'dropout_1': 0.4,
+                 'learning_rate': 0.001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=3,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=30,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+)
+
+
+#######
+
+x5
+kernel_regularizer 0.01
+not good at all
+
+
+hyperparams = {'kernel_1': 4, 'filters_1': 32, 'pool_1': 4, 'filters_2': 64,
+                 'num_filters': 1, 'dense_units_1': 256, 'dropout_1': 0.4,
+                 'learning_rate': 0.001, 'filters_3_0': 128, 'kernel_reg': 0.01}
+				 
+				 
+				 
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+#####
+
+x6
+
+# Try to reduce overfitting
+# adding kernel_regularizer=l2(0.001)
+from tensorflow.keras.regularizers import l2
+
+
+# Prepare model for saved hyperparams
+def create_model(hyperparams):
+    img_shape = INPUT_SHAPE[1:]
+    output_classes = len(LABELS)
+
+    model = Sequential()
+    model.add(InputLayer(shape=img_shape))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_1"],
+            kernel_size=(hyperparams["kernel_1"], hyperparams["kernel_1"]),
+            activation="relu",
+            use_bias=True,
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(hyperparams["pool_1"], hyperparams["pool_1"])))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_2"],
+            kernel_size=(3, 3),
+            activation="relu",
+            use_bias=True,
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_3_0"],
+            kernel_size=(3, 3),
+            activation="relu",
+            use_bias=True,
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(hyperparams["dense_units_1"], activation="relu", kernel_regularizer=l2(hyperparams['kernel_reg'])))
+    model.add(Dropout(hyperparams["dropout_1"]))
+
+    model.add(Dense(output_classes, activation="softmax"))
+
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=keras.optimizers.Adam(learning_rate=hyperparams["learning_rate"]),
+        metrics=["accuracy"],
+    )
+
+    model.summary()
+
+    return model
+	
+	
+	#print(hyperparams)
+
+hyperparams = {'kernel_1': 5, 'filters_1': 32, 'pool_1': 6, 'filters_2': 64,
+               'filters_3_0': 128, 'num_filters': 1,
+               'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'kernel_reg': 0.001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=5,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+
+
+
+#######
+
+x7
+
+#print(hyperparams)
+
+hyperparams = {'kernel_1': 5, 'filters_1': 64, 'pool_1': 6, 'filters_2': 64,
+               'filters_3_0': 128, 'num_filters': 1,
+               'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'kernel_reg': 0.0001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=5,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+
+was not that bad ... but below 90 for live
+
+#####
+###############################################################################################################
+x_b_1
+
+adjusted augment values, capped all sets at 300 to reduce iris
+
+#print(hyperparams)
+
+hyperparams = {'kernel_1': 5, 'filters_1': 128, 'pool_1': 6, 'filters_2': 128,
+               'filters_3_0': 128, 'num_filters': 1,
+               'dense_units_1': 384, 'dropout_1': 0.3,
+                 'learning_rate': 0.001, 'kernel_reg': 0.0001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=5,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+
+
+GUT!!!
+
+
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9826700019836426
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9682040023803711
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9429820020198822
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     16.0          nan         53.0
+smilla                    nan         34.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               4               496
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9775040022134781
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9725479986667633
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9458640016317368
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              32.0   NaN    67.0
+smilla             NaN  42.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               499               1                 0
+Actually iris                0             500                 0
+Actually smilla              0               3               497
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9813650041818619
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9653649985790252
+###########################################################################
+... Made predictions for 200 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9419850018620491
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     10.0          nan         29.0
+smilla                    nan         23.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               200               0                 0
+Actually iris                0             200                 0
+Actually smilla              0               0               200
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       200
+        iris       1.00      1.00      1.00       200
+      smilla       1.00      1.00      1.00       200
+
+    accuracy                           1.00       600
+   macro avg       1.00      1.00      1.00       600
+weighted avg       1.00      1.00      1.00       600
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.980600001335144
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9694999997615814
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9372580025196076
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     35.0          nan        104.0
+smilla                    nan         58.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               1               499
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9780140038728714
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9749540005922317
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9387460021972657
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     52.0          nan        122.0
+smilla                    nan         50.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9821140050888062
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.969705999970436
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9449200037717819
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     43.0          nan        107.0
+smilla                    nan         76.0          nan
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+Errors during individual image classification:
+
+Misclassified as          FIN         IRIS       SMILLA
+----------------------------------------------------------------------
+iris                     36.0          nan         70.0
+smilla                    nan         39.0          nan
+fin                       nan          nan          7.0
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               499               1                 0
+Actually iris                0             500                 0
+Actually smilla              0               2               498
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+
+
+4-15 images
+80%
+
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           5                         fin              1.0
+1                           5                         fin              1.0
+2                           5                         fin              1.0
+3                           5                         fin              1.0
+4                           5                         fin              1.0
+5                           5                         fin              1.0
+6                           5                         fin              1.0
+7                           5                         fin              1.0
+8                           5                         fin              1.0
+9                           5                         fin              1.0
+10                          5                         fin              1.0
+11                          5                         fin              1.0
+12                          5                         fin              1.0
+13                          5                         fin             0.97
+14                          5                         fin              1.0
+15                          5                         fin              1.0
+16                          5                         fin              1.0
+17                          5                         fin             0.86
+18                          5                         fin              1.0
+19                          5                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            5                        iris              1.0
+1                            5                        iris             0.88
+2                            5                        iris             0.95
+3                            5                        iris              1.0
+4                            5                        iris             0.88
+5                            5                        iris              1.0
+6                            5                        iris              1.0
+7                            5                        iris              1.0
+8                            5                        iris             0.96
+9                            5                        iris              1.0
+10                           5                        iris              1.0
+11                           5                        iris              1.0
+12                           5                        iris              1.0
+13                           5                        iris              1.0
+14                           5                        iris              1.0
+15                           5                        iris              1.0
+16                           5                        iris              1.0
+17                           5                        iris              1.0
+18                           5                        iris             0.99
+19                           5                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              5                      smilla             0.99
+1                              5                      smilla              1.0
+2                              5                      smilla             0.97
+3                              5                      smilla             0.99
+4                              5                      smilla             0.98
+5                              5                      smilla              1.0
+6                              5                      smilla              1.0
+7                              5                      smilla             0.92
+8                              5                      smilla              1.0
+9                              5                      smilla             0.98
+10                             5                      smilla              1.0
+11                             5                      smilla             0.99
+12                             5                      smilla             0.99
+13                             5                      smilla              1.0
+14                             5                      smilla             0.96
+15                             5                      smilla              1.0
+16                             5                      smilla              1.0
+17                             5                      smilla             0.81
+18                             5                      smilla             0.96
+19                             6                      smilla             0.82
+
+
+
+###############
+
+2 min 38 sec for 100 trials with 5-15 images (8 min is max for 5sec*100)
+
+
+
+
+
+
+
+
+3 - 15 images
+70% conf
+
+predicting ca 40 images per second
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin             0.96
+1                           4                         fin              1.0
+2                           4                         fin             0.94
+3                           4                         fin              1.0
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           4                         fin             0.94
+8                           4                         fin              1.0
+9                           4                         fin             0.94
+10                          4                         fin              1.0
+11                          4                         fin              1.0
+12                          4                         fin             0.82
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris             0.85
+2                            4                        iris              1.0
+3                            4                        iris             0.86
+4                            4                        iris              1.0
+5                            4                        iris              1.0
+6                            4                        iris              1.0
+7                            4                        iris             0.97
+8                            4                        iris              1.0
+9                            4                        iris             0.83
+10                           4                        iris             0.95
+11                           4                        iris             0.99
+12                           4                        iris              1.0
+13                           4                        iris              1.0
+14                           4                        iris             0.86
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.79
+1                              4                      smilla             0.83
+2                              4                      smilla             0.99
+3                              4                      smilla             0.71
+4                              4                      smilla              1.0
+5                              4                      smilla             0.76
+6                              4                      smilla              1.0
+7                              4                      smilla              1.0
+8                              4                      smilla             0.74
+9                              4                      smilla             0.98
+10                             4                      smilla              1.0
+11                             4                      smilla             0.79
+12                             4                      smilla              1.0
+13                             4                      smilla              1.0
+14                             4                      smilla             0.71
+
+
+
+80% conf
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin              1.0
+1                           4                         fin              1.0
+2                           4                         fin              1.0
+3                           4                         fin             0.94
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           5                         fin             0.83
+8                           4                         fin              1.0
+9                           4                         fin              1.0
+10                          4                         fin             0.99
+11                          5                         fin             0.82
+12                          4                         fin              1.0
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris              1.0
+2                            4                        iris             0.86
+3                            4                        iris              1.0
+4                            4                        iris              1.0
+5                            4                        iris             0.97
+6                            4                        iris              1.0
+7                            4                        iris             0.88
+8                            4                        iris              1.0
+9                            4                        iris              1.0
+10                           4                        iris              1.0
+11                           4                        iris              1.0
+12                           4                        iris             0.97
+13                           4                        iris             0.94
+14                           4                        iris             0.96
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.98
+1                              6                      smilla             0.82
+2                              4                      smilla              1.0
+3                              4                      smilla              0.9
+4                              5                      smilla              0.8
+5                              4                      smilla              1.0
+6                              4                      smilla             0.99
+7                              4                      smilla              1.0
+8                              5                      smilla             0.82
+9                              5                      smilla             0.83
+10                             9                      smilla              0.8
+11                             4                      smilla              1.0
+12                             5                      smilla             0.83
+13                             4                      smilla              1.0
+14                             4                      smilla             0.99
+
+90% conf
+
+
+   Looping through label fin:                                             
+               -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                           4                         fin              1.0
+1                           4                         fin              1.0
+2                           4                         fin              1.0
+3                           4                         fin             0.99
+4                           4                         fin              1.0
+5                           4                         fin              1.0
+6                           4                         fin              1.0
+7                           4                         fin              1.0
+8                           4                         fin              1.0
+9                           4                         fin              1.0
+10                          4                         fin             0.99
+11                          4                         fin             0.94
+12                          4                         fin              1.0
+13                          4                         fin              1.0
+14                          4                         fin              1.0
+
+
+
+   Looping through label iris:                                             
+                -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                            4                        iris              1.0
+1                            4                        iris             0.97
+2                            4                        iris             0.94
+3                            4                        iris              1.0
+4                            4                        iris              1.0
+5                            8                        iris             0.91
+6                            4                        iris             0.97
+7                            4                        iris              1.0
+8                            4                        iris              1.0
+9                            6                        iris             0.92
+10                           4                        iris              1.0
+11                           4                        iris             0.95
+12                           4                        iris              1.0
+13                           4                        iris             0.95
+14                           4                        iris              1.0
+
+
+
+   Looping through label smilla:                                             
+                  -- Attempts -- ------- Pred. class ------- -- Confidence --
+0                              4                      smilla             0.95
+1                              4                      smilla             0.94
+2                              4                      smilla              1.0
+3                              8                      smilla             0.92
+4                              4                      smilla              1.0
+5                              5                      smilla             0.92
+6                            nan              smilla?                    0.85
+7                              7                      smilla             0.91
+8                              4                      smilla              1.0
+9                              5                      smilla             0.91
+10                             4                      smilla              1.0
+11                             4                      smilla              1.0
+12                             8                      smilla             0.91
+13                             9                      smilla             0.91
+14                             4                      smilla             0.95
+
+
+
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9790900027751923
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9665620005130768
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9400540025234222
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              41.0   NaN   105.0
+smilla             NaN  66.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               1               499
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+###
+MIX MODE
+
+
+   Looping through label run 1:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                           nan  smilla?       maj. ('smilla', 7)/15   
+1                           nan   iris?          maj. ('iris', 6)/15   
+2                             5               smilla ('smilla', 4)/5   
+3                           nan  smilla?       maj. ('smilla', 7)/15   
+4                             5               smilla ('smilla', 5)/5   
+5                           nan   fin?            maj. ('fin', 8)/15   
+6                           nan  iris?         maj. ('smilla', 7)/15   
+7                           nan  iris?         maj. ('smilla', 8)/15   
+8                           nan   iris?          maj. ('iris', 6)/15   
+9                           nan  smilla?       maj. ('smilla', 6)/15   
+10                          nan   iris?          maj. ('iris', 6)/15   
+11                          nan   iris?          maj. ('iris', 6)/15   
+12                          nan   iris?          maj. ('iris', 6)/15   
+13                          nan   iris?          maj. ('iris', 6)/15   
+14                          nan  smilla?       maj. ('smilla', 8)/15   
+
+                     
+   -- Confidence --  
+0              0.47  
+1               0.4  
+2              0.79  
+3              0.45  
+4               1.0  
+5              0.53  
+6              0.38  
+7               0.4  
+8              0.41  
+9               0.4  
+10             0.46  
+11             0.45  
+12             0.39  
+13              0.4  
+14             0.53  
+
+
+
+   Looping through label run 2:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                             5               smilla ('smilla', 4)/5   
+1                           nan   iris?          maj. ('iris', 9)/15   
+2                           nan   fin?            maj. ('fin', 6)/15   
+3                           nan  iris?         maj. ('smilla', 6)/15   
+4                           nan   iris?          maj. ('iris', 6)/15   
+5                             5                     fin ('fin', 4)/5   
+6                           nan   fin?            maj. ('fin', 6)/15   
+7                           nan   fin?            maj. ('fin', 6)/15   
+8                           nan   iris?          maj. ('iris', 7)/15   
+9                           nan  iris?         maj. ('smilla', 5)/15   
+10                          nan   fin?            maj. ('fin', 5)/15   
+11                          nan  smilla?       maj. ('smilla', 6)/15   
+12                            5               smilla ('smilla', 4)/5   
+13                          nan   fin?            maj. ('fin', 6)/15   
+14                          nan   fin?            maj. ('fin', 9)/15   
+
+                     
+   -- Confidence --  
+0              0.84  
+1              0.59  
+2               0.4  
+3              0.36  
+4               0.4  
+5              0.77  
+6               0.4  
+7               0.4  
+8              0.53  
+9              0.37  
+10             0.33  
+11             0.39  
+12              0.8  
+13              0.4  
+14              0.6  
+
+
+
+   Looping through label run 3:                                       \
+                 -- Attempts --          ------- Pred. class -------   
+0                           nan   fin?            maj. ('fin', 8)/15   
+1                             5                   iris ('iris', 4)/5   
+2                           nan  fin?          maj. ('smilla', 5)/15   
+3                           nan   smilla?         maj. ('fin', 6)/15   
+4                           nan   iris?          maj. ('iris', 9)/15   
+5                             5                     fin ('fin', 4)/5   
+6                           nan  smilla?       maj. ('smilla', 7)/15   
+7                           nan   iris?           maj. ('fin', 5)/15   
+8                             5                   iris ('iris', 3)/5   
+9                           nan   iris?          maj. ('iris', 8)/15   
+10                            5                     fin ('fin', 5)/5   
+11                          nan   smilla?        maj. ('iris', 6)/15   
+12                          nan  smilla?       maj. ('smilla', 7)/15   
+13                          nan   iris?          maj. ('iris', 7)/15   
+14                            5                   iris ('iris', 3)/5   
+
+                     
+   -- Confidence --  
+0              0.53  
+1               0.8  
+2              0.33  
+3               0.4  
+4              0.56  
+5               0.8  
+6              0.43  
+7              0.38  
+8               0.9  
+9              0.58  
+10              1.0  
+11             0.38  
+12             0.47  
+13             0.51  
+14             0.77  
+
+
+
+# Optimize hyperparams
+def test_model(hp):
+    img_shape = (128, 128, 3)
+    output_classes = 3
+
+    model = Sequential()
+    model.add(InputLayer(shape=img_shape))
+
+    kern = hp.Int("kernel_1", min_value=3, max_value=6, step=1)
+    model.add(
+        Conv2D(
+            filters=hp.Int("filters_1", min_value=32, max_value=256, step=32),
+            kernel_size=(kern, kern),
+            padding="same",
+            activation="relu",
+        )
+    )
+    pool = hp.Int("pool_1", min_value=2, max_value=5, step=1)
+    model.add(MaxPooling2D(pool_size=(pool, pool)))
+
+    model.add(
+        Conv2D(
+            filters=hp.Int("filters_2", min_value=64, max_value=256, step=32),
+            kernel_size=(3, 3),
+            padding="same",
+            activation="relu",
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    # Optional third filter layer
+    for i in range(0, hp.Int("third_filter", 0, 1)):
+        model.add(
+            Conv2D(
+                filters=hp.Int(
+                    "filters_3_" + str(i), min_value=128, max_value=256, step=32
+                ),
+                kernel_size=(3, 3),
+                padding="same",
+                activation="relu",
+            )
+        )
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Flatten())
+    model.add(
+        Dense(
+            hp.Int("dense_units_1", min_value=128, max_value=1024, step=64),
+            activation="relu",
+        )
+    )
+    model.add(Dropout(hp.Float("dropout_1", min_value=0.2, max_value=0.6, step=0.1)))
+
+    # Optional second dense layer
+    for i in range(0, hp.Int("second_dense_layer", 0, 1)):
+        model.add(
+            Dense(
+                hp.Int("dense_units_2", min_value=64, max_value=256, step=32),
+                activation="relu",
+            )
+        )
+        model.add(
+            Dropout(hp.Float("dropout_2", min_value=0.2, max_value=0.5, step=0.1))
+        )
+
+    model.add(Dense(output_classes, activation="softmax"))
+
+    hp_learning_rate = hp.Choice("learning_rate", values=[1e-1, 1e-2, 1e-3, 1e-4])
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=keras.optimizers.Adam(learning_rate=hp_learning_rate),
+        metrics=["accuracy"],
+    )
+
+    model.summary()
+
+    return model
+	
+
+????????????????????????????????????????????????????????????????????????????
+? Layer (type)                    ? Output Shape           ?       Param # ?
+????????????????????????????????????????????????????????????????????????????
+� conv2d_43 (Conv2D)              � (None, 124, 124, 128)  �         9,728 �
+?���������������������������������?������������������������?���������������?
+� max_pooling2d_43 (MaxPooling2D) � (None, 20, 20, 128)    �             0 �
+?���������������������������������?������������������������?���������������?
+� conv2d_44 (Conv2D)              � (None, 18, 18, 128)    �       147,584 �
+?���������������������������������?������������������������?���������������?
+� max_pooling2d_44 (MaxPooling2D) � (None, 9, 9, 128)      �             0 �
+?���������������������������������?������������������������?���������������?
+� conv2d_45 (Conv2D)              � (None, 9, 9, 128)      �       147,584 �
+?���������������������������������?������������������������?���������������?
+� max_pooling2d_45 (MaxPooling2D) � (None, 4, 4, 128)      �             0 �
+?���������������������������������?������������������������?���������������?
+� flatten_15 (Flatten)            � (None, 2048)           �             0 �
+?���������������������������������?������������������������?���������������?
+� dense_30 (Dense)                � (None, 384)            �       786,816 �
+?���������������������������������?������������������������?���������������?
+� dropout_15 (Dropout)            � (None, 384)            �             0 �
+?���������������������������������?������������������������?���������������?
+� dense_31 (Dense)                � (None, 3)              �         1,155 �
+����������������������������������?������������������������?����������������
+ Total params: 3,278,603 (12.51 MB)
+ Trainable params: 1,092,867 (4.17 MB)
+ Non-trainable params: 0 (0.00 B)
+ Optimizer params: 2,185,736 (8.34 MB)
+ 
+ 
+ 
+ 
+
+
+##########
+
+retuned
+x_b_2
+
+
+{'kernel_reg': 0.0001,
+ 'kernel_1': 4,
+ 'filters_1': 64,
+ 'pool_1': 5,
+ 'filters_2': 64,
+ 'third_filter': 1,
+ 'dense_units_1': 192,
+ 'dropout_1': 0.30000000000000004,
+ 'learning_rate': 0.01,
+ 'dense_units_2': 160,
+ 'filters_3_0': 160}
+ 
+ 
+ Trial 06 summary
+Hyperparameters:
+kernel_reg: 0.0001
+kernel_1: 4
+filters_1: 64
+pool_1: 5
+filters_2: 64
+third_filter: 1
+dense_units_1: 192
+dropout_1: 0.30000000000000004
+second_dense_layer: 0
+learning_rate: 0.01
+dense_units_2: 160
+dropout_2: 0.4
+filters_3_0: 160
+Score: 0.9816666841506958
+
+ bad eval score, but good predict scores
+ 
+ 
+ Collecting colorama
+  Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Installing collected packages: colorama
+Successfully installed colorama-0.4.6
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9815600020885468
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.967740002989769
+###########################################################################
+... Made predictions for 500 batches with 2 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9503580008745194
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              18.0   NaN    43.0
+smilla             NaN  33.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             499                 1
+Actually smilla              0               2               498
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+Requirement already satisfied: colorama in /usr/local/lib/python3.10/dist-packages (0.4.6)
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9782060034275055
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9659199986457825
+###########################################################################
+... Made predictions for 500 batches with 3 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9381360007524491
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              29.0   NaN    79.0
+smilla             NaN  57.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               3               497
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.99      1.00      1.00       500
+      smilla       1.00      0.99      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+Requirement already satisfied: colorama in /usr/local/lib/python3.10/dist-packages (0.4.6)
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9777300008535386
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9707900003194809
+###########################################################################
+... Made predictions for 500 batches with 4 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9383640024662018
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              42.0   NaN    99.0
+smilla             NaN  63.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+Requirement already satisfied: colorama in /usr/local/lib/python3.10/dist-packages (0.4.6)
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9811260045766831
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9696219998598099
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.9359960036277771
+
+Errors during individual image classification:
+
+                   fin  iris  smilla
+Misclassified as                    
+iris              45.0   NaN   134.0
+smilla             NaN  68.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               0               500
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       1.00      1.00      1.00       500
+      smilla       1.00      1.00      1.00       500
+
+    accuracy                           1.00      1500
+   macro avg       1.00      1.00      1.00      1500
+weighted avg       1.00      1.00      1.00      1500
+
+
+
+
+
+
+############
+
+x_b_3  XXX
+
+early_stop = EarlyStopping(monitor="val_loss", patience=10,  restore_best_weights=True,
+    start_from_epoch=5,)
+
+hp = keras_tuner.HyperParameters()
+model = test_model(hp)
+
+batch_size = 32
+
+#tuner = keras_tuner.BayesianOptimization(
+tuner = keras_tuner.Hyperband(
+    test_model,
+    objective="val_accuracy",
+    directory="/tmp/tb",
+    project_name="pets_3",
+)
+
+tuner.search(
+    X_train,
+    y_ohe_train,
+    validation_data=(X_val, y_ohe_val),
+    epochs=50,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop],
+)
+
+Best val_accuracy So Far: 0.9599999785423279
+Total elapsed time: 00h 17m 47s
+
+Search: Running Trial #54
+
+Value             |Best Value So Far |Hyperparameter
+0.001             |0.001             |kernel_reg
+4                 |5                 |kernel_1
+64                |128               |filters_1
+2                 |5                 |pool_1
+64                |64                |filters_2
+64                |224               |filters_3_2
+352               |160               |dense_units_1
+0.3               |0.4               |dropout_1
+0.01              |0.001             |learning_rate
+2                 |2                 |tuner/epochs
+0                 |0                 |tuner/initial_epoch
+4                 |4                 |tuner/bracket
+0                 |0                 |tuner/round
+
+Cancelled
+
+####
+
+early_stop = EarlyStopping(monitor="val_loss", patience=10,  restore_best_weights=True,
+    start_from_epoch=5,)
+
+hp = keras_tuner.HyperParameters()
+model = test_model(hp)
+
+batch_size = 32
+
+#tuner = keras_tuner.BayesianOptimization(
+tuner = keras_tuner.BayesianOptimization(
+    test_model,
+    max_trials=30,
+    objective="val_accuracy",
+    directory="/tmp/tb",
+    project_name="pets_4",
+)
+
+tuner.search(
+    X_train,
+    y_ohe_train,
+    validation_data=(X_val, y_ohe_val),
+    epochs=50,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop],
+)
+
+Trial 15 Complete [00h 01m 53s]
+val_accuracy: 0.9733333587646484
+
+Best val_accuracy So Far: 0.9866666793823242
+Total elapsed time: 00h 22m 37s
+
+Search: Running Trial #16
+
+Value             |Best Value So Far |Hyperparameter
+0.1               |0.001             |kernel_reg
+4                 |5                 |kernel_1
+96                |128               |filters_1
+2                 |5                 |pool_1
+128               |64                |filters_2
+256               |96                |filters_3_2
+384               |384               |dense_units_1
+0.2               |0.4               |dropout_1
+0.001             |0.01              |learning_rate
+
+
+
+
+
+
+??? test!! -> no good
+
+
+
+
+
+
+
+
+
+#########################
+
+ --- 4 retrained 2
+ 
+ 
+ Requirement already satisfied: colorama in /usr/local/lib/python3.10/dist-packages (0.4.6)
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for FIN:
+
+Overall class prediction for all batches: FIN
+Overall confidence for all batches: 0.9740340021848679
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for IRIS:
+
+Overall class prediction for all batches: IRIS
+Overall confidence for all batches: 0.9596220014095307
+###########################################################################
+... Made predictions for 500 batches with 5 images per batch.
+###########################################################################
+
+Results for SMILLA:
+
+Overall class prediction for all batches: SMILLA
+Overall confidence for all batches: 0.8699460003376007
+
+Errors during individual image classification:
+
+                   fin   iris  smilla
+Misclassified as                     
+iris              42.0    NaN   282.0
+fin                NaN  100.0     NaN
+
+
+Errors during batch classification:
+
+Confusion matrix: 
+                  Predicted fin  Predicted iris  Predicted smilla
+Actually fin               500               0                 0
+Actually iris                0             500                 0
+Actually smilla              0               8               492
+
+Classification report: 
+
+              precision    recall  f1-score   support
+
+         fin       1.00      1.00      1.00       500
+        iris       0.98      1.00      0.99       500
+      smilla       1.00      0.98      0.99       500
+
+    accuracy                           0.99      1500
+   macro avg       0.99      0.99      0.99      1500
+weighted avg       0.99      0.99      0.99      1500
+
+
+
+###################
+
+
+trying x_b_1_retrained_2
+
+
+# Try to reduce overfitting
+# adding kernel_regularizer=l2(0.001)
+from tensorflow.keras.regularizers import l2
+
+
+# Prepare model for saved hyperparams
+def create_model(hyperparams):
+    img_shape = INPUT_SHAPE[1:]
+    output_classes = len(LABELS)
+
+    model = Sequential()
+    model.add(InputLayer(shape=img_shape))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_1"],
+            kernel_size=(hyperparams["kernel_1"], hyperparams["kernel_1"]),
+            activation="relu",
+            padding='same',
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(AveragePooling2D(pool_size=(hyperparams["pool_1"], hyperparams["pool_1"])))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_2"],
+            kernel_size=(3, 3),
+            activation="relu",
+            padding='same',
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(
+        Conv2D(
+            filters=hyperparams["filters_3"],
+            kernel_size=(3, 3),
+            activation="relu",
+            padding='same',
+            kernel_regularizer=l2(hyperparams['kernel_reg']),
+        )
+    )
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(hyperparams["dense_units_1"], activation="relu", kernel_regularizer=l2(hyperparams['kernel_reg'])))
+    model.add(Dropout(hyperparams["dropout_1"]))
+
+    model.add(Dense(output_classes, activation="softmax"))
+
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=keras.optimizers.Adam(learning_rate=hyperparams["learning_rate"]),
+        metrics=["accuracy"],
+    )
+
+    model.summary()
+
+    return model
+	
+	
+#print(hyperparams)
+# x_b_1
+#hyperparams = {'kernel_1': 5, 'filters_1': 128, 'pool_1': 6, 'filters_2': 128,
+            #    'filters_3_0': 128, 'num_filters': 1,
+            #    'dense_units_1': 384, 'dropout_1': 0.3,
+            #      'learning_rate': 0.001, 'kernel_reg': 0.0001,}
+# xb1 retrained change maxpool to averagepool
+
+hyperparams = {'kernel_1': 5, 'filters_1': 128, 'pool_1': 6, 'filters_2': 128,
+               'filters_3': 128, 'num_filters': 1,
+               'dense_units_1': 384, 'dropout_1': 0.2,
+                 'learning_rate': 0.001, 'kernel_reg': 0.00001,}
+
+early_stop = EarlyStopping(monitor="val_loss", patience=5,
+                           restore_best_weights=True,
+                           start_from_epoch=5,)
+
+batch_size = 32
+# Try also with 32!
+
+model = create_model(hyperparams)
+
+
+history = model.fit(
+    X_train,
+    y_ohe_train,
+    epochs=40,
+    validation_data=(X_val, y_ohe_val),
+    verbose=1,
+    batch_size=batch_size,
+    shuffle=True,
+    callbacks=[early_stop]
+)
+
+
+
+####
+
+
+
+{'Fin - Fin | R': {'Correlation': 0.9327686568351415, 'Chi-Squared': 1.169383319360967, 'Intersection': 7.4827210532384925, 'Bhattacharyya': 0.14594849989679595, 'Euclidean Distance': 0.737566}, 
+'Fin - Fin | G': {'Correlation': 0.9636986494680796, 'Chi-Squared': 0.8359134532737343, 'Intersection': 7.947083999752067, 'Bhattacharyya': 0.105398095797196, 'Euclidean Distance': 0.3835001}, 
+'Fin - Fin | B': {'Correlation': 0.9002836207810087, 'Chi-Squared': 1.5754843533993297, 'Intersection': 7.501619633287191, 'Bhattacharyya': 0.1369976199431892, 'Euclidean Distance': 0.52621555}, 
+
+'Iris - Iris | R': {'Correlation': 0.966565246117017, 'Chi-Squared': 1.0521199950769147, 'Intersection': 18.369778577820398, 'Bhattacharyya': 0.08174763718321999, 'Euclidean Distance': 0.6982838}, 
+'Iris - Iris | G': {'Correlation': 0.9685385371278187, 'Chi-Squared': 1.3770081847080147, 'Intersection': 18.257985025644302, 'Bhattacharyya': 0.09125859293073896, 'Euclidean Distance': 0.6016546}, 
+'Iris - Iris | B': {'Correlation': 0.9528746994773556, 'Chi-Squared': 1.8941958810777866, 'Intersection': 17.885749109089375, 'Bhattacharyya': 0.1213849893261115, 'Euclidean Distance': 0.73023415}, 
+
+'Smilla - Smilla | R': {'Correlation': 0.9232088638466764, 'Chi-Squared': 2.4071539747751607, 'Intersection': 18.42749055288732, 'Bhattacharyya': 0.10507971692171153, 'Euclidean Distance': 0.7498563}, 
+'Smilla - Smilla | G': {'Correlation': 0.9596765503219039, 'Chi-Squared': 1.4121850609580682, 'Intersection': 18.784363262355328, 'Bhattacharyya': 0.08517518303533483, 'Euclidean Distance': 0.62484455}, 
+'Smilla - Smilla | B': {'Correlation': 0.965036698341054, 'Chi-Squared': 1.2479883125207152, 'Intersection': 18.76923081278801, 'Bhattacharyya': 0.09527847984718477, 'Euclidean Distance': 0.6902523}, 
+
+'Fin - Iris | R': {'Correlation': 0.7520914332836723, 'Chi-Squared': 12.74197508398383, 'Intersection': 5.437968018464744, 'Bhattacharyya': 0.36391250140590214, 'Euclidean Distance': 1.3673288}, 
+'Fin - Iris | G': {'Correlation': 0.7835357469634399, 'Chi-Squared': 37.06872530077067, 'Intersection': 5.900534902699292, 'Bhattacharyya': 0.380246598898705, 'Euclidean Distance': 0.89422446}, 
+'Fin - Iris | B': {'Correlation': 0.7486709617980963, 'Chi-Squared': 15.767936914978776, 'Intersection': 6.100000127684325, 'Bhattacharyya': 0.37036922764679325, 'Euclidean Distance': 0.80711323}, 
+
+'Fin - Smilla | R': {'Correlation': 0.47292515105951666, 'Chi-Squared': 24.82464467792885, 'Intersection': 3.9401070280000567, 'Bhattacharyya': 0.5606436803203942, 'Euclidean Distance': 1.7775507}, 
+'Fin - Smilla | G': {'Correlation': 0.3604980981330549, 'Chi-Squared': 110.17889544735243, 'Intersection': 3.7903744215145707, 'Bhattacharyya': 0.5906950708428276, 'Euclidean Distance': 1.4028565}, 
+'Fin - Smilla | B': {'Correlation': 0.2666909312331479, 'Chi-Squared': 43.794840435978465, 'Intersection': 3.8187166582792997, 'Bhattacharyya': 0.576387930488985, 'Euclidean Distance': 1.4023058}, 
+
+'Iris - Smilla | R': {'Correlation': 0.7072209107350679, 'Chi-Squared': 33.410016485567155, 'Intersection': 14.468140309210867, 'Bhattacharyya': 0.3355247349239136, 'Euclidean Distance': 2.0248806}, 
+'Iris - Smilla | G': {'Correlation': 0.7038420689730127, 'Chi-Squared': 11.768817242514258, 'Intersection': 14.859557829797268, 'Bhattacharyya': 0.33626532255078684, 'Euclidean Distance': 1.8799243}, 
+'Iris - Smilla | B': {'Correlation': 0.6779142710843197, 'Chi-Squared': 40.199908255801475, 'Intersection': 14.417425149353221, 'Bhattacharyya': 0.3487051541895053, 'Euclidean Distance': 2.073202}}
+
+
+b></a>:
+            <br>Calculates the sum of the minimum values of corresponding bins in two histograms.
+			
+Euclidean Distance</b></a>:
+            <br>This method measures the straight-line distance between corresponding bins in
+            two histograms. It sums the squared differences of each bin and takes the
+            square root. The smaller the distance, the more similar the histograms are.
