@@ -1,5 +1,7 @@
 import streamlit as st
 
+from data_management import load_pkl_file
+
 
 
 def get_constants():
