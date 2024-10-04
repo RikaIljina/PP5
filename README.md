@@ -18,7 +18,6 @@
     - [Final model](#final-model)
         - [Detailed results for Test images](#detailed-results-for-test-images)
         - [Detailed results for Live images](#detailed-results-for-live-images)
-
 8. [Hypotheses - Considerations and Validations](#hypotheses---considerations-and-validations)
     - [Visual Differentiation Hypothesis](#visual-differentiation-hypothesis)
     - [Deep Learning Classification Hypothesis](#deep-learning-classification-hypothesis)
@@ -88,7 +87,7 @@ This agreement results in the following 3 business requirements:
     </details>
 ---
 
-2.	The client is interested in an F1 score > 0.9 for each label.
+2.	The client is interested in a proof-of-concept model that will tell pets apart by their images and achieves an F1 score > 0.9 for each label.
 
     <details>
     <summary>The client's questions</summary>
@@ -250,7 +249,7 @@ An instance of keras_tuner.HyperParameters was used to set the value ranges for 
 
 At first, the tuner was initialized with keras_tuner.RandomSearch, which was later replaced with keras_tuner.BayesianOptimization, hoping for a more effective and thus less resource-intensive tuning process.
 
-- Tested batch sizes: 32, 64
+- Tested batch sizes: 20, 32, 40, 64
 - Tuner max_trials: 20
 - Epochs: 20-30
 
@@ -274,7 +273,7 @@ The best hyperparameters from each tuning session were then used to train a mode
 
 By analyzing the tuner results and further testing, it became apparent that **three Conv2D/MaxPooling layers** were performing better than two, and that **one hidden Dense layer** was the best choice.
 
-**AMount of neurons**
+**Amount of neurons**
 
 Models using between 1024 and 2048 neurons were unnecessarily large and usually overfitting, and the models that were judged to be among the best had a neuron number of 384 (as suggested by the tuner early on).
 
@@ -472,11 +471,11 @@ In order to finally validate the hypotheses, we should first take a look at the 
 
     Total count:
     
-    Misclassified as |  FIN	    IRIS	SMILLA
+    Misclassified as |  FIN	    IRIS    SMILLA
     --------------------------------------------
-     fin	         |  0	    438	    122
-     iris	         |  925	    0	    2016
-     smilla	         |  0	    952	    0
+     fin	         |  0	    438	     122
+     iris	         |  925	    0	     2016
+     smilla	         |  0	    952	     0
 
     --------------------------------------------
 
@@ -484,19 +483,19 @@ In order to finally validate the hypotheses, we should first take a look at the 
            | wrongly identified | identified 
            | (false positives)  | (false negatives)
     -----------------------------------------------
-    Fin	            560 	            925	
-    Iris	        2941 	            1390	
-    Smilla	         952 	            2138
+    Fin              560                 925	
+    Iris            2941                1390	
+    Smilla           952                2138
 
     --------------------------------------------
-    Pet1   -> mistaken for Pet2	 |  times
+    Pet1   -> mistaken for Pet2  |  times
     --------------------------------------------
     fin    -> smilla             |	0
-    smilla -> fin	             |  122
-    fin    -> iris	             |  925
-    iris   -> fin	             |  438
-    iris   -> smilla	         |  952
-    smilla -> iris	             |  2016
+    smilla -> fin                |  122
+    fin    -> iris               |  925
+    iris   -> fin                |  438
+    iris   -> smilla             |  952
+    smilla -> iris               |  2016
 
     --------------------------------------------
     Summary by pair
@@ -521,12 +520,12 @@ It is assumed that an assessment of image data prior to training can determine w
 
 For the next hypothesis, we will inspect the misclassification summary for each pair and the histogram comparison heatmap by channel:
 
-    --------------------------------------------
-    Summary by pair
-    --------------------------------------------
-    Fin-Smilla pair  :   122
-    Fin-Iris pair    :   1363
-    Iris-Smilla pair :   2968
+    ----------------------------------------------
+    Summary by pair     Image amount    Percentage
+    ----------------------------------------------
+    Fin-Smilla pair  :   122                  2,7%
+    Fin-Iris pair    :   1363                30,6%
+    Iris-Smilla pair :   2968               66,65%
 
 ![alt text](outputs/heatmap_by_channel.png)
 
@@ -548,14 +547,14 @@ It is assumed that a thorough assessment of image data prior to training could p
             Variance for ('fin', 'smilla')  0.010799234
             Variance for ('iris', 'smilla') 0.004014944
 
-        While the Mean values were inconclusive for “fin – iris” and “iris – smilla”, the Variance values representing the variance for each pixel in the Mean images started to show a clear trend, with “iris – smilla” showing the least variance (0.004), followed by “fin – iris” (0.0074) and finally with “fin - smilla” peaking at 0.01. This trend has clearly been corroborated by the misclassification summary shown above.
+        While the Mean values were inconclusive for “fin – iris” and “iris – smilla”, the Variance values representing the variance for each pixel in the difference image of the Mean images started to show a clear trend, with “iris – smilla” showing the least variance (0.004), followed by “fin – iris” (0.0074) and finally with “fin - smilla” peaking at 0.01. This trend has clearly been corroborated by the misclassification summary shown above.
     - To drill down even more, histogram comparison methods were applied. A scale of 0-1 was set to represent the degree of similarity, with 0 meaning “less similar” and 1 meaning “more similar”. The resulting comparison values were normalized using that scale relative to baseline values, which were calculated by splitting the images of each label in half and comparing the respective Mean images to each other.
     
     **Results by method:**
     - The Correlation method computes the correlation coefficient between two histograms, measuring the strength of a linear relationship between two histograms. It answers the question “How well can one histogram be predicted from another?”
         - The respective values in the heatmap show the lowest correlation values for the “fin – smilla” pair, corroborating the trial results. The values for “iris – smilla” are slightly lower than the values for “fin – iris”, which seems to contradict the actual trial results.
     - Chi-Squared measures the similarity between two histograms by calculating the sum of the squared differences normalized by the values of the histograms. This method is sensitive to small changes in the histogram bins.
-        - The method pointed out a start dissimilarity in the Green channel of the “fin – smilla” pair but was inconclusive regarding the other pairs and channels and did not corroborate the trial results.
+        - The method pointed out a stark dissimilarity in the Green channel of the “fin – smilla” pair but was inconclusive regarding the other pairs and channels and did not corroborate the trial results.
     - Intersection calculates the sum of the minimum values of corresponding bins in two histograms.
         - The values yielded by this method seem to corroborate the actual trial results, placing the pairs in the right order on the similarity scale. However, the method also points to low similarity between the “fin” baseline images, which might be a sign for too much variance within the “fin” label or imply that this method is too sensitive to yet unknown factors in our datasets.
     - The Bhattacharyya distance quantifies the overlap between two probability distributions. It is useful for comparing two probability histograms and provides a measurement of the distance between two distributions.
@@ -568,7 +567,7 @@ In conclusion, **Intersection** and **Bhattacharyya** were identified as the onl
 ### Deep Learning Classification Hypothesis:
 
 - An F1 score of > 0.9 for test and live data is possible for each label.
-    - A model architecture suited for multiclass image classification was chosen and a tuner was used to find the best hyperparameters. The model was then be trained with those parameters and used to classify all the available test and live data separately. After a long process of tuning and training different models, an F1 score of > 0.94 was reached for each label and deemed sufficient. Above that, neither the recall nor the precision values fall below 0.92.
+    - A model architecture suited for multi-class image classification was chosen and a tuner was used to find the best hyperparameters. The model was then be trained with those parameters and used to classify all the available test and live data separately. After a long process of tuning and training different models, an F1 score of > 0.94 was reached for each label and deemed sufficient. Above that, neither the recall nor the precision values fall below 0.92.
 - It is assumed that it is possible to reduce the risk of misclassifying a pet by letting the model make a summary prediction for a batch of images instead of trying to classify a pet based on one single image. It is also assumed that a minimum threshold value is needed for the number of images to be batched before the first classification attempt should be made.
     - A long series of trials was conducted where the model made predictions for batches of 2+n random live images for each label. The target F1 score for batch classification was set at 1. The results are as follows:
     
@@ -580,25 +579,25 @@ In conclusion, **Intersection** and **Bhattacharyya** were identified as the onl
 
     Each batch consists of a given 2+n number of probability values for a specific class, as returned by the model. The box represents the upper and lower quartiles separated by the green median marker, while the red marker shows the mean value that we use for the classification. The circles represent outliers.
 
-    Fin, 50 batches, 2 images each:
+    **Fin, 50 batches, 2 images each:**
 ![Fin, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_2.png)
-    Iris, 50 batches, 2 images each:
+    **Iris, 50 batches, 2 images each:**
 ![Iris, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_2.png)
-    Smilla, 50 batches, 2 images each:
+    **Smilla, 50 batches, 2 images each:**
 ![Smilla, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_2.png)
 
-    Fin, 50 batches, 5 images each:
+    **Fin, 50 batches, 5 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_5.png)
-    Iris, 50 batches, 5 images each:
+    **Iris, 50 batches, 5 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_5.png)
-    Smilla, 50 batches, 5 images each:
+    **Smilla, 50 batches, 5 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_5.png)
 
-    Fin, 50 batches, 15 images each:
+    **Fin, 50 batches, 15 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_15.png)
-    Iris, 50 batches, 15 images each:
+    **Iris, 50 batches, 15 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_15.png)
-    Smiilla, 50 batches, 15 images each:
+    **Smilla, 50 batches, 15 images each:**
 ![alt text](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_15.png)
 
     As seen clearly on the figures, the red mean marker ascends with increasing batch size.
@@ -848,7 +847,7 @@ In conclusion, **Intersection** and **Bhattacharyya** were identified as the onl
     </details>
 
     The goal now is to determine:
-    -	an optimal minimum batch size that will make sure that an incorrect high-confidence error will not result in the misclassification of the batch,
+    -	an optimal minimum batch size that will make sure that an early high-confidence error will not result in the misclassification of the batch,
     -	a reasonable confidence value that will make batch misclassification highly unlikely while avoiding false negatives for classes with the lowest recall,
     -	and an appropriate upper limit for the batch size after which an accurate classification should be guaranteed or the trial abandoned due to inconclusive input.
 
@@ -991,6 +990,10 @@ Page features:
 - Model History - Accuracy and Losses
 - Model evaluation result
 - Conclusions and recommendations for classification parameters
+
+**Page 6:Recommendations**
+
+This page summarizes the Dataset Assessment and Model Performance findings to provide the client with recommendations on reasonable parameters, thresholds, and next steps.
 
 
 https://www.datascience-pm.com/crisp-dm-2/
