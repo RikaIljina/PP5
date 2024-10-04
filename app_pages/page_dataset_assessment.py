@@ -42,11 +42,12 @@ def page_dataset_assessment_body():
     if st.checkbox("Show", key="show-0"):
         
         col1, col2, col3 = st.columns(3)
-        col1.image('inputs/datasets/pets/train/fin/train_fin_0043.png', 
+        col1.image('inputs/datasets/pets_slim/train/fin/train_fin_0043.png', 
                    caption='Fin')
-        col2.image('inputs/datasets/pets/train/iris/train_iris_0076.png',
+        col2.image('inputs/datasets/pets_slim/train/iris/train_iris_0076.png',
                    caption='Iris')
-        col3.image('inputs/datasets/pets/train/smilla/train_smilla_0261.png',
+        col3.image('inputs/datasets/pets_slim/train/smilla/ \
+                   train_smilla_0261.png',
                    caption='Smilla')
         
         st.info(
@@ -93,7 +94,8 @@ def page_dataset_assessment_body():
         )
         st.image(
             var_grid_norm,
-            caption="The normalized variance images for each label in the 'train' subset",
+            caption="The normalized variance images for each label in the \
+                'train' subset",
         )
 
         st.success(
@@ -239,7 +241,8 @@ def page_dataset_assessment_body():
             between two different labels are much more pronounced than the
             baseline histogram diffs.\n
             This reinforces our initial assumption that the pets seem to have
-            prominent features that make them distinguishable from one another.\n\n
+            prominent features that make them distinguishable from one another.
+            \n\n
             However, we want to go one step further and find metrics that will
             inform our training set evaluation even better.
             """
@@ -301,13 +304,14 @@ def page_dataset_assessment_body():
             A first glance at the heatmap and the mean values per metric as 
             well as the overall mean and median values paint a clear picture:
             \n\n
-            - The **Fin**-**Smilla** pair seems to be very distinguishable, while
-            **Iris** has more overlap with the other two image sets.\n\n
-            - Surprisingly, the **Intersection** metric for the **Fin** baseline
-            values shows less similarity than for the other baseline values.
-            This might point to the dataset not being sufficiently balanced in
-            itself, with too much variation in poses and lighting between the
-            images. This finding warrants further investigation.\n\n
+            - The **Fin**-**Smilla** pair seems to be very distinguishable, 
+            while **Iris** has more overlap with the other two image sets.\n\n
+            - Surprisingly, the **Intersection** metric for the **Fin**
+            baseline values shows less similarity than for the other baseline
+            values. This might point to the dataset not being sufficiently 
+            balanced in itself, with too much variation in poses and lighting 
+            between the images. This finding warrants further investigation.
+            \n\n
             - The overlap between the cats **Smilla** and **Iris** might be
             amplified by the fact that they are roughly the same size and shape
             and take up only a small fraction of the overall image. Thus, the
@@ -341,10 +345,10 @@ def page_dataset_assessment_body():
             <li>
             <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient" target="_blank">
             <b>Correlation</b></a>:
-            <br>Computes the correlation coefficient between two histograms, measuring
-            the strength of a linear relationship between two histograms. Values range
-            from -1 (perfectly anti-correlated) to 1 (perfectly correlated).<br>
-            A value of 0 means no correlation."
+            <br>Computes the correlation coefficient between two histograms,
+            measuring the strength of a linear relationship between two
+            histograms. Values range from -1 (perfectly anti-correlated) to 1
+            (perfectly correlated).<br> A value of 0 means no correlation."
             </li>
             <li>
             <a href="https://en.wikipedia.org/wiki/Chi-squared_test" target="_blank">
