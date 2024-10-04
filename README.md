@@ -186,7 +186,7 @@ To answer each business objective, the following hypotheses need to be validated
 - A recommendation regarding the minimum and maximum number of images needed for an accurate classification as well as a reasonable confidence threshold will be given after running extensive trials and evaluating the results.
 - We will consider the model successful if it correctly classifies any given pet during the trials and live operation with the recommended parameters and refrains from a final classification when given a batch with mixed classes.
 - We will consider it a failure if it causes the device to give food to the wrong pet more than 1 time within 12 months of operation.
-We will also consider it a failure if it fails to recognize a pet after having received a steady stream of 15 viable images.
+We will also consider it a failure if it fails to recognize a pet with the agreed-upon confidence after having received a steady stream of 15 viable images.
 
 
 ## ML Model Development

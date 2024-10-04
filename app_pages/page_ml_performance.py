@@ -37,10 +37,10 @@ def page_ml_performance_metrics():
     st.write("### Model History")
     col1, col2 = st.columns(2)
     with col1:
-        model_acc = plt.imread(f"outputs/model_acc.png")
+        model_acc = plt.imread(f"outputs/x_b_1/model_acc_x_b_1.png")
         st.image(model_acc, caption='Model Training Accuracy')
     with col2:
-        model_loss = plt.imread(f"outputs/model_losses.png")
+        model_loss = plt.imread(f"outputs/x_b_1/model_losses_x_b_1.png")
         st.image(model_loss, caption='Model Training Losses')
     st.write("---")
 
@@ -56,19 +56,19 @@ def page_ml_performance_metrics():
     # fix
     # st.write(load_reports()['test'])
     
-    test_heat_precision = plt.imread(f"outputs/pred_test_precision_heatmap.png")
+    test_heat_precision = plt.imread(f"outputs/x_b_1/pred_test_precision_heatmap_x_b_1.png")
     st.image(test_heat_precision, caption='Prediction of test set, precision')
 
-    test_heat_classification = plt.imread(f"outputs/pred_test_classification_heatmap.png")
+    test_heat_classification = plt.imread(f"outputs/x_b_1/pred_test_classification_heatmap_x_b_1.png")
     st.image(test_heat_classification, caption='Prediction of test set, classification')
 
     
     st.write("### Detailed Performance on Live Set")
 
-    live_heat_precision = plt.imread(f"outputs/pred_live_precision_heatmap.png")
+    live_heat_precision = plt.imread(f"outputs/x_b_1/pred_live_precision_heatmap_x_b_1.png")
     st.image(live_heat_precision, caption='Prediction of Live set, precision')
     
-    live_heat_classification = plt.imread(f"outputs/pred_live_classification_heatmap.png")
+    live_heat_classification = plt.imread(f"outputs/x_b_1/pred_live_classification_heatmap_x_b_1.png")
     st.image(live_heat_classification, caption='Prediction of Live set, classification')
 
 
@@ -87,19 +87,19 @@ def page_ml_performance_metrics():
     
     st.write("#### Detailed Performance on Live Batches")
     
-    live_img_fin = plt.imread(f"outputs/live_class_img_probas_fin.png")
+    live_img_fin = plt.imread(f"outputs/x_b_1/live_class_img_probas_fin_x_b_1.png")
     st.image(live_img_fin, caption='Label "fin", probability spread between images')
-    live_batch_fin = plt.imread(f"outputs/live_class_batch_probas_fin.png")
+    live_batch_fin = plt.imread(f"outputs/x_b_1/live_class_batch_probas_fin_x_b_1.png")
     st.image(live_batch_fin, caption='Label "fin", probability spread between batches')
     
-    live_img_iris = plt.imread(f"outputs/live_class_img_probas_iris.png")
+    live_img_iris = plt.imread(f"outputs/x_b_1/live_class_img_probas_iris_x_b_1.png")
     st.image(live_img_iris, caption='Label "iris", probability spread between images')
-    live_batch_iris = plt.imread(f"outputs/live_class_batch_probas_iris.png")
+    live_batch_iris = plt.imread(f"outputs/x_b_1/live_class_batch_probas_iris_x_b_1.png")
     st.image(live_batch_iris, caption='Label "iris", probability spread between batches')
     
-    live_img_smilla = plt.imread(f"outputs/live_class_img_probas_smilla.png")
+    live_img_smilla = plt.imread(f"outputs/x_b_1/live_class_img_probas_smilla_x_b_1.png")
     st.image(live_img_smilla, caption='Label "smilla", probability spread between images')
-    live_batch_smilla = plt.imread(f"outputs/live_class_batch_probas_smilla.png")
+    live_batch_smilla = plt.imread(f"outputs/x_b_1/live_class_batch_probas_smilla_x_b_1.png")
     st.image(live_batch_smilla, caption='Label "smilla", probability spread between batches')
 
     
