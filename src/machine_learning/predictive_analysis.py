@@ -39,8 +39,6 @@ class ModelManager:
             return output_data
 
 
-
-
 def run_classification(
     trial_amount, min_attempts, max_attempts, min_confidence, images_buffer,
     shuffle, repeat
@@ -52,17 +50,19 @@ def run_classification(
     CLASS_DICT, LABELS, DIMS = get_constants()
 
     st.write(
-        f"🟢 Model loaded.\n\nConfidence threshold set at **{min_confidence}**.\n\nStarting classification ..."
+        f"🟢 Model loaded.\n\nConfidence threshold set at "
+        f"**{min_confidence}**.\n\nStarting classification ..."
     )
     st.write("---")
 
     gen_exhausted = False
 
-    feed = image_feed_generator(images_buffer, DIMS, shuffle, repeat, fix_dims=True)
+    feed = image_feed_generator(
+        images_buffer, DIMS, shuffle, repeat, fix_dims=True)
 
     img_nr = 0
     result = {}
-    #max_attempts = min(max_attempts, len(images_buffer))
+    # max_attempts = min(max_attempts, len(images_buffer))
     fav_class_min = []
 
     for t in range(1, trial_amount + 1):
@@ -83,8 +83,10 @@ def run_classification(
             img_nr += 1
             if attempt_count > max_attempts:
                 st.write(
-                    f"\n❌ Cancelling classification attempt after {max_attempts} attempts.\n\n"
-                    f"🔶 Confidence: **{probas_mean[fav_class]:.2f}**, tending towards class: **{CLASS_DICT[fav_class]}**\n"
+                    f"\n❌ Cancelling classification attempt after "
+                    f"{max_attempts} attempts.\n\n"
+                    f"🔶 Confidence: **{probas_mean[fav_class]:.2f}**, "
+                    f"tending towards class: **{CLASS_DICT[fav_class]}**\n"
                 )
                 st.write("---")
                 result[t] = [
@@ -134,8 +136,8 @@ def run_classification(
                 unsure = """
                     <span style='text-align: center;'>❓️</span>
                     <br><i>
-                    Inconclusive results after analyzing the minimum amount of images,
-                    adding images to the batch ...</i>
+                    Inconclusive results after analyzing the minimum amount of
+                    images, adding images to the batch ...</i>
                     """
                 con.markdown(
                     f"""<p class="small-font">{unsure}</p>""",
@@ -145,7 +147,8 @@ def run_classification(
             col = next(get_column)
             con = col.container(border=False)
             con.markdown(
-                f'<p class="small-font">⏩️ Trial <b>{t}</b>, attempt {attempt_count}</p>',
+                f'<p class="small-font">⏩️ Trial <b>{
+                    t}</b>, attempt {attempt_count}</p>',
                 unsafe_allow_html=True,
             )
 
@@ -171,7 +174,8 @@ def run_classification(
                     ": ".join(
                         [
                             CLASS_DICT[i],
-                            f"{span_green if i == fav_class else span}{probas_mean[i]:.2f}</span>",
+                            f"{span_green if i == fav_class else span}{
+                                probas_mean[i]:.2f}</span>",
                         ]
                     )
                     for i in range(len(probas_mean))
@@ -189,17 +193,19 @@ def run_classification(
             )
 
             con.markdown(
-                f"""<p class="padding-0-small">
-                                {proba_sg_str}<br>Prediction: {span_yellow}{CLASS_DICT[fav_class_sg].upper()}</span>?
-                                </p>""",
-                unsafe_allow_html=True,
+                f"""<p class="padding-0-small">{proba_sg_str}
+                    <br>Prediction: 
+                    {span_yellow}{CLASS_DICT[fav_class_sg].upper()}</span>?
+                    </p>
+                """, unsafe_allow_html=True,
             )
 
             con.image(img, use_column_width=True, caption=f"")
             con.markdown(
-                f"""{img_count_annot}<p class="padding-0-small">
-                                Mean confidence:<br>{proba_str}</p>""",
-                unsafe_allow_html=True,
+                f"""{img_count_annot}
+                    <p class="padding-0-small">
+                    Mean confidence:<br>{proba_str}</p>
+                """, unsafe_allow_html=True,
             )
 
             # -------------------------------------------------------------------------
@@ -213,8 +219,11 @@ def run_classification(
                         np.around(probas_mean[fav_class], 2),
                     ]
                     st.write(
-                        f"✅ Classification complete:\n\n"
-                        f"✅ Predicted class: **{CLASS_DICT[fav_class].upper()}**, Confidence: {probas_mean[fav_class]:.2f}\n\n"
+                        f"""
+                        ✅ Classification complete:\n\n
+                        ✅ Predicted class: 
+                        **{CLASS_DICT[fav_class].upper()}**, Confidence: 
+                        {probas_mean[fav_class]:.2f}\n\n"""
                     )
                     st.write("---")
                     break
@@ -240,9 +249,12 @@ def wrap_up(
         )
         min_amount_str = f"not enough images have been analyzed to reach a confident conclusion."
         st.write(
-            f"⚠️ The image stream has ended after {attempt_count-1} attempts but "
-            f"{min_conf_str if min_confidence/100 > probas_mean[fav_class] else min_amount_str}\n\n"
-            f"🔶 Last recorded confidence: {probas_mean[fav_class]:.2f}, tending towards class: {CLASS_DICT[fav_class]}\n"
+            f"⚠️ The image stream has ended after {
+                attempt_count-1} attempts but "
+            f"{min_conf_str if min_confidence/100 >
+                probas_mean[fav_class] else min_amount_str}\n\n"
+            f"🔶 Last recorded confidence: {
+                probas_mean[fav_class]:.2f}, tending towards class: {CLASS_DICT[fav_class]}\n"
         )
         st.write("---")
 

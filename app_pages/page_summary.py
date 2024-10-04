@@ -72,27 +72,23 @@ def page_summary_body():
 
     st.markdown("""
         <div class="blue-div">
-          <b>The project has 4 business requirements:</b>
+          <b>The project has 3 business requirements:</b>
           <ol>
             <li>
-            The client is interested in a recommendation regarding the scale
-            and quality of future datasets.
+            The client is interested in a recommendation regarding the scale 
+            and quality of future datasets as well as an investigation of a 
+            correlation between the similarity of the pets' visual features and
+            the performance of the model.
             </li>
             <li>
-            The client is interested in a confident and correct classification
-            of any given live image - an f1 score of at least 0.9. 
+            The client is interested in a proof-of-concept model that will tell
+            pets apart by their images and achieve an F1 score > 0.9 for each
+            label. 
             </li>
             <li>
-            The client is interested in a prototype for a tool that receives
-            and evaluates a stream of snapshots from a camera and returns a
-            useable classification. If the tool receives a stream of images
-            from exactly one pet, it must be able to correctly classify it
-            within 5 seconds (i.e., after 15 images). The expected accuracy
-            for classification from a stream is 100%.
-            </li>
-            <li>
-            The client is interested in an assessment regarding the automation
-            of the data collection and model training processes.
+            The client would like to investigate the possibility of an 
+            infallible process during which a pet will be either classified 
+            correctly or not classified at all.
             </li>
           </ol>
         </div>

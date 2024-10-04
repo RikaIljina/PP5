@@ -1,31 +1,13 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
-import tensorflow as tf
-
-# from tensorflow.keras.models import load_model
 from collections import Counter
 
-from src.data_management import load_pkl_file
-
 from src.data_management import download_dataframe_as_csv
-from src.machine_learning.predictive_analysis import (
-    run_classification,
-)  # load_model, get_constants
-
-# from src.generators import image_feed_generator, column_generator
+from src.machine_learning.predictive_analysis import run_classification
 from src.utils import process_inputs, update_info_box
 
 
 def page_image_classifier_body():
-
-    # st.markdown("""
-    # <style>
-    # .small-font {
-    #     font-size:0.8rem !important;
-    # }
-    # </style>
-    # """, unsafe_allow_html=True)
 
     st.write("### Image Classifier")
 
@@ -33,15 +15,12 @@ def page_image_classifier_body():
         """
         <div class="blue-div">
           <h5>Business requirement 2 and 3:</h5>
-          <p>The client is interested in a confident and correct classification
-          of any given live image - <span class="green-bg">an f1 score of at
-          least 0.9</span>.<br>
-          The client is interested in a prototype for a tool that receives and
-          evaluates a stream of snapshots from a camera and returns a useable
-          classification. If the tool receives a stream of images from exactly
-          one pet, it must be able to correctly classify it within 5 seconds
-          (ie after 15 images). <span class="green-bg">The expected accuracy
-          for classification from a stream is 100%.</span>
+          <p>The client is interested in a proof-of-concept model that will
+          tell pets apart by their images and achieves an 
+          <span class="green-bg">F1 score > 0.9 for each label.</span><br>
+          The client would like to investigate the possibility of an infallible
+          process during which a pet will be either classified correctly or not
+          classified at all.
           </p>
         </div>
         """,
@@ -52,15 +31,17 @@ def page_image_classifier_body():
 
     st.markdown(
         """
-            <div class="blue-div">
-                <h5>Answering business requirement 2 and 3:</h5>
-                <p>The client is interested in a confident and correct classification of any 
-                    given live image.<br>
-                    The client is interested in a prototype for a tool that receives and evaluates
-                    a stream of snapshots from a camera and returns a useable classification.
-                </p>
-            </div>
-            """,
+        <div class="blue-div">
+            <h5>Answering business requirement 2 and 3:</h5>
+            <p>The following classification tool uses the developed model to
+                analyze and classify any given image with the correct
+                parameters.<br>
+                The tool will aggregate images into batches and try to predict
+                the main class present until it reaches the preset confidence
+                threshold or exhausts its preset maximum attempt limit.
+            </p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -84,23 +65,23 @@ def page_image_classifier_body():
     st.write("---")
     st.markdown(
         """
-            <div class="blue-div">
-            <b>Please provide parameters for the classification.</b><br>
-            <ul>
-            <li>
-            A <b>trial</b> is a series of classification attempts from individual images
-            that are assumed to belong to the same class. The final classification result
-            is based on the mean values of all classification attempts within that trial.
-            </li>
-            <li>An <b>attempt</b> is the model's mean probability calculation from all
-            probabilities gathered so far within a single trial and the comparison of the
-            top value to the confidence threshold.
-            </li>
-            </ul>
-            <p>The following parameters may be clipped or adjusted based on the amount
-            of provided images.</p>
-            </div>
-            """,
+        <div class="blue-div">
+        <b>Please provide parameters for the classification.</b><br>
+        <ul>
+        <li>
+        A <b>trial</b> is a series of classification attempts from individual images
+        that are assumed to belong to the same class. The final classification result
+        is based on the mean values of all classification attempts within that trial.
+        </li>
+        <li>An <b>attempt</b> is the model's mean probability calculation from all
+        probabilities gathered so far within a single trial and the comparison of the
+        top value to the confidence threshold.
+        </li>
+        </ul>
+        <p>The following parameters may be clipped or adjusted based on the amount
+        of provided images.</p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
@@ -218,7 +199,8 @@ def page_image_classifier_body():
         if not df.empty:
             st.success("### **Analysis Report**")
             st.write(f"#### Confidence was set to **{min_confidence}%**")
-            cap1 = f"Batch classification results after {len(df)} Trials with {len(images_buffer)} individual images to choose from"
+            cap1 = f"Batch classification results after {
+                len(df)} Trials with {len(images_buffer)} individual images to choose from"
             st.write(cap1)
 
             st.dataframe(
@@ -236,7 +218,8 @@ def page_image_classifier_body():
                 Counter(df["Predicted class"]),
                 columns=["Amount"],
                 orient="index",
-            )  # pd.DataFrame.from_dict(Counter(fav_class_maj), columns=["Amount"], orient="index")
+                # pd.DataFrame.from_dict(Counter(fav_class_maj), columns=["Amount"], orient="index")
+            )
             df_favs_maj.index.name = "Class"
 
             df_favs_sg = pd.DataFrame.from_dict(

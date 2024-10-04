@@ -5,52 +5,72 @@ import matplotlib.pyplot as plt
 def page_project_hypothesis_body():
     st.write("### Project Hypothesis and Validation")
 
-    st.success(
-        f"The goal was to ... \n" 
-
+    st.info(
+        """
+        The goals of this project were:\n
+        - to assess image data prior to training to determine weak points in a
+        training set and give actionable recommendations to the client
+        - to investigate the possibility of a thorough assessment of image data
+        using various image comparison methods and predict which labels will be
+        hardest to distinguish
+        - to train a model that will achieve an F1 score of > 0.9 for test and
+        live data for each label
+        - to reduce the risk of misclassifying a pet by letting the model make
+        a summary prediction for a batch of images instead of trying to
+        classify a pet based on one single image
+        - to determine an optimal minimum batch size that will make sure that
+        an early high-confidence error will not result in the
+        misclassification of the batch
+        - to determine a reasonable confidence value that will make batch
+        misclassification highly unlikely while avoiding false negatives for
+        classes with the lowest recall
+        - to determine an appropriate upper limit for the batch size after
+        which an accurate classification should be guaranteed or the trial
+        abandoned due to inconclusive input
+        
+        """
     )
     
-    # st.markdown('''<div class="blue-div">
-    #             <h5>Business requirement 4:</h5>
-    #             <p>
-    #             The client is interested in an assessment regarding the automation of the
-    #                 data collection and model training processes.
-    #             </p>
-    #             </div>
-    #         ''', unsafe_allow_html=True)
-
     st.write("### Have the Business Requirements been met?")
-    st.markdown('''<div class="blue-div">
-                <ol>
-                    <li>
-                    The client is interested in a recommendation regarding the scale and quality
-                    of future datasets.<br>
-                    ... see dataset assessment page
-                    </li>
-                    <li>
-                    The client is interested in a confident and correct classification of any 
-                    given live image.<br>
-                    ... see image classification page
-                    </li>
-                    <li>
-                    The client is interested in a prototype for a tool that receives and evaluates
-                    a stream of snapshots from a camera and returns a useable classification.<br>
-                    ... see image classification page
-                    </li>
-                    <li>
-                    The client is interested in an assessment regarding the automation of the
-                    data collection and model training processes: <br>
-                    ... Need for a new study to find a proper correlation between model 
-                    classification results and the histogram comparison metrics for
-                    various pet types, sizes and colors. <br>
-                    ... Need to find out which features in each label set contribute to
-                    which metric going up or down<br>
-                    ... Need to find a formula that will analyze the metrics collected
-                    during histogram comparison and suggest to the user setting up their
-                    device in what ways they can optimize the dataset before training 
-                    the model.
-                    </li>
-                </ol></div>''', unsafe_allow_html=True
+    st.markdown(
+        '''
+        <div class="green-div">
+          <ol>
+            <li>
+            The client is interested in a recommendation regarding the scale 
+            and quality of future datasets as well as an investigation of a 
+            correlation between the similarity of the pets' visual features and
+            the performance of the model.
+            <br>
+            ✅ The requirement has been met by conducting a thorough assessment of
+            the image data and summarizing the results on the page "Dataset 
+            Assessment" and "Recommendations".
+            </li>
+            <hr>
+            <li>
+            The client is interested in a PoC model that will tell pets apart
+            by their images and achieves an F1 score > 0.9 for each label. 
+            <br>
+            ✅ The requirement has been met by developing a fully functional,
+            reasonably sized PoC model that meets all target scores.<br>
+            The model can be tested by uploading live data on the page "Image
+            Classifier" of this app.
+            </li>
+            <hr>
+            <li>
+            The client would like to investigate the possibility of an 
+            infallible process during which a pet will be either classified 
+            correctly or not classified at all.
+            <br>
+            ✅ The requirement has been met by conducting hundreds of tests on the
+            randomized live data and determining parameters which, when
+            implemented, will significantly reduce the risk of a pet
+            misclassification.<br>
+            The results have been summarized on the page "Recommendations".
+            </li>
+          </ol>
+        </div>
+        ''', unsafe_allow_html=True
         )
 
     st.write("---")

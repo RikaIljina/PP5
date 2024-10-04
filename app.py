@@ -7,7 +7,7 @@ from app_pages.page_dataset_assessment import page_dataset_assessment_body
 from app_pages.page_image_classifier import page_image_classifier_body
 from app_pages.page_project_hypothesis import page_project_hypothesis_body
 from app_pages.page_ml_performance import page_ml_performance_metrics
-
+from app_pages.page_recommendations import page_recommendations_body
 app = MultiPage(app_name="PetFeeder")  # Create an instance of the app
 
 # Add your app pages here using .add_page()
@@ -16,5 +16,6 @@ app.add_page("Dataset Assessment", page_dataset_assessment_body)
 app.add_page("Image Classifier", page_image_classifier_body)
 app.add_page("Project Hypothesis", page_project_hypothesis_body)
 app.add_page("ML Performance Metrics", page_ml_performance_metrics)
+app.add_page("Recommendations", page_recommendations_body)
 
 app.run()  # Run the app

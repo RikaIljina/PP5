@@ -4,6 +4,14 @@ from src.data_management import load_pkl_file
 
 
 def get_constants():
+    """Load global variables
+
+    Returns:
+        dict: A dictionary with all classes and their indices as keys
+        list: An alphabetically sorted list of class names
+        list: The valid image dimensions for inference
+    """
+
     CLASS_DICT = load_pkl_file(file_path=f"outputs/class_dict.pkl")
     LABELS = sorted(CLASS_DICT.values())
     DIMS = load_pkl_file(file_path=f"outputs/input_shape.pkl")[1:3]
@@ -21,7 +29,8 @@ def update_info_box(
             else f"**{min_attempts}** - **{max_attempts}**"
         )
         update_str = (
-            f"The model will conduct **{trial_amount}** trial{'s' if trial_amount > 1 else ''} with {batch_range_str} "
+            f"The model will conduct **{trial_amount}** trial{
+                's' if trial_amount > 1 else ''} with {batch_range_str} "
             f"images each. A trial will end as soon as the model is "
             f"**{min_confidence}%** confident in its prediction."
         )
@@ -46,7 +55,8 @@ def process_inputs(
         else f"**{min_attempts}** - **{max_attempts}**"
     )
     update_str = (
-        f"The model will conduct **{trial_amount}** trial{'s' if trial_amount > 1 else ''} with {batch_range_str} "
+        f"The model will conduct **{trial_amount}** trial{
+            's' if trial_amount > 1 else ''} with {batch_range_str} "
         f"images each. A trial will end as soon as the model is "
         f"**{min_confidence}%** confident in its prediction."
     )
