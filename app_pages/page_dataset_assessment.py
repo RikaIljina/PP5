@@ -46,8 +46,7 @@ def page_dataset_assessment_body():
                    caption='Fin')
         col2.image('inputs/datasets/pets_slim/train/iris/train_iris_0076.png',
                    caption='Iris')
-        col3.image('inputs/datasets/pets_slim/train/smilla/ \
-                   train_smilla_0261.png',
+        col3.image('inputs/datasets/pets_slim/train/smilla/train_smilla_0261.png',
                    caption='Smilla')
         
         st.info(
