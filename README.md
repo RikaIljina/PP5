@@ -1,4 +1,4 @@
-![Banner](https://raw.githubusercontent.com/RikaIljina/PP5/main/...)
+![Banner](assets/banner.png)
 
 # Pet Feeder
 
@@ -8,19 +8,26 @@
 2. [Business Requirements](#business-requirements)
 3. [Hypotheses](#hypotheses)
 4. [Rationale for the Data Visualization task](#rationale-for-the-data-visualization-task)
-6. [Rationale for the ML model task](#rationale-for-the-ml-model-task)
-5. [Trial and error](#trial-and-error)
-6. [Implementation of the Business Requirements](#the-rationale-to-map-the-business-requirements-to-the-data-visualizations-and-ml-tasks)
-7. [Hypotheses - Considerations and Validations](#hypotheses---considerations-and-validations)
-
-7. [ML Business case](#ml-business-case)
+5. [Rationale for the ML model task](#rationale-for-the-ml-model-task)
+6. [ML Business case](#ml-business-case)
 7. [ML Model Development](#ml-model-development)
-8. [Design document](#design-document)
-9. [CRISP DM Process](#the-process-of-cross-industry-standard-process-for-data-mining)
-10. [Bugs](#bugs)
-11. [Deployment](#deployment)
-12. [Technologies used](#technologies-used)
-13. [Credits](#credits)
+    - [Basic architecture](#basic-architecture)
+    - [Hyperparameter tuning](#hyperparameter-tuning)
+    - [Input Data](#input-data)
+    - [Trial and error](#trial-and-error)
+    - [Final model](#final-model)
+        - [Detailed results for Test images](#detailed-results-for-test-images)
+        - [Detailed results for Live images](#detailed-results-for-live-images)
+
+8. [Hypotheses - Considerations and Validations](#hypotheses---considerations-and-validations)
+    - [Visual Differentiation Hypothesis](#visual-differentiation-hypothesis)
+    - [Deep Learning Classification Hypothesis](#deep-learning-classification-hypothesis)
+9. [Design document](#design-document)
+10. [CRISP-DM Process](#crisp-dm-process)
+11. [Bugs and Issues](#bugs-and-issues)
+12. [Deployment](#deployment)
+13. [Technologies](#technologies-used)
+14. [Credits](#credits)
 
 
 
@@ -146,7 +153,7 @@ To answer each business objective, the following hypotheses need to be validated
 
     - Informational texts interpret the visual data and explain the meaning of graphs and values.
 
-    •	As a client, I want to see a conclusion so that I can come away with clear instructions as to how procure adequate datasets.
+    •	As a client, I can read a conclusion so that I can come away with clear instructions as to how procure adequate datasets.
 
     - A summary on the "Data Assessment" page provides clear recommendations based on the performed analyses.
 
@@ -205,9 +212,9 @@ Categorical cross-entropy, which is suitable for multi-class classification, was
 | Layers | Content |
 | --- | --- |
 | InputLayer | (128, 128, 3) |
-| Conv2D | filters=128, kernel_size=(5, 5), padding="same", activation="relu", kernel_regularizer=l2(0.0001) |
+| Conv2D | filters=128, kernel_size=(5, 5), activation="relu", kernel_regularizer=l2(0.0001) |
 | MaxPooling | pool_size=(6, 6) |
-| Conv2D | filters=128, kernel_size=(3, 3), padding="same", activation="relu", kernel_regularizer=l2(0.0001) |
+| Conv2D | filters=128, kernel_size=(3, 3), activation="relu", kernel_regularizer=l2(0.0001) |
 | MaxPooling | 	pool_size=(2, 2) |
 | Conv2D | filters=128, kernel_size=(3, 3), padding="same", activation="relu", kernel_regularizer=l2(0.0001) |
 | MaxPooling | pool_size=(2, 2) |
@@ -247,32 +254,69 @@ At first, the tuner was initialized with keras_tuner.RandomSearch, which was lat
 - Tuner max_trials: 20
 - Epochs: 20-30
 
+### Input Data
+
 As input data, the tuner received the X_train array with the augmented and balanced train images and the one-hot encoded y_train labels array.
 
 Early experiments showed that preserving the RGB channels instead of converting the images to grayscale led to a slightly better model performance. Adding a small amount of gaussian noise using the function np.random.normal() around a mean of 0 and a spread of 0.03 resulted in about 1-2% higher F1 scores.
 
-While it might seem counterintuitive to make image data noisy, it can help the model generalize by forcing it to ignore the noise and focus on repeating patterns and features, thereby preventing overfitting. 
+While it might seem counterintuitive to make image data noisy, it can help the model generalize by forcing it to ignore the noise and focus on repeating patterns and features, thereby preventing overfitting ([Reference](https://machinelearningmastery.com/train-neural-networks-with-noise-to-reduce-overfitting/)).
 
-[Link](https://medium.com/@abhishekjainindore24/gaussian-noise-in-machine-learning-aab693a10170#:~:text=Image%20Processing%3A%20Gaussian%20noise%20is,models%20more%20robust%20to%20variations)
+### Trial and error
+
+**Tuning process**
 
 Most of the tuning was done in a [Google Colab](https://colab.research.google.com/) notebook using the limited free access to the T4 GPU. This resulted in sufficiently fast tuning, partly thanks to the rather small size of input data that was provided.
 
 The best hyperparameters from each tuning session were then used to train a model.
 
-After several trials, an L2 kernel regularizer was added to all hidden layers, with a range of 0.01 to 0.0001 to test. The addition of the regularizer, which penalizes the weight sizes, was meant to help avoid overfitting.
+**Amount of layers**
 
-It also became apparent that three Conv2D/MaxPooling layers were performing better than two, and that one hidden dense layer was better than two.
+By analyzing the tuner results and further testing, it became apparent that **three Conv2D/MaxPooling layers** were performing better than two, and that **one hidden Dense layer** was the best choice.
 
-Models using between 1024 and 2048 neurons were unnecessarily large, and the models that were judged to be among the best had a neuron number of 384.
+**AMount of neurons**
 
-Increasing the kernel and pool sizes in the first Conv2D/MaxPooling layers to 5 and 6 respectively (as suggested by the tuner) led to better-performing models.
+Models using between 1024 and 2048 neurons were unnecessarily large and usually overfitting, and the models that were judged to be among the best had a neuron number of 384 (as suggested by the tuner early on).
 
-The use of AveragePooling instead of MaxPooling in a version of the best-performing final model worsened the performance and led to overfitting. 
-An attempt to counteract the overfitting with a lower L2 kernel regularizer value resulted in overall smoother Loss and Accuracy curves and top scores for test image classification (almost all > 0.95) but comparably worse scores for live images (with most values < 0.9, some < 0.8).
+**Kernel and pool sizes**
 
---Images x_b_1_retrained---
+Increasing the kernel and pool sizes in the first Conv2D/MaxPooling2D layers to 5 and 6 respectively (as suggested by the tuner) led to better-performing models with much better scores on live data. Larger kernel and pool sizes tend to be better for capturing more global features as opposed to small details, which coincides with our goal to recognize three distinct shapes with no need for finder details.
 
-Extensive tuning and experimenting lead to the following parameters which constitute the model that was judged to be the top performer:
+The larger pool size also helped reduce the overall model size.
+
+**Regularization**
+
+After several trials, an L2 kernel regularizer was added to all hidden layers, with a range of 0.01 to 0.00001 to test. The addition of the regularizer, which penalizes the weight sizes, was meant to help avoid overfitting.
+
+**Batch size**
+
+Using 64 as batch size during model fitting tended to worsen overfitting. Reducing it to 20 led to worse live data classification, as did a batch size of 40.
+
+**Smoothen the curves**
+
+An attempt was made to adjust certain parameters of the best-performing model and train on the same pre-saved dataset to see if we could smoothen the craggy Acc/Loss curves of the original:
+
+The attempts did lead to top scores for test image classification (almost all > 0.95) but yielded poor results for live images (with most values < 0.9, some < 0.8).
+
+| Model version | Changes | Graphs |
+|--|--|---|
+| x_b_1_retrained | - Added padding="same" to Conv2D layers 1 and 2 <br> - Changed all "MaxPooling2D" layers to "AveragePooling2D" <br> - Removed L2 kernel regularizer | ![alt text](assets/history/model_acc_loss_x_b_1_retrained.png) |
+| x_b_1_retrained_2 | - Added L2 kernel regularizer 1e-05 to all hidden layers <br> - Changed second and third "AveragePooling2D" layers back to "MaxPooling2D" <br> - Reduced Dropout of the hidden Dense layer from 0.3 to 0.2 | ![alt text](assets/history/model_acc_loss_x_b_1_retrained_2.png) |
+| x_b_1_retrained_3 | - Changed first "AveragePooling2D" layer back to "MaxPooling2D" <br> - Increased L2 kernel regularizer to 1e-03 for all hidden layers <br> - Increased  Dropout of the hidden Dense layer from 0.2 to 0.4 <br> - The only differences between this model and the top model are that is uses padding="same" instead of "none" and a Dropout rate of 0.4 instead of 0.3 | ![alt text](assets/history/model_acc_loss_x_b_1_retrained_3.png) |
+| x_b_1_retrained_4 | - Reduced first Conv2D layer kernel size from (5, 5) to (4, 4) <br> - Reduced first MaxPool2D pool size from (6, 6) to (5, 5) <br> - Reduced Dropout of the hidden Dense layer from 0.4 to 0.3| ![alt text](assets/history/model_acc_loss_x_b_1_retrained_4.png) |
+
+
+| Model version | Test data scores | Live data scores |
+|---|---|---|
+| x_b_1_retrained | ![alt text](assets/history/pred_test__x_b_1_retrained.png) | ![alt text](assets/history/pred_live__x_b_1_ret.png) |
+| x_b_1_retrained_2 | ![alt text](assets/history/pred_test__x_b_1_retrained_2.png) | ![alt text](assets/history/pred_live__x_b_1_retrained_2.png) |
+| x_b_1_retrained_3 | ![alt text](assets/history/pred_test__x_b_1_retrained_3.png) | ![alt text](assets/history/pred_live__x_b_1_retrained_3.png) |
+| x_b_1_retrained_4 | ![alt text](assets/history/pred_test__x_b_1_retrained_4.png) | ![alt text](assets/history/pred_live__x_b_1_retrained_4.png) |
+
+
+### Final model
+
+To summarize, extensive tuning and experimenting lead to the following parameters which constitute the model that was judged to be the top performer:
 
         hyperparams = {'kernel_1': 5, 'filters_1': 128, 'pool_1': 6,
                         'filters_2': 128, 'filters_3’: 128,
@@ -280,23 +324,30 @@ Extensive tuning and experimenting lead to the following parameters which consti
                         'learning_rate': 0.001, 'kernel_reg': 0.0001}
 
 
---- model-arch.png ---
+![alt text](assets/model_arch.PNG)
 
- Total params: 3,278,603 (12.51 MB)
- Trainable params: 1,092,867 (4.17 MB)
- Non-trainable params: 0 (0.00 B)
- Optimizer params: 2,185,736 (8.34 MB)
- 
+
+| Loss | Accuracy |
+|---|---|
+| ![Final model accuracy curve](outputs/x_b_1/model_acc_x_b_1.png) | ![Final model loss curve](outputs/x_b_1/model_losses_x_b_1.png) | 
+
 
  Despite uneven val_loss and val_accuracy curves pointing to some overfitting, the F1 scores were exceptional: 0.99, 0.98 and 0.97 for the test set and 0.99, 0.94 and 0.96 for the live set.
 
---- curves ---
+| Test scores | Live scores |
+|---|---|
+| ![alt text](outputs/x_b_1/pred_test_classification_heatmap_x_b_1.png) <br> ![alt text](outputs/x_b_1/pred_test_precision_heatmap_x_b_1.png) | ![alt text](outputs/x_b_1/pred_live_classification_heatmap_x_b_1.png)  <br> ![alt text](outputs/x_b_1/pred_live_precision_heatmap_x_b_1.png) |
 
-### Results for the Test dataset
+
+<details>
+<summary><b>Detailed Logs</b></summary>
+
+
+#### Detailed results for Test images
 
 **Confusion matrix:**
 
-                    Predicted fin  Predicted iris  Predicted smilla
+                     Predicted fin  Predicted iris  Predicted smilla
     Actually fin               199               1                 0
     Actually iris                0             200                 0
     Actually smilla              3               5               192
@@ -314,7 +365,7 @@ Extensive tuning and experimenting lead to the following parameters which consti
     weighted avg       0.99      0.98      0.98       600
 
 
-### Results for the Live data
+#### Detailed results for Live images
 
 **Live data stats:**
 
@@ -326,13 +377,12 @@ Extensive tuning and experimenting lead to the following parameters which consti
 
 **Confusion matrix:**
 
-|                 | Predicted fin |  Predicted iris |  Predicted smilla |
-|--|--|--|--|
-Actually fin |              100  |              2 |                0 |
-Actually iris   |             0   |          106   |              3 |
-Actually smilla  |            1   |            7   |            139 |
+                     Predicted fin  Predicted iris  Predicted smilla
+    Actually fin            100               2                 0
+    Actually iris             0             106                 3
+    Actually smilla           1               7               139
 
-Classification report: 
+**Classification report:**
 
                    precision    recall  f1-score   support
 
@@ -345,21 +395,20 @@ Classification report:
     weighted avg       0.96      0.96      0.96       358
 
 
+----
+
+**Analyzed 750 images per label in total: 50 batches, 15 images per batch:**
+
+Errors during **individual image** classification:
+
+    Misclassified as    |       FIN         IRIS       SMILLA
+    -----------------------------------------------------------
+      iris              |      14.0          nan         48.0
+      smilla            |       nan         16.0          nan
+      fin               |       nan          nan          3.0
 
 
-Analyzed 750 images per label in total
-15 per batch
-
-Errors during individual image classification:
-
-    Misclassified as          FIN         IRIS       SMILLA
-    ----------------------------------------------------------------------
-    iris                     14.0          nan         48.0
-    smilla                    nan         16.0          nan
-    fin                       nan          nan          3.0
-
-
-Errors during batch classification:
+Errors during **batch** classification:
 
 Confusion matrix: 
 
@@ -382,18 +431,18 @@ Classification report:
 
 
 
-**Analyzed 1500 images per label in total**
-* 500 Trials, 3 img/batch: 
+**Analyzed 1500 images per label in total: 500 bacthes, 3 images per batch**
 
-Errors during individual image classification:
+Errors during **individual** image classification:
 
-    Misclassified as          FIN         IRIS       SMILLA
-    iris                     36.0          nan         70.0
-    smilla                    nan         39.0          nan
-    fin                       nan          nan          7.0
+    Misclassified as    |     FIN         IRIS       SMILLA
+    ----------------------------------------------------------
+      iris              |    36.0          nan         70.0
+      smilla            |     nan         39.0          nan
+      fin               |     nan          nan          7.0
 
 
-Errors during batch classification:
+Errors during **batch** classification:
 
 Confusion matrix:
 
@@ -414,477 +463,624 @@ Classification report:
        macro avg       1.00      1.00      1.00      1500
     weighted avg       1.00      1.00      1.00      1500
 
+</details>
 
 
 ## Hypotheses - Considerations and Validations
 
-In order to finally validate the hypotheses, we should first take a look at the following data. It was collected during hundreds of trials with the best-performing models and is based on the 358 independent live images of the three pets. The trials were conducted on equally sized batches for all labels.
+In order to finally validate the hypotheses, we should first take a look at the following data. It was collected during hundreds of trials with the best-performing models and is based on the 358 independent live images of the three pets. The trials were conducted on equally sized batches for all labels. Different models were used to exclude the risk of one model favouring one specific label.
+
+    Total count:
+    
+    Misclassified as |  FIN	    IRIS	SMILLA
+    --------------------------------------------
+     fin	         |  0	    438	    122
+     iris	         |  925	    0	    2016
+     smilla	         |  0	    952	    0
+
+    --------------------------------------------
+
+           | Pet was being      | Pet was not
+           | wrongly identified | identified 
+           | (false positives)  | (false negatives)
+    -----------------------------------------------
+    Fin	            560 	            925	
+    Iris	        2941 	            1390	
+    Smilla	         952 	            2138
+
+    --------------------------------------------
+    Pet1   -> mistaken for Pet2	 |  times
+    --------------------------------------------
+    fin    -> smilla             |	0
+    smilla -> fin	             |  122
+    fin    -> iris	             |  925
+    iris   -> fin	             |  438
+    iris   -> smilla	         |  952
+    smilla -> iris	             |  2016
+
+    --------------------------------------------
+    Summary by pair
+    --------------------------------------------
+    Fin-Smilla pair  :   122
+    Fin-Iris pair    :   1363
+    Iris-Smilla pair :   2968
 
 
-    Misclassified as	fin	    iris	smilla
-     fin	            0	    438	    122
-     iris	            925	    0	    2016
-     smilla	            0	    952	    0
+### Visual Differentiation Hypothesis:
 
-|	           | Pet was being wrongly identified (false positives) |	Pet was not identified (false negatives) |
-|---|---|---|
-| Fin	|        560 |	        925 |	
-|  Iris	| 2941 |	1390 |	
-|  Smilla	| 952 |	2138	|
+**First Hypothesis:**
+It is assumed that an assessment of image data prior to training can determine weak points in a training set.
+ - It was concluded during the initial visual analysis of the image data that the label “iris” contained too many similar images, which was corroborated by the Mean and Variance images showing clear outlines of the pet. Furthermore, since the pet’s fur has light and dark patches while the pet “smilla” is predominantly black and the pet “fin” is completely beige-white, it was assumed that this pet’s unique features might overlap with the other pets.
+   - **Validation**: As we can see from the data, by far the most false positives (2941) belong to the label “iris”, meaning that images of the other pets were being incorrectly classified as “iris”.
+ - It was concluded that the pet “smilla”, being the smallest of the trio, took up too little space on the images, with the background being dominant.
+   - **Validation**: As we can see from the data, the most false negatives (2138) belong to the label “smilla”, meaning that, presumably, not enough unique features were extracted from the label “smilla” and the model had a hard time settling on “smilla” as the dominant class in an image.
+ - The label “fin” was deemed sufficient in quality for the task at hand. 
+   - **Validation**: As we can see from the data, the label has the least false positives (560) and the least false negatives (925).
 
+---
 
-    Pet1 -> mistaken for Pet2	times
-    fin -> smilla	0
-    smilla -> fin	122
-    fin -> iris	925
-    iris -> fin	438
-    iris -> smilla	952
-    smilla -> iris	2016
-
-    Summary
-    Fin-Smilla pair
-    122
-    Fin-Iris pair
-    1363
-    Iris-Smilla pair
-    2968
-
-### Visual Differentiation Hypothesis: 
-
-1.	It is assumed that an assessment of image data prior to training can determine weak points in a training set.
-•	It was concluded during the initial visual analysis of the image data that the label “iris” contained too many similar images, which was corroborated by the Mean and Variance images showing clear outlines of the pet. Furthermore, since the pet’s fur has light and dark patches while the pet “smilla” is predominantly black and the pet “fin” is completely beige-white, it was assumed that this pet’s unique features might overlap with the other pets.
-	Validation: As we can see from the data, by far the most false positives (2941) belong to the label “iris”, meaning that images of the other pets were being incorrectly classified as “iris”.
-•	It was concluded that the pet “smilla”, being the smallest of the trio, took up too little space on the images, with the background being dominant.
-	Validation: As we can see from the data, the most false negatives (2138) belong to the label “smilla”, meaning that, presumably, not enough unique features were extracted from the label “smilla” and the model had a hard time settling on “smilla” as the dominant class in an image.
-•	The label “fin” was deemed sufficient in quality for the task at hand. 
-	Validation: As we can see from the data, the label has the least false positives (560) and the least false negatives (925).
 For the next hypothesis, we will inspect the misclassification summary for each pair and the histogram comparison heatmap by channel:
 
-Summary
-Fin-Smilla pair
-122
-Fin-Iris pair
-1363
-Iris-Smilla pair
-2968
+    --------------------------------------------
+    Summary by pair
+    --------------------------------------------
+    Fin-Smilla pair  :   122
+    Fin-Iris pair    :   1363
+    Iris-Smilla pair :   2968
 
+![alt text](outputs/heatmap_by_channel.png)
+
+**Second Hypothesis:**
 It is assumed that a thorough assessment of image data prior to training could predict which labels will be hardest to distinguish.
-	The images in each label were analyzed using Mean, Variance, and histogram comparison. The methods Correlation, Chi-Squared, Intersection, Bhattacharyya, and Euclidean Distance were applied to translate the histogram comparison results into similarity values.
-	Validation:
-	After visually comparing the average difference images, a preliminary conclusion pointed to “fin” and “smilla” being the most distinguishable, seeing as their difference image exhibited the most light patches and therefore the most difference. However, the difference images for the other two pets could not be satisfactorily assessed in that manner. 
-	Next, Mean and Variance values were calculated for the difference images, yielding the following results:
+ - The images in each label were analyzed using Mean, Variance, and histogram comparison. The methods Correlation, Chi-Squared, Intersection, Bhattacharyya, and Euclidean Distance were applied to translate the histogram comparison results into similarity values.
+   - **Validation:**
+     - After visually comparing the average difference images, a preliminary conclusion pointed to “fin” and “smilla” being the most distinguishable, seeing as their difference image exhibited the most light patches and therefore the most difference. However, the difference images for the other two pets could not be satisfactorily assessed in that manner.
 
-Mean for ('fin', 'iris'):  0.08560952
-Variance for ('fin', 'iris') 0.007388024
-Mean for ('fin', 'smilla'):  0.14524248
-Variance for ('fin', 'smilla') 0.010799234
-Mean for ('iris', 'smilla'):  0.0888353
-Variance for ('iris', 'smilla') 0.004014944
+        ![alt text](outputs/average_imgs_fin_smilla.png)
 
-While the Mean values were inconclusive for “fin – iris” and “iris – smilla”, the Variance values representing the variance for each pixel in the Mean images started to show a clear trend, with “iris – smilla” showing the least variance (0.004), followed by “fin – iris” (0.0074) and finally with “fin - smilla” peaking at 0.01. This trend has clearly been corroborated by the misclassification summary shown above.
-	To drill down even more, histogram comparison methods were applied. A scale of 0-1 was set to represent the degree of similarity, with 0 meaning “less similar” and 1 meaning “more similar”. The resulting comparison values were normalized using that scale relative to baseline values, which were calculated by splitting the images of each label in half and comparing the respective Mean images to each other.
-	Results by method:
-	The Correlation method computes the correlation coefficient between two histograms, measuring the strength of a linear relationship between two histograms. It answers the question “How well can one histogram be predicted from another?”
-The respective values in the heatmap show the lowest correlation values for the “fin – smilla” pair, corroborating the trial results. The values for “iris – smilla” are slightly lower than the values for “fin – iris”, which seems to contradict the actual trial results.
-	Chi-Squared measures the similarity between two histograms by calculating the sum of the squared differences normalized by the values of the histograms. This method is sensitive to small changes in the histogram bins.
-	The method pointed out a start dissimilarity in the Green channel of the “fin – smilla” pair but was inconclusive regarding the other pairs and channels and did not corroborate the trial results.
-	Intersection calculates the sum of the minimum values of corresponding bins in two histograms.
-	The values yielded by this method seem to corroborate the actual trial results, placing the pairs in the right order on the similarity scale. However, the method also points to low similarity between the “fin” baseline images, which might be a sign for too much variance within the “fin” label or imply that this method is too sensitive to yet unknown factors in our datasets.
-	The Bhattacharyya distance quantifies the overlap between two probability distributions. It is useful for comparing two probability histograms and provides a measurement of the distance between two distributions.
-	This method seems to corroborate the actual trial results, placing the “fin – smilla” pair at the very bottom of the similarity scale and the other pairs in the correct order slightly apart from each other.
-	Euclidean Distance measures the straight-line distance between corresponding bins in two histograms. It sums the squared differences of each bin and takes the square root. The smaller the distance, the more similar the histograms are.
-	This method doesn’t seem to reflect the trend shown by the actual trials, pointing to less difference between “smilla” and “iris” than between “smilla” and “fin”.
+     - Next, Mean and Variance values were calculated for the difference images, yielding the following results:
 
-In conclusion, Intersection and Bhattacharyya were identified as the only two methods accurately reflecting the trial results. Whether there is a quantifiable correlation should be investigated in a separate study using a large dataset with pet images exhibiting various degrees of similarity.
+            Mean for ('fin', 'iris'):       0.08560952
+            Mean for ('fin', 'smilla'):     0.14524248
+            Mean for ('iris', 'smilla'):    0.0888353
+
+            Variance for ('fin', 'iris')    0.007388024
+            Variance for ('fin', 'smilla')  0.010799234
+            Variance for ('iris', 'smilla') 0.004014944
+
+        While the Mean values were inconclusive for “fin – iris” and “iris – smilla”, the Variance values representing the variance for each pixel in the Mean images started to show a clear trend, with “iris – smilla” showing the least variance (0.004), followed by “fin – iris” (0.0074) and finally with “fin - smilla” peaking at 0.01. This trend has clearly been corroborated by the misclassification summary shown above.
+    - To drill down even more, histogram comparison methods were applied. A scale of 0-1 was set to represent the degree of similarity, with 0 meaning “less similar” and 1 meaning “more similar”. The resulting comparison values were normalized using that scale relative to baseline values, which were calculated by splitting the images of each label in half and comparing the respective Mean images to each other.
+    
+    **Results by method:**
+    - The Correlation method computes the correlation coefficient between two histograms, measuring the strength of a linear relationship between two histograms. It answers the question “How well can one histogram be predicted from another?”
+        - The respective values in the heatmap show the lowest correlation values for the “fin – smilla” pair, corroborating the trial results. The values for “iris – smilla” are slightly lower than the values for “fin – iris”, which seems to contradict the actual trial results.
+    - Chi-Squared measures the similarity between two histograms by calculating the sum of the squared differences normalized by the values of the histograms. This method is sensitive to small changes in the histogram bins.
+        - The method pointed out a start dissimilarity in the Green channel of the “fin – smilla” pair but was inconclusive regarding the other pairs and channels and did not corroborate the trial results.
+    - Intersection calculates the sum of the minimum values of corresponding bins in two histograms.
+        - The values yielded by this method seem to corroborate the actual trial results, placing the pairs in the right order on the similarity scale. However, the method also points to low similarity between the “fin” baseline images, which might be a sign for too much variance within the “fin” label or imply that this method is too sensitive to yet unknown factors in our datasets.
+    - The Bhattacharyya distance quantifies the overlap between two probability distributions. It is useful for comparing two probability histograms and provides a measurement of the distance between two distributions.
+        - This method seems to corroborate the actual trial results, placing the “fin – smilla” pair at the very bottom of the similarity scale and the other pairs in the correct order slightly apart from each other.
+    - Euclidean Distance measures the straight-line distance between corresponding bins in two histograms. It sums the squared differences of each bin and takes the square root. The smaller the distance, the more similar the histograms are.
+        - This method doesn’t seem to reflect the trend shown by the actual trials, pointing to less difference between “smilla” and “iris” than between “smilla” and “fin”.
+
+In conclusion, **Intersection** and **Bhattacharyya** were identified as the only two methods accurately reflecting the trial results. Whether there is a quantifiable correlation should be investigated in a separate study using a large dataset with pet images exhibiting various degrees of similarity.
 
 ### Deep Learning Classification Hypothesis:
 
-•	An F1 score of > 0.9 for test and live data is possible for each label.
-	A model architecture suited for multiclass image classification was chosen and a tuner was used to find the best hyperparameters. The model was then be trained with those parameters and used to classify all the available test and live data separately. After a long process of tuning and training different models, an F1 score of > 0.94 was reached for each label and deemed sufficient. Above that, neither the recall nor the precision values fall below 0.92.
-•	It is assumed that it is possible to reduce the risk of misclassifying a pet by letting the model make a summary prediction for a batch of images instead of trying to classify a pet based on one single image. It is also assumed that a minimum threshold value is needed for the number of images to be batched before the first classification attempt should be made.
-	A long series of trials was conducted where the model made predictions for batches of 2+n random live images for each label. The target F1 score for batch classification was set at 1. The results are as follows:
-Setup:
-A script aggregated all live images of a label and yielded them in random combinations of 2+n images (a batch) to the classifier function. The classifier function calculated the mean probabilities for the batch and returned the dominant class without a confidence threshold to consider, meaning that any probability > 0.34 would result in a classification.
-The following boxplot graphs exemplify the final model’s results for 50 batches at a time:
+- An F1 score of > 0.9 for test and live data is possible for each label.
+    - A model architecture suited for multiclass image classification was chosen and a tuner was used to find the best hyperparameters. The model was then be trained with those parameters and used to classify all the available test and live data separately. After a long process of tuning and training different models, an F1 score of > 0.94 was reached for each label and deemed sufficient. Above that, neither the recall nor the precision values fall below 0.92.
+- It is assumed that it is possible to reduce the risk of misclassifying a pet by letting the model make a summary prediction for a batch of images instead of trying to classify a pet based on one single image. It is also assumed that a minimum threshold value is needed for the number of images to be batched before the first classification attempt should be made.
+    - A long series of trials was conducted where the model made predictions for batches of 2+n random live images for each label. The target F1 score for batch classification was set at 1. The results are as follows:
+    
+    **Setup:**
+    
+    A script aggregated all live images of a label and yielded them in random combinations of 2+n images (a batch) to the classifier function. The classifier function calculated the mean probabilities for the batch and returned the dominant class without a confidence threshold to consider, meaning that any probability > 0.34 would result in a classification.
+    
+    The following boxplot graphs exemplify the final model’s results for 50 batches at a time.
+
+    Each batch consists of a given 2+n number of probability values for a specific class, as returned by the model. The box represents the upper and lower quartiles separated by the green median marker, while the red marker shows the mean value that we use for the classification. The circles represent outliers.
 
-Each batch consists of a given 2+n number of probability values for a specific class, as returned by the model. The box represents the upper and lower quartiles separated by the green median marker, while the red marker shows the mean value that we use for the classification. The circles represent outliers.
+    Fin, 50 batches, 2 images each:
+![Fin, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_2.png)
+    Iris, 50 batches, 2 images each:
+![Iris, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_2.png)
+    Smilla, 50 batches, 2 images each:
+![Smilla, 50 batches, 2 images each](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_2.png)
 
----images---
+    Fin, 50 batches, 5 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_5.png)
+    Iris, 50 batches, 5 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_5.png)
+    Smilla, 50 batches, 5 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_5.png)
 
-As seen clearly on the figures, the red mean marker ascends with increasing batch size.
+    Fin, 50 batches, 15 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_15.png)
+    Iris, 50 batches, 15 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_15.png)
+    Smiilla, 50 batches, 15 images each:
+![alt text](outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_15.png)
 
-For 2-image batches, some means are located around 0.5.
-For 5-image batches, the means are all above 0.7.
-For 15-image batches, the means are all above 0.8, with most being situated above 0.9.
+    As seen clearly on the figures, the red mean marker ascends with increasing batch size.
 
-This trial was repeated multiple times with 500-1000 batches and 2-15 images per batch.
-No confidence threshold was set.
-To summarize the findings:
-Batches of 4 or fewer images tend to misclassify at least one batch every 500 runs.
-Batches of 5 or more images have not shown any misclassification for an entire batch.
+    For 2-image batches, some means are located around 0.5.
+    For 5-image batches, the means are all above 0.7.
+    For 15-image batches, the means are all above 0.8, with most being situated above 0.9.
 
-<details>
-<summary>Show Log</summary>
+    This trial was repeated multiple times with 500-1000 batches and 2-15 images per batch.
+    No confidence threshold was set.
+    To summarize the findings:
+    Batches of 4 or fewer images tend to misclassify at least one batch every 500 runs.
+    Batches of 5 or more images have not shown any misclassification for an entire batch.
 
+    <details>
+    <summary>Show Log</summary>
 
-    ###########################################################################
-    ... Made predictions for 1000 batches with 3 images per batch.
-    ###########################################################################
+        #######################################################################
+        ... Made predictions for 1000 batches with 3 images per batch.
+        #######################################################################
 
-    Analyzed 3000 images per label in total
+        Analyzed 3000 images per label in total.
+        Errors during individual image classification:
 
+        Misclassified as          FIN         IRIS       SMILLA
+        -------------------------------------------------------------
+        iris                     56.0          nan        153.0
+        smilla                    nan        101.0          nan
+        fin                       nan         42.0         25.0
 
-    Errors during individual image classification:
+        Errors during batch classification:
 
-    Misclassified as          FIN         IRIS       SMILLA
-    ----------------------------------------------------------------------
-    iris                     56.0          nan        153.0
-    smilla                    nan        101.0          nan
-    fin                       nan         42.0         25.0
+        Confusion matrix: 
 
+                        Predicted fin  Predicted iris  Predicted smilla
+        Actually fin              1000               0                 0
+        Actually iris                0             999                 1
+        Actually smilla              2               7               991
 
-    Errors during batch classification:
+        Classification report: 
 
-    Confusion matrix: 
-                    Predicted fin  Predicted iris  Predicted smilla
-    Actually fin              1000               0                 0
-    Actually iris                0             999                 1
-    Actually smilla              2               7               991
+                    precision    recall  f1-score   support
 
-    Classification report: 
+               fin       1.00      1.00      1.00      1000
+              iris       0.99      1.00      1.00      1000
+            smilla       1.00      0.99      0.99      1000
 
-                precision    recall  f1-score   support
+          accuracy                           1.00      3000
+         macro avg       1.00      1.00      1.00      3000
+      weighted avg       1.00      1.00      1.00      3000
 
-            fin       1.00      1.00      1.00      1000
-            iris       0.99      1.00      1.00      1000
-        smilla       1.00      0.99      0.99      1000
 
-        accuracy                           1.00      3000
-    macro avg       1.00      1.00      1.00      3000
-    weighted avg       1.00      1.00      1.00      3000
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
+        Results for FIN:
 
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: FIN
+        Overall confidence for all batches: 0.9780140038728714
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
-    Results for FIN:
+        Results for IRIS:
 
-    Overall class prediction for all batches: FIN
-    Overall confidence for all batches: 0.9780140038728714
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: IRIS
+        Overall confidence for all batches: 0.9749540005922317
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
-    Results for IRIS:
+        Results for SMILLA:
 
-    Overall class prediction for all batches: IRIS
-    Overall confidence for all batches: 0.9749540005922317
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: SMILLA
+        Overall confidence for all batches: 0.9387460021972657
 
-    Results for SMILLA:
+        Errors during individual image classification:
 
-    Overall class prediction for all batches: SMILLA
-    Overall confidence for all batches: 0.9387460021972657
+        Misclassified as          FIN         IRIS       SMILLA
+        ------------------------------------------------------------
+        iris                     52.0          nan        122.0
+        smilla                    nan         50.0          nan
 
-    Errors during individual image classification:
 
-    Misclassified as          FIN         IRIS       SMILLA
-    ----------------------------------------------------------------------
-    iris                     52.0          nan        122.0
-    smilla                    nan         50.0          nan
+        Errors during batch classification:
 
+        Confusion matrix: 
 
-    Errors during batch classification:
+                         Predicted fin  Predicted iris  Predicted smilla
+        Actually fin               500               0                 0
+        Actually iris                0             500                 0
+        Actually smilla              0               0               500
 
-    Confusion matrix: 
-                    Predicted fin  Predicted iris  Predicted smilla
-    Actually fin               500               0                 0
-    Actually iris                0             500                 0
-    Actually smilla              0               0               500
+        Classification report: 
 
-    Classification report: 
+                       precision    recall  f1-score   support
+ 
+                 fin       1.00      1.00      1.00       500
+                iris       1.00      1.00      1.00       500
+              smilla       1.00      1.00      1.00       500
 
-                precision    recall  f1-score   support
+            accuracy                           1.00      1500
+           macro avg       1.00      1.00      1.00      1500
+        weighted avg       1.00      1.00      1.00      1500
 
-            fin       1.00      1.00      1.00       500
-            iris       1.00      1.00      1.00       500
-        smilla       1.00      1.00      1.00       500
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
-        accuracy                           1.00      1500
-    macro avg       1.00      1.00      1.00      1500
-    weighted avg       1.00      1.00      1.00      1500
+        Results for FIN:
 
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: FIN
+        Overall confidence for all batches: 0.9821140050888062
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
-    Results for FIN:
+        Results for IRIS:
 
-    Overall class prediction for all batches: FIN
-    Overall confidence for all batches: 0.9821140050888062
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: IRIS
+        Overall confidence for all batches: 0.969705999970436
+        #######################################################################
+        ... Made predictions for 500 batches with 5 images per batch.
+        #######################################################################
 
-    Results for IRIS:
+        Results for SMILLA:
 
-    Overall class prediction for all batches: IRIS
-    Overall confidence for all batches: 0.969705999970436
-    ###########################################################################
-    ... Made predictions for 500 batches with 5 images per batch.
-    ###########################################################################
+        Overall class prediction for all batches: SMILLA
+        Overall confidence for all batches: 0.9449200037717819
 
-    Results for SMILLA:
+        Errors during individual image classification:
 
-    Overall class prediction for all batches: SMILLA
-    Overall confidence for all batches: 0.9449200037717819
+        Misclassified as          FIN         IRIS       SMILLA
+        --------------------------------------------------------------
+        iris                     43.0          nan        107.0
+        smilla                    nan         76.0          nan
 
-    Errors during individual image classification:
 
-    Misclassified as          FIN         IRIS       SMILLA
-    ----------------------------------------------------------------------
-    iris                     43.0          nan        107.0
-    smilla                    nan         76.0          nan
+        Errors during batch classification:
 
+        Confusion matrix: 
+        
+                         Predicted fin  Predicted iris  Predicted smilla
+        Actually fin               500               0                 0
+        Actually iris                0             500                 0
+        Actually smilla              0               0               500
 
-    Errors during batch classification:
+        Classification report: 
 
-    Confusion matrix: 
-                    Predicted fin  Predicted iris  Predicted smilla
-    Actually fin               500               0                 0
-    Actually iris                0             500                 0
-    Actually smilla              0               0               500
+                      precision    recall  f1-score   support
 
-    Classification report: 
+                 fin       1.00      1.00      1.00       500
+                iris       1.00      1.00      1.00       500
+              smilla       1.00      1.00      1.00       500
 
-                precision    recall  f1-score   support
+            accuracy                           1.00      1500
+           macro avg       1.00      1.00      1.00      1500
+        weighted avg       1.00      1.00      1.00      1500
 
-            fin       1.00      1.00      1.00       500
-            iris       1.00      1.00      1.00       500
-        smilla       1.00      1.00      1.00       500
 
-        accuracy                           1.00      1500
-    macro avg       1.00      1.00      1.00      1500
-    weighted avg       1.00      1.00      1.00      1500
+        Analyzed 2500 images per label in total.
+        Errors during individual image classification:
 
+        Misclassified as          FIN         IRIS       SMILLA
+        ---------------------------------------------------------------
+        iris                     62.0          nan        136.0
+        fin                       nan         26.0         27.0
+        smilla                    nan         81.0          nan
 
-    Analyzed 2500 images per label in total
 
+        Errors during batch classification:
 
-    Errors during individual image classification:
+        Confusion matrix: 
 
-    Misclassified as          FIN         IRIS       SMILLA
-    ----------------------------------------------------------------------
-    iris                     62.0          nan        136.0
-    fin                       nan         26.0         27.0
-    smilla                    nan         81.0          nan
+                         Predicted fin  Predicted iris  Predicted smilla
+        Actually fin               500               0                 0
+        Actually iris                0             500                 0
+        Actually smilla              0               0               500
 
+        Classification report: 
 
-    Errors during batch classification:
+                        precision    recall  f1-score   support
 
-    Confusion matrix: 
-                    Predicted fin  Predicted iris  Predicted smilla
-    Actually fin               500               0                 0
-    Actually iris                0             500                 0
-    Actually smilla              0               0               500
+                  fin       1.00      1.00      1.00       500
+                 iris       1.00      1.00      1.00       500
+               smilla       1.00      1.00      1.00       500
 
-    Classification report: 
+             accuracy                           1.00      1500
+            macro avg       1.00      1.00      1.00      1500
+         weighted avg       1.00      1.00      1.00      1500
 
-                precision    recall  f1-score   support
 
-            fin       1.00      1.00      1.00       500
-            iris       1.00      1.00      1.00       500
-        smilla       1.00      1.00      1.00       500
+        #######################################################################
+        ... Made predictions for 500 batches with 4 images per batch.
+        #######################################################################
 
-        accuracy                           1.00      1500
-    macro avg       1.00      1.00      1.00      1500
-    weighted avg       1.00      1.00      1.00      1500
+        Results for FIN:
 
+        Overall class prediction for all batches: FIN
+        Overall confidence for all batches: 0.9790900027751923
+        #######################################################################
+        ... Made predictions for 500 batches with 4 images per batch.
+        #######################################################################
 
-    ###########################################################################
-    ... Made predictions for 500 batches with 4 images per batch.
-    ###########################################################################
+        Results for IRIS:
 
-    Results for FIN:
+        Overall class prediction for all batches: IRIS
+        Overall confidence for all batches: 0.9665620005130768
+        #######################################################################
+        ... Made predictions for 500 batches with 4 images per batch.
+        #######################################################################
 
-    Overall class prediction for all batches: FIN
-    Overall confidence for all batches: 0.9790900027751923
-    ###########################################################################
-    ... Made predictions for 500 batches with 4 images per batch.
-    ###########################################################################
+        Results for SMILLA:
 
-    Results for IRIS:
+        Overall class prediction for all batches: SMILLA
+        Overall confidence for all batches: 0.9400540025234222
 
-    Overall class prediction for all batches: IRIS
-    Overall confidence for all batches: 0.9665620005130768
-    ###########################################################################
-    ... Made predictions for 500 batches with 4 images per batch.
-    ###########################################################################
+        Errors during individual image classification:
 
-    Results for SMILLA:
+                            fin  iris  smilla
+        Misclassified as
+        iris              41.0   NaN   105.0
+        smilla             NaN  66.0     NaN
 
-    Overall class prediction for all batches: SMILLA
-    Overall confidence for all batches: 0.9400540025234222
+        Errors during batch classification:
 
-    Errors during individual image classification:
+        Confusion matrix: 
 
-                    fin  iris  smilla
-    Misclassified as                    
-    iris              41.0   NaN   105.0
-    smilla             NaN  66.0     NaN
+                        Predicted fin  Predicted iris  Predicted smilla
+        Actually fin               500               0                 0
+        Actually iris                0             500                 0
+        Actually smilla              0               1               499
 
+        Classification report: 
 
-    Errors during batch classification:
+                       precision    recall  f1-score   support
 
-    Confusion matrix: 
-                    Predicted fin  Predicted iris  Predicted smilla
-    Actually fin               500               0                 0
-    Actually iris                0             500                 0
-    Actually smilla              0               1               499
+                  fin       1.00      1.00      1.00       500
+                 iris       1.00      1.00      1.00       500
+               smilla       1.00      1.00      1.00       500
 
-    Classification report: 
+             accuracy                           1.00      1500
+            macro avg       1.00      1.00      1.00      1500
+         weighted avg       1.00      1.00      1.00      1500
 
-                precision    recall  f1-score   support
+    </details>
 
-            fin       1.00      1.00      1.00       500
-            iris       1.00      1.00      1.00       500
-        smilla       1.00      1.00      1.00       500
+    The goal now is to determine:
+    -	an optimal minimum batch size that will make sure that an incorrect high-confidence error will not result in the misclassification of the batch,
+    -	a reasonable confidence value that will make batch misclassification highly unlikely while avoiding false negatives for classes with the lowest recall,
+    -	and an appropriate upper limit for the batch size after which an accurate classification should be guaranteed or the trial abandoned due to inconclusive input.
 
-        accuracy                           1.00      1500
-    macro avg       1.00      1.00      1.00      1500
-    weighted avg       1.00      1.00      1.00      1500
+    After running 500 trials per preset confidence threshold and batches with min 3 and max 15 images, the following data has been collected:
 
+    **80%:**
+    | | min batch | max batch | classified after min | min proba | NaNs after 15 | misses |
+    |---|---|---|---|---|---|---|
+    | Fin	|  3	|	12	|	473	|		0.8 | - | - |
+    | Iris |		3 |		4 |		488 | 			0.8 | - | - |
+    | Smilla	|	3	|	13	|	398	|		0.78	|	1 | - |
 
-</details>
+                         
+    **70%:**
+    | | min batch | max batch | classified after min | min proba | NaNs after 15 | misses |
+    |---|---|---|---|---|---|---|
+    | Fin	|	3 |		6 |		498 |			0.71 | - | - |
+    | Iris |	3 |	5 | 		497 |			0.71 | - | - |
+    | Smilla |		3	|	11	|	458	|		0.71 | - | - |		
 
-The goal is to determine 
--	an optimal minimum batch size that will make sure that an incorrect high-confidence error will not result in the misclassification of the batch,
--	a reasonable confidence value that will make batch misclassification highly unlikely while avoiding false negatives for classes with the lowest recall,
--	and an appropriate upper limit for the batch size after which an accurate classification should be guaranteed or the trial abandoned due to inconclusive input.
-
-After running multiple trials with preset confidence thresholds and batches with min 3 and max 15 images, the following data has been collected:
-
-    80(500)	min batch	max batch	classified after min	min proba	NaNs after 15
-    Fin		3		12		473			0.8
-    Iris		3		4		488			0.8
-    Smilla		3		13		398			0.78		1
-
-    60 (500) 	min batch	max batch	classified after min	min proba	NaNs	misses
-    Fin		3		3		500			0.63
-    Iris		3		3		500			0.61
-    Smilla		3		5		496			0.61		1 – Iris 0.6
-                        
-
-    70 (500) 	min batch	max batch	classified after min	min proba	NaNs	misses
-    Fin		3		6		498			0.71
-    Iris		3		5		497			0.71
-    Smilla		3		11		458			0.71		
-
-At a confidence threshold of 60%, after 3 images, “smilla” was misclassified as “iris” at a probability of 0.6 once during 500 trials.
-At a confidence threshold of 80%, after 15 images, “smilla” was not classified at all due to a mean probability of 0.78 once during 500 trials.
+    **60%:**
+    | | min batch | max batch | classified after min | min proba | NaNs after 15 | misses |
+    |---|---|---|---|---|---|---|
+    | Fin	|	3 |		3 |		500 |			0.63 | - | - |
+    | Iris |		3 |		3 |		500 |			0.61 | - | - |
+    | Smilla |		3 |		5 |		496 |			0.61 |	- |	1 – Iris 0.6 |
+   
+---
+At a confidence threshold of 60%, after 3 images, “smilla” was misclassified as “iris” at a probability of 0.6 once during 500 trials.<br>
+At a confidence threshold of 80%, after 15 images, “smilla” was not classified at all due to a mean probability of 0.78 once during 500 trials.<br>
 At a confidence threshold of 70%, after 3-11 images, all pets were classified correctly with a mean probability of 0.71 during 500 trials.
 
-Based on these results, the client received the following recommendation:
-Factoring in an adequate margin of safety, the minimum batch size should be at least 5 images, the maximum batch size 15 images, and the confidence threshold 70%.
+Based on these results, the client received the following recommendation:<br>
+Factoring in an adequate margin of safety, the minimum batch size should be at least **5 images**, the maximum batch size **15 images**, and the confidence threshold **70%**.<br>
 This is deemed sufficient to substantially reduce the risk of misclassification while ensuring that the pet with the lowest recall value still gets identified within a short amount of time.
 
 The last trial addresses the possibility of the model receiving a stream of mixed, inconclusive images, in which case it should cancel the classification. This functionality was simulated by feeding the model random images from all three labels and logging the results.
 
+    Attempts | Pred. class | Actual majority class | Final confidence  
+       nan    smilla?          smilla, 7 /15          0.47  
+       nan     iris?             iris, 6 /15           0.4  
+         5     smilla           smilla, 4 /5          0.79  
+       nan    smilla?          smilla, 7 /15          0.45  
+         5     smilla          smilla, 5 /5            1.0  
+       nan     fin?               fin, 8 /15          0.53  
+       nan    iris?            smilla, 7 /15          0.38  
+       nan    iris?            smilla, 8 /15           0.4  
+       nan     iris?             iris, 6 /15          0.41  
+       nan    smilla?          smilla, 6 /15           0.4  
+       nan     iris?             iris, 6 /15          0.46  
+       nan     iris?             iris, 6 /15          0.45  
+       nan     iris?             iris, 6 /15          0.39  
+       nan     iris?             iris, 6 /15           0.4  
+       nan    smilla?          smilla, 8 /15          0.53  
+         5    smilla           smilla, 4 /5           0.84  
+       nan     iris?             iris, 9 /15          0.59  
+       nan     fin?               fin, 6 /15           0.4  
+       nan    iris?            smilla, 6 /15          0.36  
+       nan     iris?             iris, 6 /15           0.4  
+         5      fin                fin, 4 /5   	      0.77	
+       nan     fin?               fin, 6 /15           0.4  
+       nan     fin?               fin, 6 /15           0.4  
+       nan     iris?             iris, 7 /15          0.53  
+       nan    iris?            smilla, 5 /15          0.37  
+       nan     fin?               fin, 5 /15          0.33  
+       nan    smilla?          smilla, 6 /15          0.39  
+         5    smilla            smilla, 4 /5           0.8  
+       nan     fin?               fin, 6 /15           0.4  
+       nan     fin?               fin, 9 /15           0.6  
+       nan     fin?               fin, 8 /15          0.53  
+         5      iris              iris, 4 /5   	       0.8
+       nan    fin?             smilla, 5 /15          0.33  
+       nan     smilla?            fin, 6 /15           0.4  
+       nan     iris?             iris, 9 /15          0.56  
+         5       fin               fin, 4 /5   	       0.8
+       nan    smilla?          smilla, 7 /15          0.43  
+       nan     iris?              fin, 5 /15          0.38  
+         5      iris              iris, 3 /5   	       0.9
+       nan     iris?             iris, 8 /15          0.58  
+         5       fin               fin, 5 /5           1.0
+       nan     smilla?           iris, 6 /15          0.38  
+       nan    smilla?          smilla, 7 /15          0.47  
+       nan     iris?             iris, 7 /15          0.51  
+         5      iris              iris, 3 /5          0.77  
 
+    
 
 ## Design document
 
+**Page 1: Quick Project Overview**
 
-Page 1: Quick Project Summary
-Quick project summary
+This page provides a quick project overview.
 
-Link to additional information (Readme file)
-<a href="https://github.com/RikaIljina/PP5/main/README.md" 
-📸 <a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" 
+- Project summary
+- Link to additional information ([Readme file](https://github.com/RikaIljina/PP5/main/README.md))
+- <a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" 
                 target="_blank" rel="noopener">Live images</a>
-                <br>
-                💾 <a href="https://drive.usercontent.google.com/download?id=1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr&export=download" 
+- <a href="https://drive.usercontent.google.com/download?id=1jDeB3UaS86FiSKJnJ4Q5-n01PZ2Fq-zr&export=download" 
                 target="_blank" rel="noopener">Train, Test, Validation datasets</a>
+ - Description of the business requirements
 
+**Page 2: Dataset Assessment**
 
-The project has 4 business requirements:
-4.	The client is interested in a recommendation regarding the scale and quality of future datasets.
-5.	The client is interested in a confident and correct classification of any given live image with an f1 score of at least 0.9. 
-6.	The client is interested in a prototype for a tool that receives and evaluates a stream of snapshots from a camera and returns a usable classification. If the tool receives a stream of images from exactly one pet, it must be able to correctly classify it within 5 seconds (i.e., after 15 images). The expected accuracy for classification from a stream is 100%. If it receives a stream of mixed images (i.e., different pets in the same batch), it must cancel the classification and not make an erroneous prediction.
-7.	The client is interested in an assessment regarding the automation of the data collection and model training processes.
+This page will answer business requirement 1 by analyzing the dataset and providing a recommendation.
+  - Checkbox 1 - Average and variance images for each label
+  - Checkbox 2 - Differences between averages for each label combo
+  - Checkbox 3 - Histogram comparison
+  - Checkbox 4 - Metrics analysis
+  - Checkbox 5 - Conclusions and recommendations for dataset compilation
+  - Checkbox 6 - Image Montage
 
+**Page 3: Image Classifier**
 
+This page will answer Business requirements 2 and 3 by providing a tool for live image classification and returning the predicted and their scores.
 
- Page 2: Dataset Assessment
-•	The page will answer business requirement 1 by analyzing the dataset and providing a recommendation.
-o	Checkbox 1 - Average and variance images for each label
-o	Checkbox 2 - Differences between averages for each label combo
-o	Checkbox 3 - Histogram comparison
-o	Checkbox 4 - Metrics analysis
-o	Checkbox 5 - Conclusions and recommendations for dataset compilation
-o	Checkbox 6 - Image Montage
+Page features:
 
-Page 3: Image Classifier
-Business requirement 2 and 3:
-•	The client is interested in a confident and correct classification of any given live image – an f1 score of at least 0.9. 
-•	The client is interested in a prototype for a tool that receives and evaluates a stream of snapshots from a camera and returns a usable classification. If the tool receives a stream of images from exactly one pet, it must be able to correctly classify it within 5 seconds (i.e., after 15 images). The expected accuracy for classification from a stream is 100%.
+- Create a user interface with a file uploader widget:
+    
+    The user will have the option to adjust the parameters for the image stream classification. They can specify the number of trials to run, the minimum batch size for each trial, the cutoff value for each classification attempt, and the confidence threshold needed for accepting the final classification.
+    
+    The user can then upload single images or image batches and start the classification.
 
-•	<a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" target="_blank" rel="noopener">Live images</a>
+- Show a reel with the analyzed images, individual results, and the results per trial
+- Show a table with all trials, the determined classes and the reached confidence values
+-  Show a table with a summary of all classes that have been recognized in the image stream by the model.
+- Allow the user to download the tables as csv file
 
-•	Create a user interface with a file uploader widget. 
-The user will have the option to adjust the parameters for the image stream classification. They can specify the number of trials to run, the minimum batch size for each trial, the cutoff value for each classification attempt, and the confidence threshold needed for accepting the final classification.
-The user can then upload single images or image batches and start the classification.
-•	Show a reel with the analyzed images, individual results, and the results per trial
-•	Show a table with all trials, the determined classes and the reached confidence values.
-•	Show a table with a summary of all classes that have been recognized in the image stream by the model.
-•	Allow the user to download the tables as csv file.
-Page 4: Project Hypothesis and Validation
-•	Block for each project hypothesis, describe the conclusion and how you validated it.
-Page 5: ML Prediction Metrics
-•	Label Frequencies for Train, Validation, and Test Sets
-•	Model History - Accuracy and Losses
-•	Model evaluation result
-•	Conclusions and recommendations for classification parameters
+**Page 4: Project Hypothesis and Validation**
+
+This page recaps each project hypothesis, describes the conclusion and how it was validated.
+
+**Page 5: ML Prediction Metrics**
+
+This pages summarizes the model scores and evaluates its performance. The conclusions shown on this page lend support to answering business requirement 1 by corroborating or refuting the conclusions from the visual analysis and the initial assumptions.
+
+Page features:
+
+- Label Frequencies for Train, Validation, and Test Sets
+- Model History - Accuracy and Losses
+- Model evaluation result
+- Conclusions and recommendations for classification parameters
+
 
 https://www.datascience-pm.com/crisp-dm-2/
 
 ## CRISP-DM Process
 
+This project applied the CRISP-DM methodology to provide a structured approach the data mining project.
+
 **Description of the dataset applying the 6 CRISP-DM methodology**
 
-I. Business Understanding
-1.	Determine business objectives: The client wants a PoC model that will accurately classify three specific pets while those are walking past the camera and coming up to their feeding bowl.
-2.	Assess situation: The result should be a small-scale, resource-effective model that can be run on an offline device. The required dataset can be limited to a few hundred images.
-3.	Determine data mining goals: The data mining step is a success if we have gathered enough images showing the pets in their most frequent poses in different lighting conditions.
-4.	Produce project plan: For this project, a Huawei P20 smartphone camera will suffice for the data collection. The data will be standardized, cleaned, and processed for training on an Asus ROG G751JT Notebook with an Intel Core i7-4710HQ CPU @ 2.50GHz and 16GB of RAM. Resource-heavy tuning processes will be done using the limited free access to the Google Colab GPU runtime.
-II. Data Understanding
-1.	Collect initial data: The images were taken over the course of 3 days against a homogenous backdrop from roughly the same spot. 
-2.	Describe data: 1451 images were taken in total, with an extra 358 images taken on a different day to be used as independent live data. The images were taken as JPEGs with a Huawei P20 smartphone camera at a resolution of 7MP and a 1:1 aspect ratio. The images were resized to the format 128x128px and saved as 3-channel (RGB) PNG, with a bit depth of 8 bit per channel. The resizing was done in batch mode with the software IrfanView using Lanczos as filter.
-3.	Explore data: Initial analyses were done using Mean and Variance representations and assumptions were made about the amount of similarity between datasets.
-4.	Verify data quality: The data was intended to be a representation of the real-world data that will presumably be analyzed by the model. The images show the pets in different poses and are partly blurred or show only a partial view of the pet, which was a deliberate choice. A human can easily tell which pet is shown on the images. 
-III. Data Preparation
+A. Business Understanding
+1. Determine business objectives:
 
-1.	Select data: All the pictures taken for this project were used for the model.
-2.	Clean data: Images where only a small part of the pet was visible were deleted.
-3.	Construct data: Average and variance images were created and compared using histogram comparison methods. The similarity between image sets was assessed with the help of the methods Correlation, Chi-Squared, Intersection, Bhattacharyya, and Euclidean Distance.
-4.	Format data: The images were loaded as numpy arrays and converted to floats between 0 and 1. The consistency in size and number of channels was ascertained.
-5.	Integrate data: The initially unbalanced data was balanced through undersampling and augmented by adding noise, cropping, brightness and hue variations.
-IV. Modeling
-1.	Select modeling techniques: The CNN model will use the Softmax regression as the output layer activation function and the default ReLU activation function for all other layers. The optimal amount of filter layers and filter values as well as the number of neurons will be chosen after the hyperparameter tuning. Categorical cross-entropy, which is suitable for multi-class classification, will be used as the loss function, while Adam, being an efficient and resource-friendly algorithm, will be the optimizer.
-2.	Generate test design: The images were spilt into train, test, and validation sets at a split rate of 0.6, 0.2, 0.2 respectively.
-3.	Build model: Several models were built using various parameters. The tuning was performed with a variety of value ranges chosen mostly through trial and error.
-4.	Assess model: Each model was thoroughly assessed on the basis of the Accuracy-Loss curves, its performance with test and live data, its F1 scores for each label, and its ability to yield an F1 score of 1 with the least amount of images over the course of hundreds of trial runs.
-V. Evaluation
-1.	Evaluate results: Several of the models did in fact perform well enough to be a reliable classifier for the specific task at hand (assessing a stream of 10-15 images before coming to a conclusion). However, the training process was repeated until the results were convincing even for small image batches (4-5 images) and consistently accurate over hundreds of trials.
-2.	Review process: Some models were excluded due to their size even though their performance was meeting all the targets. Since it was decided that the model should be lightweight and 20MB at maximum, well-performing models with 70 MB and more had to be shelved. Certain models were rejected despite having F1 scores over 0.9 because the recall for one of the classes was unacceptably low.
-3.	Determine next steps: The designed model is deemed appropriate to serve at the core of this Proof-of-Concept tool. The next step would be to identify common sources of misclassification, collect new images similar to those causing the issues, and retrain the mode. Considering the client’s need for an automated process for collecting training data, an in-depth study for image analysis and comparison is advisable. During that study, a multitude of image analysis and comparison methods should be researched and the correlation between the methods’ results and the performance of an image set mapped. Following that, the client could implement an image analysis tool that would allow a potential user to make a preliminary assessment of the product’s usefulness by analyzing batches of their pet’s images, and instruct a product user setting up their device on how to improve the odds of a successful classification of all pets.
-VI. Deployment
-1.	Plan deployment: The deployment for this specific PoC tool was accomplished by designing a Streamlit dashboard, presenting all findings to the client in an easy-to-understand manner and connecting the model for live classification tests.
-2.	Plan monitoring and maintenance: The dashboard and the model will be maintained and kept online for as long as the client requires it for testing and prototyping.
-3.	Produce final report: The summary of all findings can be found on the dashboard. A separate file with detailed test results for selected models will be provided for download.
+    The client wants a PoC model that will accurately classify three specific pets while those are walking past the camera and coming up to their feeding bowl.
+2. Assess situation:
+    
+    The result should be a small-scale, resource-effective model that can be run on an offline device. The required dataset can be limited to a few hundred images.
+3. Determine data mining goals:
+    
+    The project is a success if the model can classify pet images in batches from a live data stream with an F1 score of > 0.9 for each label, does not misclassify a pet within a specified parameter scope and does not fail to classify a pet after analyzing the maximum image batch of viable mages.
+4. Produce project plan:
+    
+    For this project, a Huawei P20 smartphone camera will suffice for the data collection. The data will be standardized, cleaned, and processed for training on an Asus ROG G751JT Notebook with an Intel Core i7-4710HQ CPU @ 2.50GHz and 16GB of RAM. Resource-heavy model tuning processes will be done using the limited free access to the Google Colab GPU runtime.
+
+B. Data Understanding
+1.	Collect initial data:
+    
+    The images were taken over the course of 3 days against a homogenous backdrop from roughly the same spot. 
+2.	Describe data:
+
+    1451 images were taken in total, with an extra 358 images taken on a different day to be used as independent live data. The images were taken as JPEGs with a Huawei P20 smartphone camera at a resolution of 7MP and a 1:1 aspect ratio. The images were resized to the format 128x128px and saved as 3-channel (RGB) PNG, with a bit depth of 8 bit per channel. The resizing was done in batch mode with the software IrfanView using Lanczos as filter.
+3.	Explore data:
+    
+    Initial analyses were done using Mean and Variance representations and assumptions were made about the amount of similarity between datasets.
+4.	Verify data quality:
+    
+    The data was intended to be a representation of the real-world data that will presumably be analyzed by the model. The images show the pets in different poses and are partly blurred or show only a partial view of the pet, which was a deliberate choice. A human can easily tell which pet is shown on the images.
+
+C. Data Preparation
+1.	Select data:
+    
+    All the pictures taken for this project were used for the model.
+2.	Clean data:
+    
+    Images where only a small part of the pet was visible were deleted.
+3.	Construct data:
+    
+    Average and variance images were created and compared using histogram comparison methods. The similarity between image sets was assessed with the help of the methods Correlation, Chi-Squared, Intersection, Bhattacharyya, and Euclidean Distance.
+4.	Format data:
+    
+    The images were loaded as numpy arrays and converted to floats between 0 and 1. The consistency in size and number of channels was ascertained.
+5.	Integrate data:
+    
+    The initially unbalanced data was balanced through undersampling and augmented by adding noise, cropping, brightness and hue variations.
+
+D. Modeling
+1.	Select modeling techniques:
+    
+    The CNN model will use the Softmax regression as the output layer activation function and the default ReLU activation function for all other layers. The optimal amount of filter layers and filter values as well as the number of neurons will be chosen after the hyperparameter tuning. Categorical cross-entropy, which is suitable for multi-class classification, will be used as the loss function, while Adam, being an efficient and resource-friendly algorithm, will be the optimizer.
+2.	Generate test design:
+    
+    The images were spilt into train, test, and validation sets at a split rate of 0.6, 0.2, 0.2 respectively.
+3.	Build model:
+    
+    Several models were built using various parameters. The tuning was performed with a variety of value ranges chosen mostly through trial and error.
+4.	Assess model:
+
+    Each model was thoroughly assessed on the basis of the Accuracy-Loss curves, its performance with test and live data, its F1 scores for each label, and its ability to yield an F1 score of 1 with the least amount of images over the course of hundreds of trial runs.
+
+E. Evaluation
+1.	Evaluate results:
+    
+    Several of the models did in fact perform well enough to be a reliable classifier for the specific task at hand (assessing a stream of 10-15 images before coming to a conclusion). However, the training process was repeated until the results were convincing even for small image batches (4-5 images) and consistently accurate over hundreds of trials.
+2.	Review process:
+    
+    Some models were excluded due to their size even though their performance was meeting all the targets. Since it was decided that the model should be lightweight and 20MB at maximum, well-performing models with 70 MB and more had to be shelved. Certain models were rejected despite having F1 scores over 0.9 because the recall for one of the classes was unacceptably low.
+3.	Determine next steps:
+
+    The designed model is deemed appropriate to serve at the core of this Proof-of-Concept tool. The next step would be to identify common sources of misclassification, collect new images similar to those causing the issues, and retrain the mode. Considering the client’s need for an automated process for collecting training data, an in-depth study for image analysis and comparison is advisable. During that study, a multitude of image analysis and comparison methods should be researched and the correlation between the methods’ results and the performance of an image set mapped. Following that, the client could implement an image analysis tool that would allow a potential user to make a preliminary assessment of the product’s usefulness by analyzing batches of their pet’s images, and instruct a product user setting up their device on how to improve the odds of a successful classification of all pets.
+
+F. Deployment
+1.	Plan deployment:
+
+    The deployment for this specific PoC tool was accomplished by designing a Streamlit dashboard, presenting all findings to the client in an easy-to-understand manner and connecting the model for live classification tests.
+2.	Plan monitoring and maintenance:
+    
+    The dashboard and the model will be maintained and kept online for as long as the client requires it for testing and prototyping.
+3.	Produce final report:
+
+    The summary of all findings can be found on the dashboard. A separate file with detailed test results for selected models will be provided for download.
 4.	Review project: …
 
 
