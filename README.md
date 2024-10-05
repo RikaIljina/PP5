@@ -1219,9 +1219,11 @@ The client would like to investigate the possibility of an infallible process du
 
 ### Code Testing
 
-The code was tested with [CI Python Linter] https://pep8ci.herokuapp.com/#
+The code was partly tested with [CI Python Linter](https://pep8ci.herokuapp.com/#), partly manually.
 
 ## Bugs and Issues
+
+There are no known bugs at this time.
 
 ## Deployment
 

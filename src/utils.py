@@ -70,6 +70,7 @@ def process_inputs(
             f"higher than the value for 'Minimal image threshold'. Adjusting."
         )
         max_attempts = min_attempts
+
     else:
         warning_box.text("")
 

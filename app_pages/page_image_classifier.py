@@ -150,6 +150,7 @@ def page_image_classifier_body():
                 min_confidence,
                 warning_box,
             )
+            st.session_state['max_attempt'] = max_attempts
 
     update_box = st.empty()
     update_box.info(update_str)
@@ -180,7 +181,7 @@ def page_image_classifier_body():
         update_info_box(
             trial_amount,
             min_attempts,
-            max_attempts,
+            st.session_state['max_attempt'],
             min_confidence,
             update_box,
         )
@@ -190,7 +191,7 @@ def page_image_classifier_body():
         result, fav_class_min = run_classification(
             trial_amount,
             min_attempts,
-            max_attempts,
+            st.session_state['max_attempt'],
             min_confidence,
             images_buffer,
             shuffle,
