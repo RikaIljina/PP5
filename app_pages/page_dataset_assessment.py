@@ -1,12 +1,11 @@
-import streamlit as st
 import os
-import matplotlib.pyplot as plt
 import itertools
-from src.data_visualization.get_montage import image_montage
 import joblib
+import streamlit as st
+import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 
+from src.data_visualization.get_montage import image_montage
 
 
 def page_dataset_assessment_body():
@@ -21,7 +20,7 @@ def page_dataset_assessment_body():
         <div class="blue-div">
           <h5>Business requirement 1:</h5>
             <p>The client is interested in a recommendation regarding the scale
-            and quality of future datasets as well as an investigation of a 
+            and quality of future datasets as well as an investigation of a
             correlation between the similarity of the pets' visual features and
             the performance of the model.
             </p>
@@ -40,27 +39,30 @@ def page_dataset_assessment_body():
         unsafe_allow_html=True,
     )
     if st.checkbox("Show", key="show-0"):
-        
+
         col1, col2, col3 = st.columns(3)
-        col1.image('inputs/datasets/pets_slim/train/fin/train_fin_0043.png', 
+        col1.image('inputs/datasets/pets_slim/train/fin/train_fin_0043.png',
                    caption='Fin')
         col2.image('inputs/datasets/pets_slim/train/iris/train_iris_0076.png',
                    caption='Iris')
-        col3.image('inputs/datasets/pets_slim/train/smilla/train_smilla_0261.png',
-                   caption='Smilla')
-        
+        col3.image(
+            'inputs/datasets/pets_slim/train/smilla/train_smilla_0261.png',
+            caption='Smilla')
+
         st.info(
             """
             * By looking through the images in the dataset, we notice that the
             pet 'smilla', being rather small, usually takes up too little space
             on the images, with the background being dominant.
             * The 'fin' label shows sufficient presence and variety.
-            * Since the fur of the pet 'iris' has light and dark patches while 
-            the pet 'smilla' is predominantly black and the pet 'fin' is 
-            completely beige-white, we assume that Iris's unique features 
+            * Since the fur of the pet 'iris' has light and dark patches while
+            the pet 'smilla' is predominantly black and the pet 'fin' is
+            completely beige-white, we assume that Iris's unique features
             might overlap with the other pets.
+            * Even the white wall behind 'iris' might be a source of confusion
+            considering how large and light 'fin' is.
             """)
-    
+
     st.markdown(
         """
         <h5 style="text-decoration: underline;">
@@ -93,21 +95,20 @@ def page_dataset_assessment_body():
         )
         st.image(
             var_grid_norm,
-            caption="The normalized variance images for each label in the \
-                'train' subset",
+            caption=("The normalized variance images for each label in the "
+                     "'train' subset"),
         )
 
         st.success(
             """
-            The variance images show the mean variance between each image in 
+            The variance images show the mean variance between each image in
             the label set, brighter areas indicating greater variance.
-            Dark areas can be interpreted as unchanging aspects such as floor 
+            Dark areas can be interpreted as unchanging aspects such as floor
             or wall.
-            
             * We notice that the average image for each pet is clearly
             distinguishable from the others.\n\n
             * We also notice that the 'iris' label might contain too many
-            similar images, seen as clear outlines on the average image. This 
+            similar images, seen as clear outlines on the average image. This
             might lead to bias during model training.\n\n
             """
         )
@@ -132,30 +133,30 @@ def page_dataset_assessment_body():
 
         st.success(
             """
-            The differences between the average images show by how much each 
-            pixel in one mean image differs from the same pixel in the other 
+            The differences between the average images show by how much each
+            pixel in one mean image differs from the same pixel in the other
             mean image. Bright areas indicate greater differences. \n\n
-            * We notice that there are visible differences between all labels, 
-            with the **'fin - smilla'** comparison showing the largest bright 
+            * We notice that there are visible differences between all labels,
+            with the **'fin - smilla'** comparison showing the largest bright
             area. \n\n
-            * We make the preliminary conclusion that the labels **'fin'** and 
-            **'smilla'** might turn out to be easiest for the model to 
+            * We make the preliminary conclusion that the labels **'fin'** and
+            **'smilla'** might turn out to be easiest for the model to
             distinguish.
             * The difference images for the other two pets can not be
             satisfactorily assessed in that manner.
-            * We calculate the Mean and Variance values for the difference 
+            * We calculate the Mean and Variance values for the difference
             images, receiving the following results:\n
             """
         )
-        
+
         dict1 = {"Mean for ('fin', 'iris')": 0.08560952,
-            "Mean for ('fin', 'smilla')":     0.14524248,
-            "Mean for ('iris', 'smilla')":    0.0888353,
-            "Variance for ('fin', 'iris')":   0.0073880,
-            "Variance for ('fin', 'smilla')": 0.0107992,
-            "Variance for ('iris', 'smilla')": 0.0040149}
+                 "Mean for ('fin', 'smilla')":     0.14524248,
+                 "Mean for ('iris', 'smilla')":    0.0888353,
+                 "Variance for ('fin', 'iris')":   0.0073880,
+                 "Variance for ('fin', 'smilla')": 0.0107992,
+                 "Variance for ('iris', 'smilla')": 0.0040149}
         st.dataframe(pd.DataFrame(dict1, index=(['Value'])).T)
-        
+
         st.success(
             """
             While the Mean values seem inconclusive for the “fin – iris” and
@@ -166,7 +167,7 @@ def page_dataset_assessment_body():
             at the top.\n\n
             We make a preliminary conclusion that the images in the sets "fin"
             and "smilla" will have the least error rates, followed by "fin" and
-            "iris" and finally with "smilla" and "iris" having the most 
+            "iris" and finally with "smilla" and "iris" having the most
             misclassifications between them.
             """)
 
@@ -181,7 +182,7 @@ def page_dataset_assessment_body():
     if st.checkbox("Show", key="show-3"):
         st.info(
             """
-            On top of the visual comparison, we want to compare the histograms 
+            On top of the visual comparison, we want to compare the histograms
             of the average images of each combo and use the results to
             evaluate our dataset.\n
             Seeing as we will be training our model on 3-channel RGB color
@@ -192,7 +193,7 @@ def page_dataset_assessment_body():
         st.write("##### Create baseline")
         st.info(
             """
-            To create the baselines, we have loaded at least 200 random 
+            To create the baselines, we have loaded at least 200 random
             non-consecutive images from each label, split the resulting array
             in half and compared the means of both halves with each other by
             subtracting one from the other and converting the result to
@@ -215,7 +216,8 @@ def page_dataset_assessment_body():
         st.write("---")
 
         st.info(
-        f"Let's assess the histograms where we compare each label to itself:"
+            f"Let's assess the histograms where we compare each label to "
+            f"itself:"
         )
         for label in LABELS:
             baseline_diffs = plt.imread(
@@ -236,7 +238,7 @@ def page_dataset_assessment_body():
 
         st.success(
             """
-            We can clearly see that the histograms depicting the differences 
+            We can clearly see that the histograms depicting the differences
             between two different labels are much more pronounced than the
             baseline histogram diffs.\n
             This reinforces our initial assumption that the pets seem to have
@@ -261,10 +263,10 @@ def page_dataset_assessment_body():
 
         st.info(
             """
-            In order to assess the similarity between our image sets, we 
+            In order to assess the similarity between our image sets, we
             performed histogram comparison for each color channel using five
             distinct methods and summarized the results in the following
-            heatmap."
+            heatmap.
             """
         )
 
@@ -284,9 +286,9 @@ def page_dataset_assessment_body():
             """
             As expected, the upper half of the heatmaps containing our baseline
             metrics is showing overwhelmingly high similarity values, while the
-            lower half with the pet comparisons is showing low similarity 
+            lower half with the pet comparisons is showing low similarity
             values.\n\n
-            At the same time, there seem to be a stark variance between 
+            At the same time, there seems to be a stark variance between
             different combinations, reinforcing our assumption that certain
             pet images have more overlap in color and shape than others.\n\n
             """
@@ -300,15 +302,15 @@ def page_dataset_assessment_body():
 
         st.success(
             """
-            A first glance at the heatmap and the mean values per metric as 
+            A first glance at the heatmap and the mean values per metric as
             well as the overall mean and median values paint a clear picture:
             \n\n
-            - The **Fin**-**Smilla** pair seems to be very distinguishable, 
+            - The **Fin**-**Smilla** pair seems to be very distinguishable,
             while **Iris** has more overlap with the other two image sets.\n\n
             - Surprisingly, the **Intersection** metric for the **Fin**
             baseline values shows less similarity than for the other baseline
-            values. This might point to the dataset not being sufficiently 
-            balanced in itself, with too much variation in poses and lighting 
+            values. This might point to the dataset not being sufficiently
+            balanced in itself, with too much variation in poses and lighting
             between the images. This finding warrants further investigation.
             \n\n
             - The overlap between the cats **Smilla** and **Iris** might be
@@ -327,11 +329,11 @@ def page_dataset_assessment_body():
                                          'Intersection', 'Bhattacharyya',
                                          'Euclidean Distance'],
                                   data=[['Fin - Smilla', 'Iris - Smilla',
-                                        'Fin - Iris'], 
+                                        'Fin - Iris'],
                                         ['Fin - Smilla', 'Iris - Smilla',
                                         'Fin - Iris'],
                                         ['Fin - Smilla', 'Fin - Iris',
-                                         'Iris - Smilla'], 
+                                         'Iris - Smilla'],
                                         ['Fin - Smilla', 'Fin - Iris',
                                          'Iris - Smilla'],
                                         ['Iris - Smilla', 'Fin - Smilla',
@@ -352,32 +354,37 @@ def page_dataset_assessment_body():
             <li>
             <a href="https://en.wikipedia.org/wiki/Chi-squared_test" target="_blank">
             <b>Chi-Squared</b></a>:
-            <br>This method measures the similarity between two histograms by calculating 
-            the sum of the squared differences normalized by the values of the histograms.
-            It is sensitive to small changes in the histogram bins.<br>
-            The result is a value between 0 and infinity, where 0 means highest similarity.
+            <br>This method measures the similarity between two histograms by
+            calculating the sum of the squared differences normalized by the
+            values of the histograms. It is sensitive to small changes in the
+            histogram bins.<br>
+            The result is a value between 0 and infinity, where 0 means highest
+            similarity.
             </li>
             <li>
             <a href="https://blog.datadive.net/histogram-intersection-for-change-detection/" target="_blank">
             <b>Intersection</b></a>:
-            <br>Calculates the sum of the minimum values of corresponding bins in two histograms.
-            The result is a value between 0 and 1, where 1 means the histograms are identical.
+            <br>Calculates the sum of the minimum values of corresponding bins
+            in two histograms. The result is a value between 0 and 1, where 1
+            means the histograms are identical.
             </li>
             <li>
             <a href="https://en.wikipedia.org/wiki/Bhattacharyya_distance" target="_blank">
             <b>Bhattacharyya</b></a>:
-            <br>The Bhattacharyya distance quantifies the overlap between two probability
-            distributions. It is useful for comparing two probability histograms and
-            provides a measurement of the distance between two distributions.
-            The result is a value between 0 and infinity, where 0 means highest similarity.
+            <br>The Bhattacharyya distance quantifies the overlap between two
+            probability distributions. It is useful for comparing two
+            probability histograms and provides a measurement of the distance
+            between two distributions. The result is a value between 0 and
+            infinity, where 0 means highest similarity.
             </li>
             <li>
-            <a href="https://en.wikipedia.org/wiki/Bhattacharyya_distance" target="_blank">
+            <a href="https://en.wikipedia.org/wiki/Euclidean_distance" target="_blank">
             <b>Euclidean Distance</b></a>:
-            <br>This method measures the straight-line distance between corresponding bins in
-            two histograms. It sums the squared differences of each bin and takes the
-            square root. The smaller the distance, the more similar the histograms are.
-            The result is a value between 0 and infinity, where 0 means highest similarity.
+            <br>This method measures the straight-line distance between
+            corresponding bins in two histograms. It sums the squared
+            differences of each bin and takes the square root. The smaller the
+            distance, the more similar the histograms are. The result is a
+            value between 0 and infinity, where 0 means highest similarity.
             </li>
             </ul>""",
                 unsafe_allow_html=True,
@@ -394,34 +401,45 @@ def page_dataset_assessment_body():
     if st.checkbox("Show", key="show-5"):
         st.info(
             """
-            In order to avoid high bias, low variance between the different labels and
-            too high variance within a single label, the following recommendations for
-            compiling the training dataset should be followed:\n\n
+            In order to avoid high bias, low variance between the different
+            labels and too high variance within a single label, the following
+            recommendations for compiling the training dataset should be
+            followed:\n\n
             * The more images a label contains, the better.\n
-            * Images should be taken at different times of the day with different lighting
-            to ensure that every possible lighting condition that the device will encounter
-            during live classification is present in the train set.\n
-            * At the same time, over- and underexposure should be avoided to 
+            * Images should be taken at different times of the day with
+            different lighting to ensure that every possible lighting condition
+            that the device will encounter during live classification is
+            present in the train set.\n
+            * At the same time, over- and underexposure should be avoided to
             make sure that certain features are not rendered unrecognizable.\n
-            * If possible, the images should show more of the pet than of the background.\n
-            * If the pets use to wear different collars or clothes, the images should
-            reflect that in appropriate proportions.\n
-            * The pets should behave naturally on the images, just as they will be during
-            the capturing of live images.\n
-            * The distance between the camera and the pet should reflect the actual placement
-            of camera and feeding device in the real-world application of the device.\n
-            * The model should be trained with images from the same camera type and the
-            same size/resolution that will be used during live classification.\n\n
-            When analyzing image data, the following aspects should be considered:\n\n
-            * The mean and variation images of a dataset should not contain clear
-            outlines of the pet; this is a sign of an excess number of highly
-            similar images, for example of the pet sitting there without moving.\n
-            * Broadly speaking, regarding the metrics, we want the similarity values in the
-            baseline part of the heatmap to go up and be close to 1, while we want to
-            see the values in the label comparison part reduced to as close to 0 as
-            possible. However, a pronounced difference between the two parts is already
-            a good sign that the model will pick up on the differences, given a sufficient
-            amount of data to train on.
+            * If possible, the images should show more of the pet than of the
+            background.\n
+            * When choosing the background, less visual noise is preferable.
+            All pets should be clearly distinguishable against the background
+            color.\n
+            * If the pets use to wear different collars or clothes, the images
+            should reflect that in appropriate proportions.\n
+            * The pets should behave naturally on the images, just as they will
+            during the capturing of live images.\n
+            * The distance between the camera and the pet should reflect the
+            actual placement of camera and feeding device in the real-world
+            application of the device.\n
+            * The model should be trained with images from the same camera type
+            and the same size/resolution that will be used during live
+            classification.\n\n
+            When analyzing image data, the following aspects should be
+            considered:\n\n
+            * The mean and variation images of a dataset should not contain
+            clear outlines of the pet; this is a sign of an excess number of
+            highly similar images, for example of the pet sitting there without
+            moving.\n
+            * Broadly speaking, regarding the metrics, we want the similarity
+            values in the baseline part of the heatmap to go up and be close to
+            1, while we want to see the values in the label comparison part
+            reduced to as close to 0 as possible. However, a pronounced
+            difference between the two parts is already a good sign that the
+            model will pick up on the differences, given a sufficient amount of
+            data to train on.
             """
         )
 

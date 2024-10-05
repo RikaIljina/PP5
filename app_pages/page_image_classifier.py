@@ -51,7 +51,8 @@ def page_image_classifier_body():
         """
         <div class="yellow-div">
             <p>
-            You can download a set of pet images for live prediction from Google Drive: 
+            You can download a set of pet images for live prediction from 
+            Google Drive: 
             <a href="https://drive.usercontent.google.com/u/0/uc?id=1M4vruKofgkxSTwYd1FCdtoajfvmZFP6Y&export=download" 
             target="_blank" rel="noopener">Live images</a>
             </p>
@@ -69,17 +70,18 @@ def page_image_classifier_body():
         <b>Please provide parameters for the classification.</b><br>
         <ul>
         <li>
-        A <b>trial</b> is a series of classification attempts from individual images
-        that are assumed to belong to the same class. The final classification result
-        is based on the mean values of all classification attempts within that trial.
+        A <b>trial</b> is a series of classification attempts from individual
+        images that are assumed to belong to the same class. The final
+        classification result is based on the mean values of all classification
+        attempts within that trial.
         </li>
-        <li>An <b>attempt</b> is the model's mean probability calculation from all
-        probabilities gathered so far within a single trial and the comparison of the
-        top value to the confidence threshold.
+        <li>An <b>attempt</b> is the model's mean probability calculation from
+        all probabilities gathered so far within a single trial and the
+        comparison of the top value to the confidence threshold.
         </li>
         </ul>
-        <p>The following parameters may be clipped or adjusted based on the amount
-        of provided images.</p>
+        <p>The following parameters may be clipped or adjusted based on the
+        amount of provided images.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -96,7 +98,8 @@ def page_image_classifier_body():
     with st.form(key="param_input_form"):
         col1, col2, buff = st.columns([6, 3, 1])
         col1.markdown(
-            f'<p style="padding-top: 1rem;">How many consecutive trials should the model run?</p>',
+            f'<p style="padding-top: 1rem;">How many consecutive trials should'
+            f' the model run?</p>',
             unsafe_allow_html=True,
         )
         trial_amount = col2.number_input(
@@ -104,10 +107,12 @@ def page_image_classifier_body():
         )
         col1, col2, buff = st.columns([6, 3, 1])
         col1.markdown(
-            f'<p style="padding-top: 1rem;">How many images within one trial should the model analyze before '
+            f'<p style="padding-top: 1rem;">How many images within one trial '
+            f'should the model analyze before '
             f"trying to reach a conclusion?</p>",
             unsafe_allow_html=True,
-            help="WARNING: A too low number can lead to misclassification due to a high-confidence error early on",
+            help=("WARNING: A too low number can lead to misclassification due"
+                  "to a high-confidence error early on"),
         )
 
         min_attempts = col2.number_input(
@@ -115,8 +120,9 @@ def page_image_classifier_body():
         )
         col1, col2, buff = st.columns([6, 3, 1])
         col1.markdown(
-            f'<p style="padding-top: 1rem;">After how many images should the model give up the classification '
-            f"attempt and restart the trial?</p>",
+            f'<p style="padding-top: 1rem;">After how many images should the '
+            f'model give up the classification '
+            f'attempt and restart the trial?</p>',
             unsafe_allow_html=True,
         )
         max_attempts = col2.number_input(
@@ -124,7 +130,8 @@ def page_image_classifier_body():
         )
         col1, col2, buff = st.columns([6, 3, 1])
         col1.markdown(
-            f'<p style="padding-top: 1rem;">What confidence level should count as a successful classification?',
+            f'<p style="padding-top: 1rem;">What confidence level should count'
+            f' as a successful classification?',
             unsafe_allow_html=True,
         )
         min_confidence = col2.slider(
@@ -199,8 +206,9 @@ def page_image_classifier_body():
         if not df.empty:
             st.success("### **Analysis Report**")
             st.write(f"#### Confidence was set to **{min_confidence}%**")
-            cap1 = f"Batch classification results after {
-                len(df)} Trials with {len(images_buffer)} individual images to choose from"
+            cap1 = (f"Batch classification results after {len(df)} Trials "
+                    f"with {len(images_buffer)} individual images to choose "
+                    f"from")
             st.write(cap1)
 
             st.dataframe(
@@ -218,7 +226,6 @@ def page_image_classifier_body():
                 Counter(df["Predicted class"]),
                 columns=["Amount"],
                 orient="index",
-                # pd.DataFrame.from_dict(Counter(fav_class_maj), columns=["Amount"], orient="index")
             )
             df_favs_maj.index.name = "Class"
 

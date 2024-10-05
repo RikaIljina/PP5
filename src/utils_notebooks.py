@@ -3,13 +3,15 @@ from colorama import Fore, Style
 from matplotlib.font_manager import FontProperties
 
 
-# Error notification style
 def print_err(message):
+    """Styling for error messages"""
+
     print(f"{Fore.RED}ERROR:{Style.RESET_ALL}\n{message}")
 
 
-# Warning notification style
 def print_warn(message):
+    """Styling for warning messages"""
+
     print(f"{Fore.YELLOW}WARNING:{Style.RESET_ALL}\n{message}")
     
 
@@ -19,19 +21,24 @@ def get_user_confirmation():
     sys.stdout.flush()
     return input().lower()
 
-def show_progress(label, list_len):
+
+def show_progress(list_len):
+    """Show progress bar while loading images into memory"""
     width = 100
     for i in range(list_len):
-        yield f'\r{label:<10}: {"#"*int(width if i == list_len-1 else i//(list_len/width)):<{width}}|| '
-        
+        yield f'\r{''}: {"#"*int(width if i == list_len-1 else i//(list_len/width)):<{width}}|| '
+
 
 def set_ticks(ax):
+    """Remove ticks from figures"""
+
     ax.set_xticks([])
     ax.set_yticks([])
-    
-    
+
 
 def font_props():
+    """Set font properties for figures"""
+
     font_top = FontProperties(
     weight="bold",
     size=20,
@@ -49,6 +56,8 @@ def font_props():
 
 
 def style_dataframe(df, hl_label=None):
+    """Custom dataframe style with the possibility to highlight a label"""
+
     col_names = [" "]
     col_names.extend(list(df.columns))
     for x, c in enumerate(col_names):

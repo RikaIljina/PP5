@@ -1,8 +1,8 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.image import imread
-from src.machine_learning.evaluate_clf import load_test_evaluation, load_reports
+import matplotlib.pyplot as plt
+
+from src.machine_learning.evaluate_clf import load_test_evaluation
 
 
 def page_ml_performance_metrics():
@@ -13,7 +13,8 @@ def page_ml_performance_metrics():
         f"outputs/labels_distribution_after_split.png")
     col1, col2, = st.columns(2)
     col1.image(labels_distribution,
-               caption='Initial label distribution on Train, Validation and Test Sets')
+               caption=('Initial label distribution on Train, Validation and '
+                        'Test Sets'))
     st.write("---")
 
     st.write("### Train, Validation and Test Set: Balancing and Augmentation")
@@ -37,19 +38,20 @@ def page_ml_performance_metrics():
     st.write("### Model Setup")
     st.write(
         """
-        The model is a Deep Learning Convolutional Neural Network (CNN) built 
-        with Keras, a high-level API for Tensorflow. The CNN model uses the 
-        Softmax regression as the output layer activation function and the 
+        The model is a Deep Learning Convolutional Neural Network (CNN) built
+        with Keras, a high-level API for Tensorflow. The CNN model uses the
+        Softmax regression as the output layer activation function and the
         default ReLU activation function for all other layers.\n
-        Categorical cross-entropy, which is suitable for multi-class 
-        classification, was used as the loss function, while Adam, being an 
+        Categorical cross-entropy, which is suitable for multi-class
+        classification, was used as the loss function, while Adam, being an
         efficient and resource-friendly algorithm, was used as the optimizer.
         """)
 
     st.markdown(
-        """         
-            [Input shape: 128, 128, 3]<br>
-            [Model type :  Sequential]<br>
+        """        
+
+            Input shape: 128, 128, 3<br>
+            Model type :  Sequential<br>
             <table>
                 <tr>
                     <th>Layers</th>
@@ -61,7 +63,7 @@ def page_ml_performance_metrics():
                 </tr>
                 <tr>
                     <td>Conv2D</td>
-                    <td>filters=128, kernel_size=(5, 5), activation="relu", 
+                    <td>filters=128, kernel_size=(5, 5), activation="relu",
                     kernel_regularizer=l2(0.0001)</td>
                 </tr>
                 <tr>
@@ -70,7 +72,7 @@ def page_ml_performance_metrics():
                 </tr>
                 <tr>
                     <td>Conv2D</td>
-                    <td>filters=128, kernel_size=(3, 3), activation="relu", 
+                    <td>filters=128, kernel_size=(3, 3), activation="relu",
                     kernel_regularizer=l2(0.0001)</td>
                 </tr>
                 <tr>
@@ -79,7 +81,7 @@ def page_ml_performance_metrics():
                 </tr>
                 <tr>
                     <td>Conv2D</td>
-                    <td>filters=128, kernel_size=(3, 3), padding="same", 
+                    <td>filters=128, kernel_size=(3, 3), padding="same",
                     activation="relu", kernel_regularizer=l2(0.0001)</td>
                 </tr>
                 <tr>
@@ -104,13 +106,17 @@ def page_ml_performance_metrics():
                 </tr>
             </table>
 
-            [Compiling:]<br>
-                [loss="categorical_crossentropy"]<br>
-                [optimizer=keras.optimizers.Adam(learning_rate=0.001)]<br>
-                [metrics=["accuracy"]]<br>
+            Compiling:<br>
+            loss="categorical_crossentropy"<br>
+            optimizer=keras.optimizers.Adam(learning_rate=0.001)<br>
+            metrics=["accuracy"]<br>
             """, unsafe_allow_html=True)
 
     st.image('assets/model_arch.PNG')
+
+    st.success("The overall model size is 12.8 MB, with an inference-only "
+               "tflite version of 4.2 MB. This meets the requirement for a "
+               "light-weight model.")
 
     eval, hyperparams = load_test_evaluation()
     st.write("Final model hyperparameters")
@@ -134,8 +140,6 @@ def page_ml_performance_metrics():
 
     st.write("### Detailed Performance on Test Set")
 
-    # test_report = load_reports()['test']
-    # st.code(f'''{test_report}''')
     col1, col2 = st.columns(2)
     test_heat_precision = plt.imread(
         f"outputs/x_b_1/pred_test_precision_heatmap_x_b_1.png")
@@ -162,15 +166,16 @@ def page_ml_performance_metrics():
 
     st.success(
         """
-        The model's scores meet the target values for all labels, which means
-        that the developed model answers **Business Requirement 2**.
+        The model's scores meet the target values of F1 > 0.9 for test and live
+        images for all labels, which means that the developed model answers
+        **Business Requirement 2**.
         """)
 
     st.markdown(
         """
         Please find detailed performance reports and test logs in the project's
         <a href=
-             "https://github.com/RikaIljina/PP5/blob/main/README.md#final-model" 
+             "https://github.com/RikaIljina/PP5/blob/main/README.md#final-model"
              target="_blank" rel="noopener">README on GitHub</a>.
         """, unsafe_allow_html=True)
 
@@ -209,34 +214,40 @@ def page_ml_performance_metrics():
     live_batch_fin = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_5.png")
     st.image(live_batch_fin,
-             caption='Label "fin", probability spread between batches of 5 images each')
+             caption=('Label "fin", probability spread between batches of 5 '
+                     'images each'))
     st.write("**Fin, 15 images/50 batches**")
     live_batch_fin = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_fin__x_b_1_50_15.png")
     st.image(live_batch_fin,
-             caption='Label "fin", probability spread between batches of 15 images each')
+             caption=('Label "fin", probability spread between batches of 15 '
+                      'images each'))
 
     st.write("**Iris, 5 images/50 batches**")
     live_batch_iris = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_5.png")
     st.image(live_batch_iris,
-             caption='Label "iris", probability spread between batches of 5 images each')
+             caption=('Label "iris", probability spread between batches of 5 '
+                      'images each'))
     st.write("**Iris, 15 images/50 batches**")
     live_batch_iris = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_iris__x_b_1_50_15.png")
     st.image(live_batch_iris,
-             caption='Label "iris", probability spread between batches of 15 images each')
+             caption=('Label "iris", probability spread between batches of 15 '
+                      'images each'))
 
     st.write("**Smilla, 5 images/50 batches**")
     live_batch_smilla = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_5.png")
     st.image(live_batch_smilla,
-             caption='Label "smilla", probability spread between batches of 5 images each')
+             caption=('Label "smilla", probability spread between batches of 5'
+                      ' images each'))
     st.write("**Smilla, 15 images/50 batches**")
     live_batch_smilla = plt.imread(
         f"outputs/x_b_1/live_class_batch_probas_smilla__x_b_1_50_15.png")
     st.image(live_batch_smilla,
-             caption='Label "smilla", probability spread between batches of 15 images each')
+             caption=('Label "smilla", probability spread between batches of '
+                      '15 images each'))
 
     st.info(
         """
@@ -256,7 +267,7 @@ def page_ml_performance_metrics():
         """)
     st.success(
         """
-        Running 500 batches per label with 5 images per batch resulted in an F1 
+        Running 500 batches per label with 5 images per batch resulted in an F1
         score of 1 for each label, which answers **Business Requirement 3**.\n
         Please see the page "Recommendations" for adequate classification
         parameters.

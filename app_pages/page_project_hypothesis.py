@@ -1,8 +1,8 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 
 
 def page_project_hypothesis_body():
+
     st.write("### Project Hypothesis and Validation")
 
     st.info(
@@ -27,29 +27,30 @@ def page_project_hypothesis_body():
         - to determine an appropriate upper limit for the batch size after
         which an accurate classification should be guaranteed or the trial
         abandoned due to inconclusive input
-        
         """
     )
-    
+
     st.write("### Have the Business Requirements been met?")
     st.markdown(
         '''
         <div class="green-div">
           <ol>
             <li>
-            The client is interested in a recommendation regarding the scale 
-            and quality of future datasets as well as an investigation of a 
+            The client is interested in a recommendation regarding the scale
+            and quality of future datasets as well as an investigation of a
             correlation between the similarity of the pets' visual features and
             the performance of the model.
             <br>
-            ✅ The requirement has been met by conducting a thorough assessment of
-            the image data and summarizing the results on the page "Dataset 
+            <br>
+            ✅ The requirement has been met by conducting a thorough assessment
+            of the image data and summarizing the results on the page "Dataset
             Assessment" and "Recommendations".
             </li>
             <hr>
             <li>
             The client is interested in a PoC model that will tell pets apart
-            by their images and achieves an F1 score > 0.9 for each label. 
+            by their images and achieves an F1 score > 0.9 for each label.
+            <br>
             <br>
             ✅ The requirement has been met by developing a fully functional,
             reasonably sized PoC model that meets all target scores.<br>
@@ -58,12 +59,13 @@ def page_project_hypothesis_body():
             </li>
             <hr>
             <li>
-            The client would like to investigate the possibility of an 
-            infallible process during which a pet will be either classified 
+            The client would like to investigate the possibility of an
+            infallible process during which a pet will be either classified
             correctly or not classified at all.
             <br>
-            ✅ The requirement has been met by conducting hundreds of tests on the
-            randomized live data and determining parameters which, when
+            <br>
+            ✅ The requirement has been met by conducting hundreds of tests on
+            the randomized live data and determining parameters which, when
             implemented, will significantly reduce the risk of a pet
             misclassification.<br>
             The results have been summarized on the page "Recommendations".

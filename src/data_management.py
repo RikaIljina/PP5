@@ -1,9 +1,8 @@
 import os
 import base64
-from datetime import datetime
 import joblib
-import streamlit as st
 import tempfile
+from datetime import datetime
 
 
 def download_dataframe_as_csv(dfs, caps):
@@ -28,11 +27,14 @@ def download_dataframe_as_csv(dfs, caps):
     button_css = '<button class="download-btn-2">'
 
     datetime_now = datetime.now().strftime("%d%b%Y_%Hh%Mmin%Ss")
-    href = f"""{button_css}<a style="text-decoration: none; color: black;" href="data:file/csv;base64,{b64}
-        " download="Report_{datetime_now}.csv" target="_blank">Download Report</a></button>"""
+    href = f"""
+        {button_css}<a style="text-decoration: none; color: black;"
+        href="data:file/csv;base64,{b64}" download="Report_{datetime_now}.csv"
+        target="_blank">Download Report</a></button>
+        """
     os.remove(temp_name)
 
-    return href  # csv_content, f"Report_{datetime_now}.csv"
+    return href
 
 
 def load_pkl_file(file_path):

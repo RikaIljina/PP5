@@ -22,6 +22,16 @@ def get_constants():
 def update_info_box(
     trial_amount, min_attempts, max_attempts, min_confidence, update_box
 ):
+    """Update text box with currently set classifier parameters
+
+    Args:
+        trial_amount (int): Number of trials to run
+        min_attempts (int): Mininmum number of images to classify as a batch
+        max_attempts (int): Number of images after which the trial is cancelled
+        min_confidence (int): Confidence threshold to reach
+        update_box (DeltaGenerator): Reference to empty container on the page
+    """
+
     if st.session_state["tr_input"]:
         batch_range_str = (
             f"**{min_attempts}**"
@@ -40,10 +50,24 @@ def update_info_box(
 def process_inputs(
     trial_amount, min_attempts, max_attempts, min_confidence, warning_box
 ):
+    """Check parameters submitted by user and adjust if needed
+
+    Args:
+        trial_amount (int): Number of trials to run
+        min_attempts (int): Mininmum number of images to classify as a batch
+        max_attempts (int): Number of images after which the trial is cancelled
+        min_confidence (int): Confidence threshold to reach
+        warning_box (DeltaGenerator): Reference to empty container on the page
+
+    Returns:
+        str: Message string with all set parameters
+        int: The possibly adjusted value for max attempts
+    """
+
     if max_attempts < min_attempts:
         warning_box.error(
-            f"The value for 'Max attempts per trial' must be equal to or higher "
-            f"than the value for 'Minimal image threshold'. Adjusting."
+            f"The value for 'Max attempts per trial' must be equal to or "
+            f"higher than the value for 'Minimal image threshold'. Adjusting."
         )
         max_attempts = min_attempts
     else:
